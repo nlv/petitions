@@ -7,21 +7,12 @@
 module App where
 
 import           Control.Monad.Trans.Except
-import           Data.Aeson
 import           Data.Text
-import           GHC.Generics
 import           Network.Wai
 import           Network.Wai.Handler.Warp
 import           Servant
 import           System.IO
-
--- * api
-
-type Api = PetitionApi -- :<|> SingerApi
-
-type PetitionApi = 
-  "petition" :> Capture "id" Integer :> QueryParam "locale" Text :> Get '[JSON] Petition
-
+import           Data
 
 api :: Proxy Api
 api = Proxy
@@ -60,44 +51,3 @@ example0En = Petition 0 "Zerro" "Very short" "Veeeeeeeryyyyyy Looooooong" "en"
 
 example1 :: Petition
 example1 = Petition 1 "One" "One petition" "One petition of the first petition" "en"
-
--- * data
-
-data Petition
-  = Petition {
-    petitionId                :: Integer,
-    petitionName              :: Text,
-    petitionShortDescription  :: Text,
-    petitionDescription       :: Text,
-    petitionLocale            :: Text
-  }
-  deriving (Eq, Show, Generic)
-
-instance ToJSON Petition
-instance FromJSON Petition
-
-{-
-data Signer
-  = Signer {
-    petitionFirstName :: String,
-    petitionLastName  :: String,
-    petitionCountry :: String,
-    petitionOrganization :: Maybe Integer,
-    petitionEmail :: Integer,
-    petitionPhone :: Integer,
-    petitionBirthYear :: Integer,
-    petitionGender :: Integer,
-    petitionNotifiesEnabled :: Integer,
-    petition :: Integer,
-    petition :: Integer,
-    itemText :: String
-  }
-  deriving (Eq, Show, Generic)
-
-instance ToJSON Signer
-instance FromJSON Signer
--}
-
-data a + b = Foo a b
-
-type X = Int + Bool
