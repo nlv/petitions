@@ -27,6 +27,7 @@ executables:
 
 dependencies:
   - base
+  - text
   - servant
   - servant-server
   - transformers
