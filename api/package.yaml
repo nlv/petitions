@@ -1,4 +1,4 @@
-name: example-servant-minimal
+name: petitions-api
 
 ghc-options: -Wall
 
@@ -9,7 +9,7 @@ tests:
       - test
     dependencies:
       - hspec
-      - example-servant-minimal
+      - petitions-api
       - servant-client
       - warp >= 3.2.4
       - http-client
@@ -20,10 +20,10 @@ library:
     - src
 
 executables:
-  example-servant-minimal:
+  petitions-api:
     main: exe/Main.hs
     dependencies:
-      - example-servant-minimal
+      - petitions-api
 
 dependencies:
   - base
