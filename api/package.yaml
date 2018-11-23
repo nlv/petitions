@@ -21,9 +21,15 @@ library:
 
 executables:
   petitions-api:
-    main: exe/Main.hs
+    main: exe/Server/Main.hs
     dependencies:
       - petitions-api
+  generate-elm-client:
+    main: exe/generate-elm-client/Main.hs
+    dependencies:
+      - petitions-api
+      - servant-elm
+      - elm-export
 
 dependencies:
   - base

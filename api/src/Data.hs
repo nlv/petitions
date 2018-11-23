@@ -16,11 +16,11 @@ import           Servant
 type Api = PetitionApi -- :<|> SingerApi
 
 type PetitionApi = 
-  "petition" :> Capture "id" Integer :> QueryParam "locale" Text :> Get '[JSON] Petition
+  "petition" :> Capture "id" Int :> QueryParam "locale" Text :> Get '[JSON] Petition
 
 data Petition
   = Petition {
-    petitionId                :: Integer,
+    petitionId                :: Int,
     petitionName              :: Text,
     petitionShortDescription  :: Text,
     petitionDescription       :: Text,

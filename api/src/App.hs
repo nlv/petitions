@@ -36,7 +36,7 @@ server =
   getPetitionById 
 
 
-getPetitionById :: Integer -> Maybe Text -> Handler Petition
+getPetitionById :: Int -> Maybe Text -> Handler Petition
 getPetitionById i l = case (i, l) of
   (0, Just "ru") -> return example0Ru
   (0, Just "en") -> return example0En
