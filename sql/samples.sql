@@ -6,10 +6,10 @@ VALUES
 ;
 
 INSERT INTO petitions
-(name, description, locale)
+(code, name, description, locale)
 VALUES 
-('За все хорошее!', 'Надо добиться улучшение жизни НАРОДА!!!!!!', 'ru'),
-('STOP CARS!', 'STOP USING CARS!!!!!!!', 'en')
+('for-all-goods', 'За все хорошее!', 'Надо добиться улучшение жизни НАРОДА!!!!!!', 'ru'),
+('stop-cars', 'STOP CARS!', 'STOP USING CARS!!!!!!!', 'en')
 ;
 
 INSERT INTO petitions_locale

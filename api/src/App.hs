@@ -36,11 +36,11 @@ server =
   getPetitionById 
 
 
-getPetitionById :: Int -> Maybe Text -> Handler Petition
+getPetitionById :: Text -> Maybe Text -> Handler Petition
 getPetitionById i l = case (i, l) of
-  (0, Just "ru") -> return example0Ru
-  (0, Just "en") -> return example0En
-  (1, Nothing)   -> return example1
+  ("zerro", Just "ru") -> return example0Ru
+  ("zerro", Just "en") -> return example0En
+  ("one",   Nothing)   -> return example1
   _ -> throwE err404
 
 example0Ru :: Petition

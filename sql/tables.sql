@@ -4,6 +4,7 @@ CREATE TABLE locales (
 
 CREATE TABLE petitions (
      id          SERIAL       PRIMARY KEY
+    ,code        VARCHAR(40)  NOT NULL UNIQUE
     ,name        VARCHAR(255) NOT NULL UNIQUE
     ,description TEXT         NOT NULL
     ,locale      VARCHAR(10)  NOT NULL REFERENCES locales (code)

@@ -24,8 +24,8 @@ decodePetition =
         |> required "petitionDescription" string
         |> required "petitionLocale" string
 
-getPetitionById : Int -> Maybe (String) -> Http.Request (Petition)
-getPetitionById capture_id query_locale =
+getPetitionByCode : String -> Maybe (String) -> Http.Request (Petition)
+getPetitionByCode capture_code query_locale =
     let
         params =
             List.filter (not << String.isEmpty)
@@ -43,7 +43,7 @@ getPetitionById capture_id query_locale =
                 String.join "/"
                     [ ""
                     , "petition"
-                    , capture_id |> toString |> Http.encodeUri
+                    , capture_code |> Http.encodeUri
                     ]
                 ++ if List.isEmpty params then
                        ""
