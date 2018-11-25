@@ -19,11 +19,11 @@ type alias Petition =
 decodePetition : Decoder Petition
 decodePetition =
     succeed Petition
-        |> required "petitionId" int
-        |> required "petitionName" string
-        |> required "petitionShortDescription" string
-        |> required "petitionDescription" string
-        |> required "petitionLocale" string
+        |> required "_petitionId" int
+        |> required "_petitionName" string
+        |> required "_petitionShortDescription" string
+        |> required "_petitionDescription" string
+        |> required "_petitionLocale" string
 
 getPetitionByCode : String -> String -> Maybe (String) -> Http.Request (Petition)
 getPetitionByCode url capture_code query_locale =

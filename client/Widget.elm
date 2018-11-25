@@ -27,8 +27,15 @@ type alias Model =
 init : {url: String, code: String, locale: String} -> (Model, Cmd Msg)
 init {url, code, locale} =
   ( {url = url, code = code, locale = locale, status = Loading }
-  , Http.send GotPetition (getPetitionByCode url "zerro" (Just locale))
+  , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
+
+prepareLocale : String -> Maybe String
+prepareLocale locale
+  = case locale of
+      "default" -> Nothing
+      l         -> Just l
+
 
 -- getFromServer : String -> Http.Request a -> Http.Request a
 -- getFromServer server request =
