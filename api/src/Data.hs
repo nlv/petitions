@@ -13,7 +13,9 @@
 
 module Data (
   Api,
-  Petition(..)
+  -- Petition(..)
+  Petition,
+  PetitionT(..)
   )  where
 
 import Data.Aeson
@@ -22,38 +24,39 @@ import GHC.Generics
 import Servant
 import Database.Beam
 
-data Petition2T f
-  = Petition2 {
+data PetitionT f
+  = Petition {
     _petitionId                :: Columnar f Int,
     _petitionName              :: Columnar f Text,
     _petitionShortDescription  :: Columnar f Text,
     _petitionDescription       :: Columnar f Text,
     _petitionLocale            :: Columnar f Text
   }
+  deriving Generic
 
-type Petition2 = Petition2T Identity
-type Petition2Id = PrimaryKey Petition2T Identity
+type Petition = PetitionT Identity
+type PetitionId = PrimaryKey PetitionT Identity
 
-deriving instance Show Petition2
-deriving instance Eq Petition2
+deriving instance Show Petition
+deriving instance Eq Petition
 
 type Api = PetitionApi -- :<|> SingerApi
 
 type PetitionApi = 
   "petition" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[JSON] Petition
 
-data Petition
-  = Petition {
-    petitionId                :: Int,
-    petitionName              :: Text,
-    petitionShortDescription  :: Text,
-    petitionDescription       :: Text,
-    petitionLocale            :: Text
-  }
-  deriving (Eq, Show, Generic)
+-- data Petition
+--   = Petition {
+--     petitionId                :: Int,
+--     petitionName              :: Text,
+--     petitionShortDescription  :: Text,
+--     petitionDescription       :: Text,
+--     petitionLocale            :: Text
+--   }
+--   deriving (Eq, Show, Generic)
 
-instance ToJSON Petition
-instance FromJSON Petition
+instance ToJSON (PetitionT Identity)
+instance FromJSON (PetitionT Identity)
 
 
 {-

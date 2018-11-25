@@ -6,6 +6,7 @@
 
 module App where
 
+import Database.Beam
 import           Control.Monad.Trans.Except
 import           Data.Text
 import           Network.Wai
@@ -45,10 +46,10 @@ getPetitionById i l = case (i, l) of
   _ -> throwE err404
 
 example0Ru :: Petition
-example0Ru = Petition 0 "Ноль" "Очень кратко" "Длииииииииинно" "ru"
+example0Ru = Petition 0 "Ноль" "Очень кратко" "Длииииииииинно" "ru" 
 
 example0En :: Petition
-example0En = Petition 0 "Zerro" "Very short" "Veeeeeeeryyyyyy Looooooong" "en"
+example0En = Petition 0 "Zerro" "Very short" "Veeeeeeeryyyyyy Looooooong" "en" 
 
 example1 :: Petition
 example1 = Petition 1 "One" "One petition" "One petition of the first petition" "en"
