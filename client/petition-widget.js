@@ -5709,8 +5709,8 @@ var elm$http$Http$Internal$Request = function (a) {
 };
 var elm$http$Http$request = elm$http$Http$Internal$Request;
 var elm$url$Url$percentEncode = _Url_percentEncode;
-var author$project$Generated$Api$getPetitionByCode = F2(
-	function (capture_code, query_locale) {
+var author$project$Generated$Api$getPetitionByCode = F3(
+	function (url, capture_code, query_locale) {
 		var params = A2(
 			elm$core$List$filter,
 			A2(elm$core$Basics$composeL, elm$core$Basics$not, elm$core$String$isEmpty),
@@ -5743,7 +5743,7 @@ var author$project$Generated$Api$getPetitionByCode = F2(
 						'/',
 						_List_fromArray(
 							[
-								'http://localhost:3000',
+								url,
 								'petition',
 								elm$url$Url$percentEncode(capture_code)
 							])),
@@ -5873,15 +5873,19 @@ var elm$http$Http$send = F2(
 			elm$http$Http$toTask(request_));
 	});
 var author$project$Main$init = function (_n0) {
+	var url = _n0.url;
+	var code = _n0.code;
+	var locale = _n0.locale;
 	return _Utils_Tuple2(
-		author$project$Main$Loading,
+		{code: code, locale: locale, status: author$project$Main$Loading, url: url},
 		A2(
 			elm$http$Http$send,
 			author$project$Main$GotPetition,
-			A2(
+			A3(
 				author$project$Generated$Api$getPetitionByCode,
+				url,
 				'zerro',
-				elm$core$Maybe$Just('ru'))));
+				elm$core$Maybe$Just(locale))));
 };
 var elm$core$Platform$Sub$batch = _Platform_batch;
 var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
@@ -5891,8 +5895,8 @@ var author$project$Main$subscriptions = function (model) {
 var author$project$Main$Failure = function (a) {
 	return {$: 'Failure', a: a};
 };
-var author$project$Main$Success = function (a) {
-	return {$: 'Success', a: a};
+var author$project$Main$Loaded = function (a) {
+	return {$: 'Loaded', a: a};
 };
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
@@ -5902,12 +5906,20 @@ var author$project$Main$update = F2(
 		if (result.$ === 'Ok') {
 			var petition = result.a;
 			return _Utils_Tuple2(
-				author$project$Main$Success(petition),
+				_Utils_update(
+					model,
+					{
+						status: author$project$Main$Loaded(petition)
+					}),
 				elm$core$Platform$Cmd$none);
 		} else {
 			var err = result.a;
 			return _Utils_Tuple2(
-				author$project$Main$Failure(err),
+				_Utils_update(
+					model,
+					{
+						status: author$project$Main$Failure(err)
+					}),
 				elm$core$Platform$Cmd$none);
 		}
 	});
@@ -5947,10 +5959,14 @@ var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$p = _VirtualDom_node('p');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var author$project$Main$view = function (model) {
-	switch (model.$) {
+var author$project$Main$view = function (_n0) {
+	var url = _n0.url;
+	var code = _n0.code;
+	var locale = _n0.locale;
+	var status = _n0.status;
+	switch (status.$) {
 		case 'Failure':
-			var err = model.a;
+			var err = status.a;
 			return A2(
 				elm$html$Html$div,
 				_List_Nil,
@@ -5968,7 +5984,7 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$text('Загрузка петиции')
 					]));
 		default:
-			var petition = model.a;
+			var petition = status.a;
 			return A2(
 				elm$html$Html$div,
 				_List_Nil,
@@ -6142,7 +6158,24 @@ var elm$url$Url$fromString = function (str) {
 		A2(elm$core$String$dropLeft, 8, str)) : elm$core$Maybe$Nothing);
 };
 var elm$browser$Browser$element = _Browser_element;
+var elm$json$Json$Decode$andThen = _Json_andThen;
 var author$project$Main$main = elm$browser$Browser$element(
 	{init: author$project$Main$init, subscriptions: author$project$Main$subscriptions, update: author$project$Main$update, view: author$project$Main$view});
 _Platform_export({'Main':{'init':author$project$Main$main(
-	elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
+	A2(
+		elm$json$Json$Decode$andThen,
+		function (url) {
+			return A2(
+				elm$json$Json$Decode$andThen,
+				function (locale) {
+					return A2(
+						elm$json$Json$Decode$andThen,
+						function (code) {
+							return elm$json$Json$Decode$succeed(
+								{code: code, locale: locale, url: url});
+						},
+						A2(elm$json$Json$Decode$field, 'code', elm$json$Json$Decode$string));
+				},
+				A2(elm$json$Json$Decode$field, 'locale', elm$json$Json$Decode$string));
+		},
+		A2(elm$json$Json$Decode$field, 'url', elm$json$Json$Decode$string)))(0)}});}(this));

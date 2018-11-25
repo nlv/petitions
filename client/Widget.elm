@@ -11,15 +11,23 @@ main =
 
 -- MODEL
 
-type Model
+type PetitionStatus
   = Failure Http.Error
   | Loading
-  | Success Petition
+  | Loaded Petition
 
-init : () -> (Model, Cmd Msg)
-init _ =
-  ( Loading
-  , Http.send GotPetition (getPetitionByCode "zerro" (Just "ru"))
+type alias Model = 
+  {
+     url    : String
+    ,code   : String
+    ,locale : String
+    ,status : PetitionStatus
+  }
+
+init : {url: String, code: String, locale: String} -> (Model, Cmd Msg)
+init {url, code, locale} =
+  ( {url = url, code = code, locale = locale, status = Loading }
+  , Http.send GotPetition (getPetitionByCode url "zerro" (Just locale))
   )
 
 -- getFromServer : String -> Http.Request a -> Http.Request a
@@ -37,24 +45,24 @@ update msg model =
     GotPetition result ->
       case result of
         Ok petition ->
-          (Success petition, Cmd.none)
+          ({model | status = Loaded petition}, Cmd.none)
 
         Err err ->
-          (Failure err, Cmd.none)
+          ({model | status = Failure err}, Cmd.none)
 
 
 -- VIEW
 
 view : Model -> Html Msg
-view model =
-  case model of
+view {url, code, locale, status} =
+  case status of
     Failure err ->
       div []
         [ text ("Ошибка получения петиции: " ++ (toString err))]
     Loading ->
       div []
         [ text "Загрузка петиции" ]
-    Success petition ->
+    Loaded petition ->
       div []
         [ 
           h1 [] [text (petition.petitionName) ],

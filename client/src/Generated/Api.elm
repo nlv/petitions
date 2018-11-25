@@ -25,8 +25,8 @@ decodePetition =
         |> required "petitionDescription" string
         |> required "petitionLocale" string
 
-getPetitionByCode : String -> Maybe (String) -> Http.Request (Petition)
-getPetitionByCode capture_code query_locale =
+getPetitionByCode : String -> String -> Maybe (String) -> Http.Request (Petition)
+getPetitionByCode url capture_code query_locale =
     let
         params =
             List.filter (not << String.isEmpty)
@@ -42,7 +42,7 @@ getPetitionByCode capture_code query_locale =
                 []
             , url =
                 String.join "/"
-                    [ "http://localhost:3000"
+                    [ url
                     , "petition"
                     , capture_code |> Url.percentEncode
                     ]
