@@ -2,16 +2,40 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 module Data (
   Api,
   Petition(..)
   )  where
 
-import           Data.Aeson
-import           Data.Text
-import           GHC.Generics
-import           Servant
+import Data.Aeson
+import Data.Text
+import GHC.Generics
+import Servant
+import Database.Beam
+
+data Petition2T f
+  = Petition2 {
+    _petitionId                :: Columnar f Int,
+    _petitionName              :: Columnar f Text,
+    _petitionShortDescription  :: Columnar f Text,
+    _petitionDescription       :: Columnar f Text,
+    _petitionLocale            :: Columnar f Text
+  }
+
+type Petition2 = Petition2T Identity
+type Petition2Id = PrimaryKey Petition2T Identity
+
+deriving instance Show Petition2
+deriving instance Eq Petition2
 
 type Api = PetitionApi -- :<|> SingerApi
 
@@ -30,6 +54,7 @@ data Petition
 
 instance ToJSON Petition
 instance FromJSON Petition
+
 
 {-
 data Signer
