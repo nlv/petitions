@@ -1,25 +1,20 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module App where
 
 import Database.Beam
-import           Control.Monad.Trans.Except
-import           Data.Text
-import           Network.Wai
-import           Network.Wai.Handler.Warp
-import           Network.Wai.Middleware.Cors
-import           Servant
-import           System.IO
-import           Data
+import Control.Monad.Trans.Except
+import Data.Text
+import Network.Wai
+import Network.Wai.Handler.Warp
+import Network.Wai.Middleware.Cors
+import Servant
+import System.IO
+import Data
+import Api
 
 api :: Proxy Api
 api = Proxy
-
--- * app
 
 run :: IO ()
 run = do
@@ -36,7 +31,6 @@ mkApp = return $ simpleCors (serve api server)
 server :: Server Api
 server =
   getPetitionById 
-
 
 getPetitionById :: Text -> Maybe Text -> Handler Petition
 getPetitionById i l = case (i, l) of
