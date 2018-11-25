@@ -1,41 +1,74 @@
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Html, button, div, text, h1, p)
+import Generated.Api exposing (Petition, getPetitionByCode)
+import Http
+-- import Html.Events exposing (onClick)
 
 
 main =
-  Browser.sandbox { init = init, update = update, view = view }
+  Browser.element { init = init, update = update, subscriptions = subscriptions, view = view }
 
 
 -- MODEL
 
-type alias Model = Int
+type Model
+  = Failure Http.Error
+  | Loading
+  | Success Petition
 
-init : Model
-init =
-  0
+init : () -> (Model, Cmd Msg)
+init _ =
+  ( Loading
+  , Http.send GotPetition (getPetitionByCode "zerro" (Just "ru"))
+  )
 
+-- getFromServer : String -> Http.Request a -> Http.Request a
+-- getFromServer server request =
+--   { request | url = server ++ request.url }
 
 -- UPDATE
 
-type Msg = Increment | Decrement
+type Msg
+  = GotPetition (Result Http.Error Petition)
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    Increment ->
-      model + 1
+    GotPetition result ->
+      case result of
+        Ok petition ->
+          (Success petition, Cmd.none)
 
-    Decrement ->
-      model - 1
+        Err err ->
+          (Failure err, Cmd.none)
 
 
 -- VIEW
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
+  case model of
+    Failure err ->
+      div []
+        [ text ("Ошибка получения петиции: " ++ (toString err))]
+    Loading ->
+      div []
+        [ text "Загрузка петиции" ]
+    Success petition ->
+      div []
+        [ 
+          h1 [] [text (petition.petitionName) ],
+          p  [] [text (petition.petitionShortDescription) ]
+        ]
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
+ 
+toString err =
+  case err of
+    Http.BadUrl url              -> "Плохой url: " ++ url
+    Http.Timeout                 -> "Вышло время"
+    Http.NetworkError            -> "Ошибка сети"
+    Http.BadStatus response      -> "Плохой статус: " ++ response.status.message
+    Http.BadPayload str response -> "Битый формат ответа: " ++ str

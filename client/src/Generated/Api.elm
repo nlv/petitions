@@ -5,6 +5,7 @@ import Json.Decode.Pipeline exposing (..)
 import Json.Encode
 import Http
 import String
+import Url
 
 
 type alias Petition =
@@ -17,7 +18,7 @@ type alias Petition =
 
 decodePetition : Decoder Petition
 decodePetition =
-    decode Petition
+    succeed Petition
         |> required "petitionId" int
         |> required "petitionName" string
         |> required "petitionShortDescription" string
@@ -30,7 +31,7 @@ getPetitionByCode capture_code query_locale =
         params =
             List.filter (not << String.isEmpty)
                 [ query_locale
-                    |> Maybe.map (Http.encodeUri >> (++) "locale=")
+                    |> Maybe.map (identity >> Url.percentEncode >> (++) "locale=")
                     |> Maybe.withDefault ""
                 ]
     in
@@ -41,9 +42,9 @@ getPetitionByCode capture_code query_locale =
                 []
             , url =
                 String.join "/"
-                    [ ""
+                    [ "http://localhost:3000"
                     , "petition"
-                    , capture_code |> Http.encodeUri
+                    , capture_code |> Url.percentEncode
                     ]
                 ++ if List.isEmpty params then
                        ""

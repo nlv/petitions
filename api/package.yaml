@@ -39,4 +39,5 @@ dependencies:
   - transformers
   - aeson
   - wai
+  - wai-cors
   - warp

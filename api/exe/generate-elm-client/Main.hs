@@ -26,4 +26,4 @@ spec = Spec ["Generated", "Api"]
 
 
 main :: IO ()
-main = specsToDir [spec] "../client"
+main = specsToDir [spec] "../client/src"

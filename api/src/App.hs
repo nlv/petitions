@@ -10,6 +10,7 @@ import           Control.Monad.Trans.Except
 import           Data.Text
 import           Network.Wai
 import           Network.Wai.Handler.Warp
+import           Network.Wai.Middleware.Cors
 import           Servant
 import           System.IO
 import           Data
@@ -29,7 +30,7 @@ run = do
   runSettings settings =<< mkApp
 
 mkApp :: IO Application
-mkApp = return $ serve api server
+mkApp = return $ simpleCors (serve api server)
 
 server :: Server Api
 server =
