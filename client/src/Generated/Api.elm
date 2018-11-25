@@ -11,7 +11,6 @@ import Url
 type alias Petition =
     { petitionId : Int
     , petitionName : String
-    , petitionShortDescription : String
     , petitionDescription : String
     , petitionLocale : String
     }
@@ -21,7 +20,6 @@ decodePetition =
     succeed Petition
         |> required "_petitionId" int
         |> required "_petitionName" string
-        |> required "_petitionShortDescription" string
         |> required "_petitionDescription" string
         |> required "_petitionLocale" string
 

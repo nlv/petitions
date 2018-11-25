@@ -20,7 +20,6 @@ data PetitionT f
     _petitionId                :: Columnar f Int,
     _petitionCode              :: Columnar f Text,
     _petitionName              :: Columnar f Text,
-    _petitionShortDescription  :: Columnar f Text,
     _petitionDescription       :: Columnar f Text,
     _petitionLocale            :: Columnar f Text
   }
@@ -52,7 +51,6 @@ instance FromJSON (PetitionT Identity)
 --     _petitionLocalePetitionId        :: Columnar f Int,
 --     _petitionLocaleLocale            :: Columnar f Text
 --     _petitionLocaleName              :: Columnar f Text,
---     _petitionLocaleShortDescription  :: Columnar f Text,
 --     _petitionLocaleDescription       :: Columnar f Text,
 --   }
 --   deriving Generic

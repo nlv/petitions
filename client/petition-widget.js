@@ -4994,34 +4994,30 @@ var NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2(elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var author$project$Generated$Api$Petition = F5(
-	function (petitionId, petitionName, petitionShortDescription, petitionDescription, petitionLocale) {
-		return {petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName, petitionShortDescription: petitionShortDescription};
+var author$project$Generated$Api$Petition = F4(
+	function (petitionId, petitionName, petitionDescription, petitionLocale) {
+		return {petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
 	});
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$string = _Json_decodeString;
 var elm$json$Json$Decode$succeed = _Json_succeed;
 var author$project$Generated$Api$decodePetition = A3(
 	NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'petitionLocale',
+	'_petitionLocale',
 	elm$json$Json$Decode$string,
 	A3(
 		NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'petitionDescription',
+		'_petitionDescription',
 		elm$json$Json$Decode$string,
 		A3(
 			NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'petitionShortDescription',
+			'_petitionName',
 			elm$json$Json$Decode$string,
 			A3(
 				NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-				'petitionName',
-				elm$json$Json$Decode$string,
-				A3(
-					NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-					'petitionId',
-					elm$json$Json$Decode$int,
-					elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition))))));
+				'_petitionId',
+				elm$json$Json$Decode$int,
+				elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition)))));
 var elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(
@@ -5755,6 +5751,14 @@ var author$project$Main$GotPetition = function (a) {
 	return {$: 'GotPetition', a: a};
 };
 var author$project$Main$Loading = {$: 'Loading'};
+var author$project$Main$prepareLocale = function (locale) {
+	if (locale === 'default') {
+		return elm$core$Maybe$Nothing;
+	} else {
+		var l = locale;
+		return elm$core$Maybe$Just(l);
+	}
+};
 var elm$core$Task$Perform = function (a) {
 	return {$: 'Perform', a: a};
 };
@@ -5884,8 +5888,8 @@ var author$project$Main$init = function (_n0) {
 			A3(
 				author$project$Generated$Api$getPetitionByCode,
 				url,
-				'zerro',
-				elm$core$Maybe$Just(locale))));
+				code,
+				author$project$Main$prepareLocale(locale))));
 };
 var elm$core$Platform$Sub$batch = _Platform_batch;
 var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
@@ -6002,7 +6006,7 @@ var author$project$Main$view = function (_n0) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text(petition.petitionShortDescription)
+								elm$html$Html$text(petition.petitionDescription)
 							]))
 					]));
 	}

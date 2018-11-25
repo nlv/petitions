@@ -73,7 +73,7 @@ view {url, code, locale, status} =
       div []
         [ 
           h1 [] [text (petition.petitionName) ],
-          p  [] [text (petition.petitionShortDescription) ]
+          p  [] [text (petition.petitionDescription) ]
         ]
 
 subscriptions : Model -> Sub Msg

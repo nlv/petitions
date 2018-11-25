@@ -40,10 +40,10 @@ getPetitionById i l = case (i, l) of
   _ -> throwE err404
 
 example0Ru :: Petition
-example0Ru = Petition 0 "zerro" "Ноль" "Очень кратко" "Длииииииииинно" "ru" 
+example0Ru = Petition 0 "zerro" "Ноль" "Длииииииииинно" "ru" 
 
 example0En :: Petition
-example0En = Petition 0 "zerro" "Zerro" "Very short" "Veeeeeeeryyyyyy Looooooong" "en" 
+example0En = Petition 0 "zerro" "Zerro" "Veeeeeeeryyyyyy Looooooong" "en" 
 
 example1 :: Petition
-example1 = Petition 1 "one" "One" "One petition" "One petition of the first petition" "en"
+example1 = Petition 1 "one" "One" "One petition of the first petition" "en"
