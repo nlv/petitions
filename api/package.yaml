@@ -35,9 +35,12 @@ dependencies:
   - base
   - text
   - beam-core
+  - beam-postgres
+  - postgresql-simple
   - servant
   - servant-server
   - transformers
+  - microlens
   - aeson
   - wai
   - wai-cors

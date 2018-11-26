@@ -12,6 +12,9 @@ import Servant
 import System.IO
 import Data
 import Api
+import qualified Base as B
+import Database.Beam.Postgres
+import qualified Database.PostgreSQL.Simple as Pg
 
 api :: Proxy Api
 api = Proxy
@@ -30,20 +33,14 @@ mkApp = return $ simpleCors (serve api server)
 
 server :: Server Api
 server =
-  getPetitionById 
+  getPetitionByCode
 
-getPetitionById :: Text -> Maybe Text -> Handler Petition
-getPetitionById i l = case (i, l) of
-  ("zerro", Just "ru") -> return example0Ru
-  ("zerro", Just "en") -> return example0En
-  ("one",   Nothing)   -> return example1
-  _ -> throwE err404
+getPetitionByCode :: Text -> Maybe Text -> Handler Petition
+getPetitionByCode code _ = do
+  p' <- liftIO $ do
+    conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
+    runBeamPostgres conn (B.getPetitionByCode code)
+  case p' of
+    Just p -> pure p
+    _      -> throwE err404
 
-example0Ru :: Petition
-example0Ru = Petition 0 "zerro" "Ноль" "Длииииииииинно" "ru" 
-
-example0En :: Petition
-example0En = Petition 0 "zerro" "Zerro" "Veeeeeeeryyyyyy Looooooong" "en" 
-
-example1 :: Petition
-example1 = Petition 1 "one" "One" "One petition of the first petition" "en"
