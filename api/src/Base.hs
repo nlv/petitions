@@ -4,7 +4,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-#  LANGUAGE ImpredicativeTypes #-}
-{-#  LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Base (
@@ -47,8 +47,11 @@ petitionDb = defaultDbSettings `withDbModification`
     _petitionsLocale =
       modifyTable (\_ -> "petitions_locale") $ 
       tableModification {
+         _petitionLocaleId          = fieldNamed "id",
+         _petitionLocaleName        = fieldNamed "name",
+         _petitionLocaleDescription = fieldNamed "description",
          _petitionLocaleLocale      = fieldNamed "locale",
-         _petitionLocalePetitionId = PetitionId "petition_id"
+         _petitionLocalePetitionId  = PetitionId "petition_id"
       }
   }
 
@@ -61,7 +64,6 @@ Petition
 
 PetitionLocale
   (LensFor petitionLocaleId)    
-  (LensFor petitionLocaleCode)    
   (LensFor petitionLocaleName)
   (LensFor petitionLocaleDescription)
   (LensFor petitionLocaleLocale)
@@ -71,36 +73,28 @@ PetitionDb
   (TableLens petitions) 
   (TableLens petitionsLocale) = dbLenses
 
-
-
 getPetitionByCode code locale = do
   ps <- runSelectReturningList $ select $ do
     case locale of 
       (Just locale') -> do
         p <- all_ (petitionDb ^. petitions)
-        l <- all_ (petitionDb ^. petitionsLocale)
-        -- l <- leftJoin_ (all_ (petitionDb ^. petitionsLocale))
-                      --  (\l' -> _petitionLocalePetitionId l' `references_` p)
-        guard_ (_petitionLocalePetitionId l `references_` p)
+        l <- leftJoin_ (all_ (petitionDb ^. petitionsLocale))
+                       (\l' -> (_petitionLocalePetitionId l') `references_` p &&. 
+                        l' ^. petitionLocaleLocale ==. (val_ locale')) 
         guard_ (p ^. petitionCode ==. val_ code)
-        guard_ (l ^. petitionLocaleLocale ==. val_ locale')
-        pure p
-        -- pure (p, l)
-        -- pure $ case l of
-        --   Just l' -> undefined
-        --     -- Petition 
-        --     --   p ^. petitionId
-        --     --   code
-        --     --   l' ^. petitionLocaleName
-        --     --   l' ^. petitionLocaleDescription
-        --     --   l' ^. petitionLocaleLocale
-        --   _ -> p
+        pure (p, l)
       Nothing -> do
         p <- all_ (petitionDb ^. petitions)
         guard_ (p ^. petitionCode ==. val_ code)
-        pure p
-        -- pure (p, undefined)
+        pure (p, nothing_)
   pure $ 
     case ps of
-      p:_ -> Just p
+      (p, Nothing):_ -> Just p
+      (p, Just l''):_ -> Just $
+        Petition 
+          (p ^. petitionId) 
+          (p ^. petitionCode) 
+          (l'' ^. petitionLocaleName) 
+          (l'' ^. petitionLocaleDescription) 
+          (l'' ^. petitionLocaleLocale) 
       _   -> Nothing

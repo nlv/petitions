@@ -39,6 +39,7 @@ getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
   p' <- liftIO $ do
     conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
+    -- runBeamPostgresDebug putStrLn conn (B.getPetitionByCode code locale)
     runBeamPostgres conn (B.getPetitionByCode code locale)
   case p' of
     Just p -> pure p
