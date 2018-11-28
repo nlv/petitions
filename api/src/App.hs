@@ -36,10 +36,10 @@ server =
   getPetitionByCode
 
 getPetitionByCode :: Text -> Maybe Text -> Handler Petition
-getPetitionByCode code _ = do
+getPetitionByCode code locale = do
   p' <- liftIO $ do
     conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
-    runBeamPostgres conn (B.getPetitionByCode code)
+    runBeamPostgres conn (B.getPetitionByCode code locale)
   case p' of
     Just p -> pure p
     _      -> throwE err404

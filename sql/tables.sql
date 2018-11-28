@@ -38,3 +38,24 @@ CREATE TABLE signers (
     ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
     ,CHECK (email IS NOT NULL OR phone IS NOT NULL)
 );
+
+CREATE VIEW vpetitions AS
+SELECT 
+      p.id
+     ,p.code
+     ,p.name
+     ,p.description
+     ,p.locale
+     ,TRUE is_default
+FROM petitions AS p
+UNION ALL
+SELECT 
+      p.id
+     ,p.code
+     ,l.name
+     ,l.description
+     ,l.locale
+     ,FALSE is_default
+FROM petitions AS p
+INNER JOIN petitions_locale AS l ON l.petition_id = p.id
+;

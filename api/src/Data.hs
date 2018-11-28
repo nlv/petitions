@@ -2,12 +2,19 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+
 
 module Data (
   Petition,
-  PetitionT(..)
+  PetitionT(..),
+  PetitionId,
+  PetitionLocale,
+  PetitionLocaleT(..),
+  PetitionLocaleId
   )  where
 
+import GHC.Generics
 import Data.Aeson
 import Data.Text
 import GHC.Generics
@@ -33,35 +40,34 @@ deriving instance Eq Petition
 instance ToJSON (PetitionT Identity)
 instance FromJSON (PetitionT Identity)
 
--- ** PetitionLocale
+type PetitionId = PrimaryKey PetitionT Identity
 
--- CREATE TABLE petitions_locale (
---      id          SERIAL                PRIMARY KEY
---     ,petition_id INTEGER      NOT NULL REFERENCES petitions (id)
---     ,locale      VARCHAR(10)  NOT NULL REFERENCES locales (code)
---     ,name        VARCHAR(255) NOT NULL 
---     ,description TEXT         NOT NULL
---     ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
---     ,UNIQUE (petition_id, locale)
--- );
+-- instance Generic (PrimaryKey PetitionT Identity)
+-- instance ToJSON (PrimaryKey PetitionT Identity)
 
--- data PetitionLocaleT f
---   = PetitionLocale {
---     _petitionLocaleId                :: Columnar f Int,
---     _petitionLocalePetitionId        :: Columnar f Int,
---     _petitionLocaleLocale            :: Columnar f Text
---     _petitionLocaleName              :: Columnar f Text,
---     _petitionLocaleDescription       :: Columnar f Text,
---   }
---   deriving Generic
+data PetitionLocaleT f
+  = PetitionLocale {
+    _petitionLocaleId          :: Columnar f Int,
+    _petitionLocaleCode        :: Columnar f Text,
+    _petitionLocaleName        :: Columnar f Text,
+    _petitionLocaleDescription :: Columnar f Text,
+    _petitionLocaleLocale      :: Columnar f Text,
 
--- type Petition = PetitionT Identity
+    _petitionLocalePetitionId  :: PrimaryKey PetitionT f
+  }
+  deriving Generic
 
--- deriving instance Show Petition
--- deriving instance Eq Petition
+type PetitionLocale = PetitionLocaleT Identity
 
--- instance ToJSON (PetitionT Identity)
--- instance FromJSON (PetitionT Identity)
+type PetitionLocaleId = PrimaryKey PetitionLocaleT Identity
+-- deriving instance Show (PrimaryKey PetitionT Identity)
+-- deriving instance Show PetitionLocale
+
+-- deriving instance Eq PetitionLocale
+
+-- instance ToJSON (PetitionLocaleT Identity)
+-- instance FromJSON (PetitionLocaleT Identity)
+
 
 {-
 data Signer
