@@ -48,7 +48,6 @@ type PetitionId = PrimaryKey PetitionT Identity
 data PetitionLocaleT f
   = PetitionLocale {
     _petitionLocaleId          :: Columnar f Int,
-    _petitionLocaleCode        :: Columnar f Text,
     _petitionLocaleName        :: Columnar f Text,
     _petitionLocaleDescription :: Columnar f Text,
     _petitionLocaleLocale      :: Columnar f Text,
