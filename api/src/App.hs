@@ -2,8 +2,8 @@
 
 module App where
 
-import Database.Beam
 import Control.Monad.Trans.Except
+import Control.Monad.IO.Class
 import Data.Text
 import Network.Wai
 import Network.Wai.Handler.Warp
@@ -13,7 +13,6 @@ import System.IO
 import Data
 import Api
 import qualified Base as B
-import Database.Beam.Postgres
 import qualified Database.PostgreSQL.Simple as Pg
 
 api :: Proxy Api
@@ -37,10 +36,8 @@ server =
 
 getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
-  p' <- liftIO $ do
-    conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
-    -- runBeamPostgresDebug putStrLn conn (B.getPetitionByCode code locale)
-    runBeamPostgres conn (B.getPetitionByCode code locale)
+  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
+  p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
     Just p -> pure p
     _      -> throwE err404

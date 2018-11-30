@@ -6,66 +6,59 @@
 
 
 module Data (
-  Petition,
-  PetitionT(..),
-  PetitionId,
-  PetitionLocale,
-  PetitionLocaleT(..),
-  PetitionLocaleId
+  Petition(..),
+  Petition'(..),
+  PetitionField
+  -- PetitionT(..),
+  -- PetitionId,
+  -- PetitionLocale,
+  -- PetitionLocaleT(..),
+  -- PetitionLocaleId
   )  where
 
 import GHC.Generics
 import Data.Aeson
 import Data.Text
-import GHC.Generics
-import Database.Beam
+
+import Opaleye (Field, SqlInt4, SqlText)
 
 -- ** Petition
 
-data PetitionT f
-  = Petition {
-    _petitionId                :: Columnar f Int,
-    _petitionCode              :: Columnar f Text,
-    _petitionName              :: Columnar f Text,
-    _petitionDescription       :: Columnar f Text,
-    _petitionLocale            :: Columnar f Text
-  }
-  deriving Generic
-
-type Petition = PetitionT Identity
+data Petition' a b c d e = Petition' { 
+    _petitionId                :: a,
+    _petitionCode              :: b,
+    _petitionName              :: c,
+    _petitionDescription       :: d,
+    _petitionLocale            :: e
+} deriving Generic
+type Petition = Petition' Int Text Text Text Text
+type PetitionField = Petition' 
+                      (Field SqlInt4)
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText)
 
 deriving instance Show Petition
 deriving instance Eq Petition
 
-instance ToJSON (PetitionT Identity)
-instance FromJSON (PetitionT Identity)
+instance ToJSON   Petition
+instance FromJSON Petition
 
-type PetitionId = PrimaryKey PetitionT Identity
+-- instance ToJSON   (Petition' Int Text Text Text Text)
+-- instance FromJSON (Petition' Int Text Text Text Text)
 
--- instance Generic (PrimaryKey PetitionT Identity)
--- instance ToJSON (PrimaryKey PetitionT Identity)
+-- data PetitionLocaleT f
+--   = PetitionLocale {
+--     _petitionLocaleId          :: Columnar f Int,
+--     _petitionLocaleName        :: Columnar f Text,
+--     _petitionLocaleDescription :: Columnar f Text,
+--     _petitionLocaleLocale      :: Columnar f Text,
 
-data PetitionLocaleT f
-  = PetitionLocale {
-    _petitionLocaleId          :: Columnar f Int,
-    _petitionLocaleName        :: Columnar f Text,
-    _petitionLocaleDescription :: Columnar f Text,
-    _petitionLocaleLocale      :: Columnar f Text,
+--     _petitionLocalePetitionId  :: PrimaryKey PetitionT f
+--   }
+--   deriving Generic
 
-    _petitionLocalePetitionId  :: PrimaryKey PetitionT f
-  }
-  deriving Generic
-
-type PetitionLocale = PetitionLocaleT Identity
-
-type PetitionLocaleId = PrimaryKey PetitionLocaleT Identity
--- deriving instance Show (PrimaryKey PetitionT Identity)
--- deriving instance Show PetitionLocale
-
--- deriving instance Eq PetitionLocale
-
--- instance ToJSON (PetitionLocaleT Identity)
--- instance FromJSON (PetitionLocaleT Identity)
 
 
 {-

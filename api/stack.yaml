@@ -2,6 +2,9 @@ resolver: lts-8.12
 packages:
   - '.'
 extra-deps:
-  - beam-core-0.7.2.2@sha256:4eb3e12584c01d2218845581322c7632295d9e76c565c25d4010549d55d16dbb
-  - beam-postgres-0.3.2.2@sha256:950cda1e10dfedbc8649e6551adbd31995c2f95f07bc63ed4d8135d03cdfbce2
-  - beam-migrate-0.3.2.1@sha256:fb9d918e43f296c507cf94823aed4bc2790e4b7a0c407eaa027118d980350fbe
+  - opaleye-0.6.7003.0
+  - postgresql-simple-0.5.4.0@sha256:d4c28e2e4c4136dfff0bc415c05b28c04089f6b92e7ede2b45a379e1e393ef5e
+# extra-deps:
+#   - beam-core-0.7.2.2@sha256:4eb3e12584c01d2218845581322c7632295d9e76c565c25d4010549d55d16dbb
+#   - beam-postgres-0.3.2.2@sha256:950cda1e10dfedbc8649e6551adbd31995c2f95f07bc63ed4d8135d03cdfbce2
+#   - beam-migrate-0.3.2.1@sha256:fb9d918e43f296c507cf94823aed4bc2790e4b7a0c407eaa027118d980350fbe

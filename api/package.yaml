@@ -34,9 +34,11 @@ executables:
 dependencies:
   - base
   - text
-  - beam-core
-  - beam-postgres
+  # - beam-core
+  # - beam-postgres
   - postgresql-simple
+  - product-profunctors
+  - opaleye
   - servant
   - servant-server
   - transformers
