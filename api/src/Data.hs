@@ -3,12 +3,17 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 
 module Data (
-  Petition(..),
+  Petition,
+  PetitionExt,
   Petition'(..),
-  PetitionField
+  PetitionField,
+  PetitionId'(..),
+  pPetitionId
   -- PetitionT(..),
   -- PetitionId,
   -- PetitionLocale,
@@ -19,21 +24,31 @@ module Data (
 import GHC.Generics
 import Data.Aeson
 import Data.Text
+import Data.Profunctor.Product.TH (makeAdaptorAndInstance)
 
 import Opaleye (Field, SqlInt4, SqlText)
 
 -- ** Petition
 
-data Petition' a b c d e = Petition' { 
+newtype PetitionId' a = PetitionId a deriving (Show, Eq, Generic)
+$(makeAdaptorAndInstance "pPetitionId" ''PetitionId')
+type PetitionIdField = PetitionId' (Field SqlInt4)
+type PetitionId = PetitionId' Int 
+instance ToJSON   PetitionId
+instance FromJSON PetitionId
+
+data Petition' a b c d e = Petition { 
     _petitionId                :: a,
     _petitionCode              :: b,
     _petitionName              :: c,
     _petitionDescription       :: d,
     _petitionLocale            :: e
 } deriving Generic
-type Petition = Petition' Int Text Text Text Text
+type Petition = Petition' PetitionId Text Text Text Text
+type PetitionExt = Petition' Int Text Text Text Text
+
 type PetitionField = Petition' 
-                      (Field SqlInt4)
+                      PetitionIdField
                       (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
@@ -42,8 +57,8 @@ type PetitionField = Petition'
 deriving instance Show Petition
 deriving instance Eq Petition
 
-instance ToJSON   Petition
-instance FromJSON Petition
+instance ToJSON   PetitionExt
+instance FromJSON PetitionExt
 
 -- instance ToJSON   (Petition' Int Text Text Text Text)
 -- instance FromJSON (Petition' Int Text Text Text Text)

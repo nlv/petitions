@@ -36,8 +36,8 @@ $(makeAdaptorAndInstance "pPetition" ''Petition')
 
 petitionTable :: Table PetitionField PetitionField
 petitionTable = table "petitions"
-                  (pPetition Petition' {
-                    _petitionId          = tableField "id",
+                  (pPetition Petition {
+                    _petitionId          = pPetitionId (PetitionId (tableField "id")),
                     _petitionCode        = tableField "code",
                     _petitionName        = tableField "name",
                     _petitionDescription = tableField "description",

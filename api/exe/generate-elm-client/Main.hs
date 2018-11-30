@@ -9,13 +9,13 @@ import Servant.Elm  (ElmType, Proxy (Proxy), defElmImports, generateElmForAPI)
 import Data
 import Api
 
-instance ElmType Petition
+instance ElmType PetitionExt
 
 spec :: Spec
 spec = Spec ["Generated", "Api"]
             (defElmImports
-             : toElmTypeSource    (Proxy :: Proxy Petition)
-             : toElmDecoderSource (Proxy :: Proxy Petition)
+             : toElmTypeSource    (Proxy :: Proxy PetitionExt)
+             : toElmDecoderSource (Proxy :: Proxy PetitionExt)
              : generateElmForAPI  (Proxy :: Proxy Api))
 
 
