@@ -11,13 +11,17 @@ module Data (
   PetitionId,
   PetitionLocale,
   PetitionLocaleT(..),
-  PetitionLocaleId
+  PetitionLocaleId,
+  Signer,
+  SignerT(..),
+  SignerId,
+  SignerForm
   )  where
 
 import GHC.Generics
 import Data.Aeson
 import Data.Text
-import GHC.Generics
+-- import GHC.Generics
 import Database.Beam
 
 -- ** Petition
@@ -68,24 +72,47 @@ type PetitionLocaleId = PrimaryKey PetitionLocaleT Identity
 -- instance FromJSON (PetitionLocaleT Identity)
 
 
-{-
-data Signer
+data SignerT f
   = Signer {
-    petitionFirstName :: String,
-    petitionLastName  :: String,
-    petitionCountry :: String,
-    petitionOrganization :: Maybe Integer,
-    petitionEmail :: Integer,
-    petitionPhone :: Integer,
-    petitionBirthYear :: Integer,
-    petitionGender :: Integer,
-    petitionNotifiesEnabled :: Integer,
-    petition :: Integer,
-    petition :: Integer,
-    itemText :: String
-  }
-  deriving (Eq, Show, Generic)
+    _signerId                 :: Columnar f Int--,
+    -- _singerFirstName          :: Columnar f Text--,
+    -- _singerLastName           :: Columnar f Text,
+    -- _signerCountry            :: Columnar f Text,
+    -- _signerOrganization       :: Columnar f Text,
+    -- _signerEmail              :: Columnar f Text,
+    -- _signerPhone              :: Columnar f Text,
+    -- _signerBirthYear          :: Columnar f Int,
+    -- _signerGender             :: Columnar f Int,
+    -- _signerNotifiesEnabled    :: Columnar f Bool --,
 
-instance ToJSON Signer
-instance FromJSON Signer
--}
+    -- _signerPetitionId :: PrimaryKey PetitionT f
+  }
+  deriving Generic
+
+type Signer = SignerT Identity
+
+-- deriving instance Show Signer
+-- deriving instance Eq Signer
+
+-- instance ToJSON (SignerT Identity)
+-- instance FromJSON (SignerT Identity)
+
+type SignerId = PrimaryKey SignerT Identity
+
+data SignerForm
+  = SignerForm {
+    _singerFormFirstName          :: Text,
+    _singerFormLastName           :: Text,
+    _signerFormCountry            :: Text,
+    _signerFormOrganization       :: Text,
+    _signerFormEmail              :: Text,
+    _signerFormPhone              :: Text,
+    _signerFormBirthYear          :: Int,
+    _signerFormGender             :: Int,
+    _signerFormNotifiesEnabled    :: Bool
+  }
+  deriving Generic
+
+
+instance ToJSON (SignerForm)
+instance FromJSON (SignerForm)

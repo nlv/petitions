@@ -14,9 +14,9 @@ module Base (
 import GHC.Generics
 import Database.Beam
 import Data.Text
+import Data.Maybe
 import Lens.Micro
 import Data
-
 import System.IO
 
 instance Beamable PetitionT
@@ -33,9 +33,18 @@ instance Table PetitionLocaleT where
   primaryKey = PetitionLocaleId . _petitionLocaleId
 instance Beamable (PrimaryKey PetitionLocaleT)
 
+
+instance Table SignerT where
+  data PrimaryKey SignerT f = SignerId (Columnar f Int) deriving Generic
+  primaryKey = SignerId . _signerId
+
+instance Beamable SignerT
+instance Beamable (PrimaryKey SignerT)
+
 data PetitionDb f = PetitionDb
                       { _petitions       :: f (TableEntity PetitionT) 
                       , _petitionsLocale :: f (TableEntity PetitionLocaleT)
+                      , _signers         :: f (TableEntity SignerT)
                       }
                         deriving Generic
 
@@ -69,9 +78,23 @@ PetitionLocale
   (LensFor petitionLocaleLocale)
   (PetitionId (LensFor petitionLocalePetitionId)) = tableLenses
 
+Signer 
+  (LensFor singerId) = tableLenses
+  -- (LensFor petitionFirstName) = tableLenses    
+  -- (LensFor signerLastName)
+  -- (LensFor signerCountry)
+  -- (LensFor signerOrganization)
+  -- (LensFor signerEmail)
+  -- (LensFor signerPhone)
+  -- (LensFor signerBirthYear)
+  -- (LensFor signerGender)
+  -- (LensFor signerNotifiesEnabled) = tableLenses
+  -- (PetitionId (LensFor signerId)) = tableLenses
+
 PetitionDb 
   (TableLens petitions) 
-  (TableLens petitionsLocale) = dbLenses
+  (TableLens petitionsLocale) 
+  (TableLens signers) = dbLenses
 
 getPetitionByCode code locale = do
   ps <- runSelectReturningList $ select $ do
@@ -98,3 +121,45 @@ getPetitionByCode code locale = do
           (l'' ^. petitionLocaleDescription) 
           (l'' ^. petitionLocaleLocale) 
       _   -> Nothing
+
+-- insertSigner :: SignerForm -> Text -> IO Int
+-- insertSigner signerForm code = do
+--   conn <- Pg.connectPostgreSQL "dbname=petitions" 
+--   -- runBeamPostgresDebug putStrLn conn (B.getPetitionByCode code locale)
+--   runBeamPostgres conn $ do
+--     -- petition' <- getPetitionByCode code Nothing
+--     let petition' = Nothing
+--     x <- case petition' of
+--       Just petition -> do 
+--         let sx = [ (Signer default_)
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- undefined
+--                         -- (val_ "_signerFormFirstName signerForm")
+--                         -- (val_ $ "_signerFormLastName signerForm")
+--                         -- (val_ $ "_signerFormCountry signerForm")
+--                         -- (val_ $ "_signerFormOrganization signerForm")
+--                         -- (val_ $ "_signerFormEmail signerForm")
+--                         -- (val_ $ "_signerFormPhone signerForm")
+--                         -- (val_ $ 2) -- "_signerFormBirthYear signerForm")
+--                         -- (val_ $ 3) -- "_signerFormGender signerForm")
+--                         -- (val_ $ "_signerFormNotifiesEnabled signerForm")
+--                         -- -- (pk petition)
+--                       ] :: (QExpr (Sql92InsertValuesExpressionSyntax Sql92InsertValuesSyntax _ _))
+--                       --s')-- :: [QGenExpr _ _ _ _] -- ctxt0 expr0 s0 a0]
+--         runInsert $
+--           insert (petitionDb ^. signers) $
+--           insertExpressions sx
+--     pure 2
+--   pure 0
+  
+
+
