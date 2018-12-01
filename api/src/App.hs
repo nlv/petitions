@@ -34,11 +34,12 @@ server :: Server Api
 server =
   getPetitionByCode
 
-getPetitionByCode :: Text -> Maybe Text -> Handler PetitionExt
+getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
   conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
-    Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
+    Just p -> pure p
+    -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
     _      -> throwE err404
 

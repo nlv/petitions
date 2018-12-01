@@ -9,10 +9,10 @@
 
 module Data (
   Petition,
-  PetitionExt,
   Petition'(..),
   PetitionField,
   PetitionId'(..),
+  PetitionId,
   pPetitionId
   -- PetitionT(..),
   -- PetitionId,
@@ -45,7 +45,6 @@ data Petition' a b c d e = Petition {
     _petitionLocale            :: e
 } deriving Generic
 type Petition = Petition' PetitionId Text Text Text Text
-type PetitionExt = Petition' Int Text Text Text Text
 
 type PetitionField = Petition' 
                       PetitionIdField
@@ -57,11 +56,8 @@ type PetitionField = Petition'
 deriving instance Show Petition
 deriving instance Eq Petition
 
-instance ToJSON   PetitionExt
-instance FromJSON PetitionExt
-
--- instance ToJSON   (Petition' Int Text Text Text Text)
--- instance FromJSON (Petition' Int Text Text Text Text)
+instance ToJSON   Petition
+instance FromJSON Petition
 
 -- data PetitionLocaleT f
 --   = PetitionLocale {
