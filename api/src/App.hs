@@ -31,8 +31,7 @@ mkApp :: IO Application
 mkApp = return $ simpleCors (serve api server)
 
 server :: Server Api
-server =
-  getPetitionByCode
+server = getPetitionByCode :<|> putSigner
 
 getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
@@ -42,4 +41,12 @@ getPetitionByCode code locale = do
     Just p -> pure p
     -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
     _      -> throwE err404
+
+putSigner :: Text -> SignerForm -> Handler ()
+putSigner code signerForm = do
+  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
+  inserted <- liftIO $ B.insertSigner conn code signerForm
+  case inserted of 
+    True -> pure ()
+    False -> throwE err404
 

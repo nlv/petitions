@@ -12,6 +12,7 @@ import Data
 type Api = PetitionApi -- :<|> SingerApi
 
 type PetitionApi = 
-  "petition" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[JSON] Petition
+       "petition" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[JSON] Petition 
+  :<|> "petition" :> Capture "code" Text :> "signer" :> ReqBody '[JSON] SignerForm :> Put '[JSON] ()
 
 

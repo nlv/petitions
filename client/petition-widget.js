@@ -4994,9 +4994,9 @@ var NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2(elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var author$project$Generated$Api$Petition = F4(
-	function (petitionId, petitionName, petitionDescription, petitionLocale) {
-		return {petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
+var author$project$Generated$Api$Petition = F5(
+	function (petitionId, petitionCode, petitionName, petitionDescription, petitionLocale) {
+		return {petitionCode: petitionCode, petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
 	});
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$string = _Json_decodeString;
@@ -5015,9 +5015,13 @@ var author$project$Generated$Api$decodePetition = A3(
 			elm$json$Json$Decode$string,
 			A3(
 				NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-				'_petitionId',
-				elm$json$Json$Decode$int,
-				elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition)))));
+				'_petitionCode',
+				elm$json$Json$Decode$string,
+				A3(
+					NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+					'_petitionId',
+					elm$json$Json$Decode$int,
+					elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition))))));
 var elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(

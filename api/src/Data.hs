@@ -21,6 +21,12 @@ module Data (
   -- PetitionLocaleId'(..),
   -- PetitionLocaleId,
   -- pPetitionLocaleId
+
+  Signer,
+  Signer'(..),
+  SignerField,
+  SignerFieldMod,
+  SignerForm(..)
   )  where
 
 import GHC.Generics
@@ -28,7 +34,7 @@ import Data.Aeson
 import Data.Text
 import Data.Profunctor.Product.TH (makeAdaptorAndInstance)
 
-import Opaleye (Field, SqlInt4, SqlText)
+import Opaleye (Field, SqlInt4, SqlText, SqlBool)
 
 -- ** Petition
 
@@ -97,27 +103,68 @@ deriving instance Eq PetitionLocale
 instance ToJSON   PetitionLocale
 instance FromJSON PetitionLocale
 
+-- ** Signer
 
+data Signer' a b c d e f g h k l m = Signer { 
+    _signerId              :: a,
+    _signerPetitionId      :: b,
+    _signerFirstName       :: c,
+    _signerLastName        :: d,
+    _signerCountry         :: e,
+    _signerOrganization    :: f,
+    _signerEmail           :: g,
+    _signerPhone           :: h,
+    _signerBirthYear       :: k,
+    _signerGender          :: l,
+    _signerNotifiesEnabled :: m
+} deriving Generic
+type Signer = Signer' Int Int Text Text Text Text Text Text Int Text Bool
 
+type SignerField = Signer' 
+                      (Field SqlInt4) 
+                      (Field SqlInt4) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlInt4) 
+                      (Field SqlText) 
+                      (Field SqlBool) 
 
-{-
-data Signer
-  = Signer {
-    petitionFirstName :: String,
-    petitionLastName  :: String,
-    petitionCountry :: String,
-    petitionOrganization :: Maybe Integer,
-    petitionEmail :: Integer,
-    petitionPhone :: Integer,
-    petitionBirthYear :: Integer,
-    petitionGender :: Integer,
-    petitionNotifiesEnabled :: Integer,
-    petition :: Integer,
-    petition :: Integer,
-    itemText :: String
-  }
-  deriving (Eq, Show, Generic)
+type SignerFieldMod = Signer' 
+                      (Maybe (Field SqlInt4))
+                      (Field SqlInt4) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlText) 
+                      (Field SqlInt4) 
+                      (Field SqlText) 
+                      (Field SqlBool) 
 
-instance ToJSON Signer
+deriving instance Show Signer
+deriving instance Eq Signer
+
+instance ToJSON   Signer
 instance FromJSON Signer
--}
+
+-- ** SignerForm
+
+data SignerForm = SignerForm { 
+    _signerFormFirstName       :: Text,
+    _signerFormLastName        :: Text,
+    _signerFormCountry         :: Text,
+    _signerFormOrganization    :: Text,
+    _signerFormEmail           :: Text,
+    _signerFormPhone           :: Text,
+    _signerFormBirthYear       :: Int,
+    _signerFormGender          :: Text,
+    _signerFormNotifiesEnabled :: Bool
+} deriving Generic
+
+instance ToJSON   SignerForm
+instance FromJSON SignerForm

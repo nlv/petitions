@@ -10,7 +10,8 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 module Base (
-  getPetitionByCode
+  getPetitionByCode,
+  insertSigner
   )  where
 
 import GHC.Generics
@@ -21,10 +22,15 @@ import qualified Database.PostgreSQL.Simple as Pg
 
 import           Opaleye (Field, FieldNullable, matchNullable, isNull,
                          Table, table, tableField, selectTable,
+                         Insert(..),
+                         Update(..),
+                         Delete(..),
+                         rCount,
+                         rReturning,                         
                          Select, SelectArr, restrict, (.==), (.<=), (.&&), (.<),
                          (.===),
-                         (.++), ifThenElse, sqlStrictText, aggregate, groupBy, sqlInt4,
-                         count, avg, sum, leftJoin, runSelect,
+                         (.++), ifThenElse, sqlStrictText, aggregate, groupBy, sqlInt4, sqlBool,
+                         count, avg, sum, leftJoin, runSelect, runInsert_,
                          showSqlForPostgres, Unpackspec,
                          SqlInt4, SqlText, SqlDate, SqlFloat8, SqlBool)
 
@@ -32,6 +38,8 @@ import           Data.Profunctor.Product (p2, p3)
 import           Data.Profunctor.Product.Default (Default)
 import Data.Profunctor.Product.TH (makeAdaptorAndInstance)
 import Control.Arrow (returnA)
+
+import GHC.Int (Int64)
 
 -- ** Petition
 
@@ -75,6 +83,26 @@ petitionLocaleTable = table "petitions_locale"
 --                             (FieldNullable SqlText) 
 --                             PetitionIdNullableField
 
+-- Signer
+
+$(makeAdaptorAndInstance "pSigner" ''Signer')
+
+signerTable :: Table SignerFieldMod SignerField
+signerTable = table "signers"
+                  (pSigner Signer {
+                    _signerId              = tableField "id",
+                    _signerPetitionId      = tableField "petition_id",
+                    _signerFirstName       = tableField "first_name",
+                    _signerLastName        = tableField "last_name",
+                    _signerCountry         = tableField "country",
+                    _signerOrganization    = tableField "organization",
+                    _signerEmail           = tableField "email",
+                    _signerPhone           = tableField "phone",
+                    _signerBirthYear       = tableField "birth_year",
+                    _signerGender          = tableField "gender",
+                    _signerNotifiesEnabled = tableField "notifies_enabled"
+                  })
+
 
 -- a :: Text -> Text -> Select Petition
 -- a :: Text -> Text -> Select Text
@@ -114,6 +142,45 @@ getPetitionLocale conn pid locale = do
   pure $ case ps of
             p:ps' -> Just p
             _         -> Nothing
+
+insertSigner :: Pg.Connection -> Text -> SignerForm -> IO Bool
+insertSigner conn code signerForm = do
+  petition' <- getPetitionByCode conn code Nothing
+  case petition' of
+    Just petition -> do
+      let signer = signerForm2Mod (_petitionId petition) signerForm
+      runInsert_ conn Insert
+          { iTable      = signerTable
+          , iRows       = [signer]
+          , iReturning  = rCount
+          , iOnConflict = Nothing
+          }
+      pure True
+    _ -> pure False
+
+signerForm2Mod :: Int -> SignerForm -> SignerFieldMod
+signerForm2Mod pid form = 
+  Signer
+    Nothing
+    (sqlInt4 pid)
+    (sqlStrictText $ _signerFormFirstName form)
+    (sqlStrictText $ _signerFormLastName form)
+    (sqlStrictText $ _signerFormCountry form)
+    (sqlStrictText $ _signerFormOrganization form)
+    (sqlStrictText $ _signerFormEmail form)
+    (sqlStrictText $ _signerFormPhone form)
+    (sqlInt4 $ _signerFormBirthYear form)
+    (sqlStrictText $ _signerFormGender form)
+    (sqlBool $ _signerFormNotifiesEnabled form)
+
+
+-- insertSigner :: SignerFieldMod -> Insert Int64
+-- insertSigner signer = Insert
+--   { iTable      = signerTable
+--   , iRows       = [signer]
+--   , iReturning  = rCount
+--   , iOnConflict = Nothing
+-- }
 
 -- petitionLocaleLeftJoin :: Select (PetitionField, PetitionLocaleNullableField)                            
 -- petitionLocaleLeftJoin = leftJoin selectPetition selectPetitionLocale eqId 
