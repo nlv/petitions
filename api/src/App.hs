@@ -10,6 +10,7 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.Cors
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import Network.Wai.Middleware.Static
 import Servant
 import System.IO
 import Data
@@ -37,7 +38,7 @@ run = do
 
 mkApp :: IO Application
 -- mkApp = return $ simpleCors (serve api server)
-mkApp = return $ (cors corsPolicy) $ logStdoutDev $ (serve api server)
+mkApp = return $ (cors corsPolicy) $ logStdoutDev $ static $ (serve api server)
 
 server :: Server Api
 server = getPetitionByCode :<|> postSigner

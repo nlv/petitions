@@ -48,4 +48,5 @@ dependencies:
   - wai
   - wai-cors
   - wai-extra
+  - wai-middleware-static
   - warp
