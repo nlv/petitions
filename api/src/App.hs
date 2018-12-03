@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds #-}
 
 module App where
 
@@ -7,6 +9,7 @@ import Control.Monad.IO.Class
 import Data.Text
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai
+import Network.Wai.MakeAssets
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.Cors
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
@@ -19,6 +22,11 @@ import qualified Database.PostgreSQL.Simple as Pg
 
 api :: Proxy Api
 api = Proxy
+
+type WithAssets = Api :<|> Capture "static" :> Raw
+
+withAssets :: Proxy WithAssets
+withAssets = Proxy
 
 corsPolicy :: Request -> Maybe CorsResourcePolicy
 corsPolicy _ = Just $ simpleCorsResourcePolicy
@@ -36,12 +44,13 @@ run = do
   runSettings settings =<< mkApp
 
 mkApp :: IO Application
--- mkApp = return $ simpleCors (serve api server)
-mkApp = return $ (cors corsPolicy) $ logStdoutDev $ (serve api server)
+-- mkApp = (cors corsPolicy) $ logStdoutDev $ (serve withAssets <$> server)
+mkApp = (serve withAssets <$> server)
 
-server :: Server Api
-server = getPetitionByCode :<|> postSigner
-
+server :: IO (Server WithAssets)
+server = do 
+  assets <- serveAssets
+  (getPetitionByCode :<|> postSigner :<|> getStaticFiles :<|> assets)
 
 getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
@@ -59,4 +68,7 @@ postSigner code signerForm = do
   case inserted of 
     True -> pure ()
     False -> throwE err404
+
+getStaticFiles :: Server Raw
+getStaticFiles = serveDirectoryWebApp "../client"
 
