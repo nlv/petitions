@@ -44,6 +44,8 @@ dependencies:
   - transformers
   - microlens
   - aeson
+  - http-types
   - wai
   - wai-cors
+  - wai-extra
   - warp

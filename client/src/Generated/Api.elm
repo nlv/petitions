@@ -99,12 +99,13 @@ getPetitionByCode url capture_code query_locale =
                 False
             }
 
-putPetitionByCodeSigner : String -> String -> SignerForm -> Http.Request (())
-putPetitionByCodeSigner url capture_code body =
+postPetitionByCodeSigner : String -> String -> SignerForm -> Http.Request (())
+postPetitionByCodeSigner url capture_code body =
     Http.request
         { method =
-            "PUT"
+            "POST"
         , headers =
+            -- [ Http.header  "Content-Type" "application/json"  ]
             []
         , url =
             String.join "/"

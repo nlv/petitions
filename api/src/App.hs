@@ -5,9 +5,11 @@ module App where
 import Control.Monad.Trans.Except
 import Control.Monad.IO.Class
 import Data.Text
+import qualified Network.HTTP.Types as HTTP
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.Cors
+import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Servant
 import System.IO
 import Data
@@ -17,6 +19,12 @@ import qualified Database.PostgreSQL.Simple as Pg
 
 api :: Proxy Api
 api = Proxy
+
+corsPolicy :: Request -> Maybe CorsResourcePolicy
+corsPolicy _ = Just $ simpleCorsResourcePolicy
+  { corsRequestHeaders = ["Content-Type"]
+  , corsMethods = HTTP.methodOptions : HTTP.methodPut : corsMethods simpleCorsResourcePolicy 
+  }
 
 run :: IO ()
 run = do
@@ -28,10 +36,12 @@ run = do
   runSettings settings =<< mkApp
 
 mkApp :: IO Application
-mkApp = return $ simpleCors (serve api server)
+-- mkApp = return $ simpleCors (serve api server)
+mkApp = return $ (cors corsPolicy) $ logStdoutDev $ (serve api server)
 
 server :: Server Api
-server = getPetitionByCode :<|> putSigner
+server = getPetitionByCode :<|> postSigner
+
 
 getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
@@ -42,8 +52,8 @@ getPetitionByCode code locale = do
     -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
     _      -> throwE err404
 
-putSigner :: Text -> SignerForm -> Handler ()
-putSigner code signerForm = do
+postSigner :: Text -> SignerForm -> Handler ()
+postSigner code signerForm = do
   conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
   inserted <- liftIO $ B.insertSigner conn code signerForm
   case inserted of 
