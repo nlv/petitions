@@ -11,6 +11,7 @@ import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.Cors
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Network.Wai.Middleware.Static
+import Network.Wai.Handler.WarpTLS
 import Servant
 import System.IO
 import Data
@@ -29,12 +30,13 @@ corsPolicy _ = Just $ simpleCorsResourcePolicy
 
 run :: IO ()
 run = do
-  let port = 3000
-      settings =
+  let port = 8080
+      warpOpts =
         setPort port $
         setBeforeMainLoop (hPutStrLn stderr ("listening on port " ++ show port)) $
         defaultSettings
-  runSettings settings =<< mkApp
+      tlsOpts = tlsSettings "/etc/ssl/certs/ssl-cert-snakeoil.pem" "/etc/ssl/private/ssl-cert-snakeoil.key"
+  runTLS tlsOpts warpOpts =<< mkApp
 
 mkApp :: IO Application
 -- mkApp = return $ simpleCors (serve api server)
@@ -46,7 +48,7 @@ server = getPetitionByCode :<|> postSigner
 
 getPetitionByCode :: Text -> Maybe Text -> Handler Petition
 getPetitionByCode code locale = do
-  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
+  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
     Just p -> pure p

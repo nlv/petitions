@@ -50,3 +50,4 @@ dependencies:
   - wai-extra
   - wai-middleware-static
   - warp
+  - warp-tls
