@@ -27,6 +27,7 @@ CREATE TABLE signers (
     ,first_name       VARCHAR(255) NOT NULL 
     ,last_name        VARCHAR(255) NOT NULL 
     ,country          VARCHAR(255) NOT NULL
+    ,city             VARCHAR(255) NOT NULL
     ,organization     VARCHAR(255) 
     ,email            VARCHAR(255) 
     ,phone            VARCHAR(255)    

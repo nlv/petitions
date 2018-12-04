@@ -5764,10 +5764,27 @@ var author$project$Main$prepareLocale = function (locale) {
 		return elm$core$Maybe$Just(l);
 	}
 };
-var author$project$Generated$Api$SignerForm = F9(
-	function (signerFormFirstName, signerFormLastName, signerFormCountry, signerFormOrganization, signerFormEmail, signerFormPhone, signerFormBirthYear, signerFormGender, signerFormNotifiesEnabled) {
-		return {signerFormBirthYear: signerFormBirthYear, signerFormCountry: signerFormCountry, signerFormEmail: signerFormEmail, signerFormFirstName: signerFormFirstName, signerFormGender: signerFormGender, signerFormLastName: signerFormLastName, signerFormNotifiesEnabled: signerFormNotifiesEnabled, signerFormOrganization: signerFormOrganization, signerFormPhone: signerFormPhone};
-	});
+var author$project$Generated$Api$SignerForm = function (signerFormFirstName) {
+	return function (signerFormLastName) {
+		return function (signerFormCountry) {
+			return function (signerFormCity) {
+				return function (signerFormOrganization) {
+					return function (signerFormEmail) {
+						return function (signerFormPhone) {
+							return function (signerFormBirthYear) {
+								return function (signerFormGender) {
+									return function (signerFormNotifiesEnabled) {
+										return {signerFormBirthYear: signerFormBirthYear, signerFormCity: signerFormCity, signerFormCountry: signerFormCountry, signerFormEmail: signerFormEmail, signerFormFirstName: signerFormFirstName, signerFormGender: signerFormGender, signerFormLastName: signerFormLastName, signerFormNotifiesEnabled: signerFormNotifiesEnabled, signerFormOrganization: signerFormOrganization, signerFormPhone: signerFormPhone};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var etaque$elm_form$Form$Validate$errMaybe = function (res) {
 	if (res.$ === 'Ok') {
 		return elm$core$Maybe$Nothing;
@@ -6016,14 +6033,17 @@ var author$project$Main$validate = A2(
 						A2(etaque$elm_form$Form$Validate$field, 'organization', etaque$elm_form$Form$Validate$string),
 						A2(
 							etaque$elm_form$Form$Validate$andMap,
-							A2(etaque$elm_form$Form$Validate$field, 'country', etaque$elm_form$Form$Validate$string),
+							A2(etaque$elm_form$Form$Validate$field, 'city', etaque$elm_form$Form$Validate$string),
 							A2(
 								etaque$elm_form$Form$Validate$andMap,
-								A2(etaque$elm_form$Form$Validate$field, 'last_name', etaque$elm_form$Form$Validate$string),
+								A2(etaque$elm_form$Form$Validate$field, 'country', etaque$elm_form$Form$Validate$string),
 								A2(
 									etaque$elm_form$Form$Validate$andMap,
-									A2(etaque$elm_form$Form$Validate$field, 'first_name', etaque$elm_form$Form$Validate$string),
-									etaque$elm_form$Form$Validate$succeed(author$project$Generated$Api$SignerForm))))))))));
+									A2(etaque$elm_form$Form$Validate$field, 'last_name', etaque$elm_form$Form$Validate$string),
+									A2(
+										etaque$elm_form$Form$Validate$andMap,
+										A2(etaque$elm_form$Form$Validate$field, 'first_name', etaque$elm_form$Form$Validate$string),
+										etaque$elm_form$Form$Validate$succeed(author$project$Generated$Api$SignerForm)))))))))));
 var elm$core$Task$Perform = function (a) {
 	return {$: 'Perform', a: a};
 };
@@ -6237,6 +6257,9 @@ var author$project$Generated$Api$encodeSignerForm = function (x) {
 				_Utils_Tuple2(
 				'_signerFormCountry',
 				elm$json$Json$Encode$string(x.signerFormCountry)),
+				_Utils_Tuple2(
+				'_signerFormCity',
+				elm$json$Json$Encode$string(x.signerFormCity)),
 				_Utils_Tuple2(
 				'_signerFormOrganization',
 				elm$json$Json$Encode$string(x.signerFormOrganization)),
@@ -6861,7 +6884,7 @@ var author$project$Main$update = F2(
 		var code = model.code;
 		var locale = model.locale;
 		var form = model.form;
-		var signer0 = {signerFormBirthYear: 22, signerFormCountry: 'c', signerFormEmail: 'e', signerFormFirstName: 'a', signerFormGender: 'M', signerFormLastName: 'b', signerFormNotifiesEnabled: false, signerFormOrganization: 'd', signerFormPhone: 'f'};
+		var signer0 = {signerFormBirthYear: 22, signerFormCity: 'c', signerFormCountry: 'c', signerFormEmail: 'e', signerFormFirstName: 'a', signerFormGender: 'M', signerFormLastName: 'b', signerFormNotifiesEnabled: false, signerFormOrganization: 'd', signerFormPhone: 'f'};
 		switch (msg.$) {
 			case 'GotPetition':
 				var result = msg.a;
@@ -6948,7 +6971,6 @@ var author$project$Main$update = F2(
 var author$project$Main$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
-var elm$core$Debug$toString = _Debug_toString;
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -6962,11 +6984,7 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
-var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
-var elm$html$Html$label = _VirtualDom_node('label');
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -6975,6 +6993,108 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
+var author$project$View$Bootstrap$colQ = F2(
+	function (i, content) {
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class(
+					'col-xs-' + elm$core$String$fromInt(i))
+				]),
+			content);
+	});
+var author$project$View$Bootstrap$errorClass = function (maybeError) {
+	return A2(
+		elm$core$Maybe$withDefault,
+		'',
+		A2(
+			elm$core$Maybe$map,
+			function (_n0) {
+				return 'has-error';
+			},
+			maybeError));
+};
+var elm$core$Debug$toString = _Debug_toString;
+var elm$html$Html$p = _VirtualDom_node('p');
+var elm$html$Html$span = _VirtualDom_node('span');
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var author$project$View$Bootstrap$errorMessage = function (maybeError) {
+	if (maybeError.$ === 'Just') {
+		var error = maybeError.a;
+		return A2(
+			elm$html$Html$p,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('help-block')
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text(
+					elm$core$Debug$toString(error))
+				]));
+	} else {
+		return A2(
+			elm$html$Html$span,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('help-block')
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text('\u2007')
+				]));
+	}
+};
+var elm$html$Html$label = _VirtualDom_node('label');
+var author$project$View$Bootstrap$formGroup = F3(
+	function (labelQ, maybeError, inputs) {
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class(
+					'row form-group ' + author$project$View$Bootstrap$errorClass(maybeError))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					author$project$View$Bootstrap$colQ,
+					3,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$label,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('control-label')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(labelQ)
+								]))
+						])),
+					A2(author$project$View$Bootstrap$colQ, 5, inputs),
+					A2(
+					author$project$View$Bootstrap$colQ,
+					4,
+					_List_fromArray(
+						[
+							author$project$View$Bootstrap$errorMessage(maybeError)
+						]))
+				]));
+	});
+var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
+var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6986,6 +7106,237 @@ var elm$html$Html$Events$on = F2(
 			event,
 			elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
+var elm$html$Html$Events$onBlur = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'blur',
+		elm$json$Json$Decode$succeed(msg));
+};
+var elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
+	});
+var elm$json$Json$Decode$bool = _Json_decodeBool;
+var elm$html$Html$Events$targetChecked = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'checked']),
+	elm$json$Json$Decode$bool);
+var elm$html$Html$Events$onCheck = function (tagger) {
+	return A2(
+		elm$html$Html$Events$on,
+		'change',
+		A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetChecked));
+};
+var elm$html$Html$Events$onFocus = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'focus',
+		elm$json$Json$Decode$succeed(msg));
+};
+var etaque$elm_form$Form$Blur = function (a) {
+	return {$: 'Blur', a: a};
+};
+var etaque$elm_form$Form$Checkbox = {$: 'Checkbox'};
+var etaque$elm_form$Form$Focus = function (a) {
+	return {$: 'Focus', a: a};
+};
+var etaque$elm_form$Form$Input = F3(
+	function (a, b, c) {
+		return {$: 'Input', a: a, b: b, c: c};
+	});
+var etaque$elm_form$Form$Field$Bool = function (a) {
+	return {$: 'Bool', a: a};
+};
+var etaque$elm_form$Form$Input$checkboxInput = F2(
+	function (state, attrs) {
+		var formAttrs = _List_fromArray(
+			[
+				elm$html$Html$Attributes$type_('checkbox'),
+				elm$html$Html$Attributes$checked(
+				A2(elm$core$Maybe$withDefault, false, state.value)),
+				elm$html$Html$Events$onCheck(
+				A2(
+					elm$core$Basics$composeR,
+					etaque$elm_form$Form$Field$Bool,
+					A2(etaque$elm_form$Form$Input, state.path, etaque$elm_form$Form$Checkbox))),
+				elm$html$Html$Events$onFocus(
+				etaque$elm_form$Form$Focus(state.path)),
+				elm$html$Html$Events$onBlur(
+				etaque$elm_form$Form$Blur(state.path))
+			]);
+		return A2(
+			elm$html$Html$input,
+			_Utils_ap(formAttrs, attrs),
+			_List_Nil);
+	});
+var author$project$View$Bootstrap$checkboxGroup = F2(
+	function (labelQ, state) {
+		return A3(
+			author$project$View$Bootstrap$formGroup,
+			'',
+			state.liveError,
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('checkbox')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$label,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(etaque$elm_form$Form$Input$checkboxInput, state, _List_Nil),
+									elm$html$Html$text(labelQ)
+								]))
+						]))
+				]));
+	});
+var elm$html$Html$option = _VirtualDom_node('option');
+var elm$html$Html$select = _VirtualDom_node('select');
+var elm$html$Html$Attributes$selected = elm$html$Html$Attributes$boolProperty('selected');
+var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
+var elm$html$Html$Events$targetValue = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	elm$json$Json$Decode$string);
+var etaque$elm_form$Form$Select = {$: 'Select'};
+var etaque$elm_form$Form$Field$String = function (a) {
+	return {$: 'String', a: a};
+};
+var etaque$elm_form$Form$Input$selectInput = F3(
+	function (options, state, attrs) {
+		var formAttrs = _List_fromArray(
+			[
+				A2(
+				elm$html$Html$Events$on,
+				'change',
+				A2(
+					elm$json$Json$Decode$map,
+					A2(
+						elm$core$Basics$composeR,
+						etaque$elm_form$Form$Field$String,
+						A2(etaque$elm_form$Form$Input, state.path, etaque$elm_form$Form$Select)),
+					elm$html$Html$Events$targetValue)),
+				elm$html$Html$Events$onFocus(
+				etaque$elm_form$Form$Focus(state.path)),
+				elm$html$Html$Events$onBlur(
+				etaque$elm_form$Form$Blur(state.path))
+			]);
+		var buildOption = function (_n0) {
+			var k = _n0.a;
+			var v = _n0.b;
+			return A2(
+				elm$html$Html$option,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$value(k),
+						elm$html$Html$Attributes$selected(
+						_Utils_eq(
+							state.value,
+							elm$core$Maybe$Just(k)))
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text(v)
+					]));
+		};
+		return A2(
+			elm$html$Html$select,
+			_Utils_ap(formAttrs, attrs),
+			A2(elm$core$List$map, buildOption, options));
+	});
+var author$project$View$Bootstrap$selectGroup = F3(
+	function (options, labelQ, state) {
+		return A3(
+			author$project$View$Bootstrap$formGroup,
+			labelQ,
+			state.liveError,
+			_List_fromArray(
+				[
+					A3(
+					etaque$elm_form$Form$Input$selectInput,
+					options,
+					state,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('form-control')
+						]))
+				]));
+	});
+var etaque$elm_form$Form$Text = {$: 'Text'};
+var elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			elm$json$Json$Decode$map,
+			elm$html$Html$Events$alwaysStop,
+			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
+};
+var etaque$elm_form$Form$Input$baseInput = F5(
+	function (t, toFieldValue, inputType, state, attrs) {
+		var formAttrs = _List_fromArray(
+			[
+				elm$html$Html$Attributes$type_(t),
+				elm$html$Html$Attributes$value(
+				A2(elm$core$Maybe$withDefault, '', state.value)),
+				elm$html$Html$Events$onInput(
+				A2(
+					elm$core$Basics$composeR,
+					toFieldValue,
+					A2(etaque$elm_form$Form$Input, state.path, inputType))),
+				elm$html$Html$Events$onFocus(
+				etaque$elm_form$Form$Focus(state.path)),
+				elm$html$Html$Events$onBlur(
+				etaque$elm_form$Form$Blur(state.path))
+			]);
+		return A2(
+			elm$html$Html$input,
+			_Utils_ap(formAttrs, attrs),
+			_List_Nil);
+	});
+var etaque$elm_form$Form$Input$textInput = A3(etaque$elm_form$Form$Input$baseInput, 'text', etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Text);
+var author$project$View$Bootstrap$textGroup = F2(
+	function (labelQ, state) {
+		return A3(
+			author$project$View$Bootstrap$formGroup,
+			labelQ,
+			state.liveError,
+			_List_fromArray(
+				[
+					A2(
+					etaque$elm_form$Form$Input$textInput,
+					state,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('form-control'),
+							elm$html$Html$Attributes$value(
+							A2(elm$core$Maybe$withDefault, '', state.value))
+						]))
+				]));
+	});
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$legend = _VirtualDom_node('legend');
 var elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		elm$html$Html$Events$on,
@@ -7055,140 +7406,16 @@ var etaque$elm_form$Form$getStringAt = F2(
 			A2(etaque$elm_form$Form$getFieldAt, name, model));
 	});
 var etaque$elm_form$Form$getFieldAsString = etaque$elm_form$Form$getField(etaque$elm_form$Form$getStringAt);
-var elm$html$Html$input = _VirtualDom_node('input');
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
-var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
-var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
-var elm$html$Html$Events$onBlur = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'blur',
-		elm$json$Json$Decode$succeed(msg));
-};
-var elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
-	});
-var elm$json$Json$Decode$bool = _Json_decodeBool;
-var elm$html$Html$Events$targetChecked = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'checked']),
-	elm$json$Json$Decode$bool);
-var elm$html$Html$Events$onCheck = function (tagger) {
-	return A2(
-		elm$html$Html$Events$on,
-		'change',
-		A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetChecked));
-};
-var elm$html$Html$Events$onFocus = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'focus',
-		elm$json$Json$Decode$succeed(msg));
-};
-var etaque$elm_form$Form$Blur = function (a) {
-	return {$: 'Blur', a: a};
-};
-var etaque$elm_form$Form$Checkbox = {$: 'Checkbox'};
-var etaque$elm_form$Form$Focus = function (a) {
-	return {$: 'Focus', a: a};
-};
-var etaque$elm_form$Form$Input = F3(
-	function (a, b, c) {
-		return {$: 'Input', a: a, b: b, c: c};
-	});
-var etaque$elm_form$Form$Field$Bool = function (a) {
-	return {$: 'Bool', a: a};
-};
-var etaque$elm_form$Form$Input$checkboxInput = F2(
-	function (state, attrs) {
-		var formAttrs = _List_fromArray(
-			[
-				elm$html$Html$Attributes$type_('checkbox'),
-				elm$html$Html$Attributes$checked(
-				A2(elm$core$Maybe$withDefault, false, state.value)),
-				elm$html$Html$Events$onCheck(
-				A2(
-					elm$core$Basics$composeR,
-					etaque$elm_form$Form$Field$Bool,
-					A2(etaque$elm_form$Form$Input, state.path, etaque$elm_form$Form$Checkbox))),
-				elm$html$Html$Events$onFocus(
-				etaque$elm_form$Form$Focus(state.path)),
-				elm$html$Html$Events$onBlur(
-				etaque$elm_form$Form$Blur(state.path))
-			]);
-		return A2(
-			elm$html$Html$input,
-			_Utils_ap(formAttrs, attrs),
-			_List_Nil);
-	});
-var etaque$elm_form$Form$Text = {$: 'Text'};
-var etaque$elm_form$Form$Field$String = function (a) {
-	return {$: 'String', a: a};
-};
-var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
-var elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var elm$html$Html$Events$targetValue = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	elm$json$Json$Decode$string);
-var elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			elm$json$Json$Decode$map,
-			elm$html$Html$Events$alwaysStop,
-			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
-};
-var etaque$elm_form$Form$Input$baseInput = F5(
-	function (t, toFieldValue, inputType, state, attrs) {
-		var formAttrs = _List_fromArray(
-			[
-				elm$html$Html$Attributes$type_(t),
-				elm$html$Html$Attributes$value(
-				A2(elm$core$Maybe$withDefault, '', state.value)),
-				elm$html$Html$Events$onInput(
-				A2(
-					elm$core$Basics$composeR,
-					toFieldValue,
-					A2(etaque$elm_form$Form$Input, state.path, inputType))),
-				elm$html$Html$Events$onFocus(
-				etaque$elm_form$Form$Focus(state.path)),
-				elm$html$Html$Events$onBlur(
-				etaque$elm_form$Form$Blur(state.path))
-			]);
-		return A2(
-			elm$html$Html$input,
-			_Utils_ap(formAttrs, attrs),
-			_List_Nil);
-	});
-var etaque$elm_form$Form$Input$textInput = A3(etaque$elm_form$Form$Input$baseInput, 'text', etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Text);
 var author$project$Main$formView = function (form) {
 	var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
 	var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
 	var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
 	var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
+	var genderOptions = _List_fromArray(
+		[
+			_Utils_Tuple2('M', 'Male'),
+			_Utils_Tuple2('F', 'Female')
+		]);
 	var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
 	var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
 	var errorFor = function (field) {
@@ -7212,93 +7439,64 @@ var author$project$Main$formView = function (form) {
 	};
 	var email = A2(etaque$elm_form$Form$getFieldAsString, 'email', form);
 	var country = A2(etaque$elm_form$Form$getFieldAsString, 'country', form);
+	var city = A2(etaque$elm_form$Form$getFieldAsString, 'city', form);
 	var birthYear = A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form);
 	return A2(
 		elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('form-horizontal')
+			]),
 		_List_fromArray(
 			[
 				A2(
-				elm$html$Html$label,
+				elm$html$Html$legend,
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text('Frist Name')
+						elm$html$Html$text('Elm Simple Form example')
 					])),
-				A2(etaque$elm_form$Form$Input$textInput, firstName, _List_Nil),
-				errorFor(firstName),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Last Name')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, lastName, _List_Nil),
-				errorFor(lastName),
+				author$project$View$Bootstrap$textGroup,
+				'First Name',
+				A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Country')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, country, _List_Nil),
-				errorFor(country),
+				author$project$View$Bootstrap$textGroup,
+				'Last Name',
+				A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Organization')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, organization, _List_Nil),
-				errorFor(organization),
+				author$project$View$Bootstrap$textGroup,
+				'Country',
+				A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('email')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, email, _List_Nil),
-				errorFor(email),
+				author$project$View$Bootstrap$textGroup,
+				'City',
+				A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('phone')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, phone, _List_Nil),
-				errorFor(phone),
+				author$project$View$Bootstrap$textGroup,
+				'Organization',
+				A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Birth Year')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, birthYear, _List_Nil),
-				errorFor(birthYear),
+				author$project$View$Bootstrap$textGroup,
+				'Email',
+				A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Gender')
-					])),
-				A2(etaque$elm_form$Form$Input$textInput, gender, _List_Nil),
-				errorFor(gender),
+				author$project$View$Bootstrap$textGroup,
+				'Phone',
+				A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
 				A2(
-				elm$html$Html$label,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Notifies Enabled')
-					])),
-				A2(etaque$elm_form$Form$Input$checkboxInput, notifiesEnabled, _List_Nil),
-				errorFor(notifiesEnabled),
+				author$project$View$Bootstrap$textGroup,
+				'Birth Year',
+				A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
+				A3(
+				author$project$View$Bootstrap$selectGroup,
+				genderOptions,
+				'Gender',
+				A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
+				A2(
+				author$project$View$Bootstrap$checkboxGroup,
+				'Notifies Enabled',
+				A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
 				A2(
 				elm$html$Html$button,
 				_List_fromArray(
@@ -7332,7 +7530,8 @@ var author$project$Main$toString = function (err) {
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
-var elm$html$Html$p = _VirtualDom_node('p');
+var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
 var author$project$Main$view = function (_n0) {
 	var url = _n0.url;
 	var code = _n0.code;
@@ -7363,7 +7562,11 @@ var author$project$Main$view = function (_n0) {
 			var petition = petitionStatus.a;
 			return A2(
 				elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						A2(elm$html$Html$Attributes$style, 'margin', '50px 20px'),
+						A2(elm$html$Html$Attributes$style, 'width', '550px')
+					]),
 				_List_fromArray(
 					[
 						A2(

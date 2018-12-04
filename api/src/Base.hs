@@ -95,6 +95,7 @@ signerTable = table "signers"
                     _signerFirstName       = tableField "first_name",
                     _signerLastName        = tableField "last_name",
                     _signerCountry         = tableField "country",
+                    _signerCity            = tableField "city",
                     _signerOrganization    = tableField "organization",
                     _signerEmail           = tableField "email",
                     _signerPhone           = tableField "phone",
@@ -166,6 +167,7 @@ signerForm2Mod pid form =
     (sqlStrictText $ _signerFormFirstName form)
     (sqlStrictText $ _signerFormLastName form)
     (sqlStrictText $ _signerFormCountry form)
+    (sqlStrictText $ _signerFormCity form)
     (sqlStrictText $ _signerFormOrganization form)
     (sqlStrictText $ _signerFormEmail form)
     (sqlStrictText $ _signerFormPhone form)

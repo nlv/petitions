@@ -31,12 +31,15 @@ corsPolicy _ = Just $ simpleCorsResourcePolicy
 run :: IO ()
 run = do
   let port = 8080
+  -- let port = 80
       warpOpts =
         setPort port $
         setBeforeMainLoop (hPutStrLn stderr ("listening on port " ++ show port)) $
         defaultSettings
-      tlsOpts = tlsSettings "/etc/ssl/certs/ssl-cert-snakeoil.pem" "/etc/ssl/private/ssl-cert-snakeoil.key"
+      -- tlsOpts = tlsSettings "/etc/ssl/certs/ssl-cert-snakeoil.pem" "/etc/ssl/private/ssl-cert-snakeoil.key"
+      tlsOpts = tlsSettings "crt.txt" "private-key.txt"
   runTLS tlsOpts warpOpts =<< mkApp
+  -- runServer warpOpts =<< mkApp
 
 mkApp :: IO Application
 -- mkApp = return $ simpleCors (serve api server)
@@ -57,7 +60,7 @@ getPetitionByCode code locale = do
 
 postSigner :: Text -> SignerForm -> Handler ()
 postSigner code signerForm = do
-  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions" 
+  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
   inserted <- liftIO $ B.insertSigner conn code signerForm
   case inserted of 
     True -> pure ()

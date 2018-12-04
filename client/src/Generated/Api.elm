@@ -29,6 +29,7 @@ type alias SignerForm =
     { signerFormFirstName : String
     , signerFormLastName : String
     , signerFormCountry : String
+    , signerFormCity : String
     , signerFormOrganization : String
     , signerFormEmail : String
     , signerFormPhone : String
@@ -43,6 +44,7 @@ decodeSignerForm =
         |> required "_signerFormFirstName" string
         |> required "_signerFormLastName" string
         |> required "_signerFormCountry" string
+        |> required "_signerFormCity" string
         |> required "_signerFormOrganization" string
         |> required "_signerFormEmail" string
         |> required "_signerFormPhone" string
@@ -56,6 +58,7 @@ encodeSignerForm x =
         [ ( "_signerFormFirstName", Json.Encode.string x.signerFormFirstName )
         , ( "_signerFormLastName", Json.Encode.string x.signerFormLastName )
         , ( "_signerFormCountry", Json.Encode.string x.signerFormCountry )
+        , ( "_signerFormCity", Json.Encode.string x.signerFormCity )
         , ( "_signerFormOrganization", Json.Encode.string x.signerFormOrganization )
         , ( "_signerFormEmail", Json.Encode.string x.signerFormEmail )
         , ( "_signerFormPhone", Json.Encode.string x.signerFormPhone )

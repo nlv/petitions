@@ -1,6 +1,6 @@
 import Browser
-import Html exposing (Html, button, div, text, h1, p, label)
-import Html.Attributes exposing (class)
+import Html exposing (Html, button, div, text, h1, p, label, br, legend)
+import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
 import Http
@@ -8,6 +8,7 @@ import Http
 import Form exposing (Form)
 import Form.Input as Input
 import Form.Validate as Validate exposing (..)
+import View.Bootstrap exposing (..)
 -- import Html.Events exposing (onClick)
 
 
@@ -75,6 +76,7 @@ update msg ({ url, code, locale, form } as model) =
                     signerFormFirstName  = "a"
                   , signerFormLastName = "b"
                   , signerFormCountry = "c"
+                  , signerFormCity = "c"
                   , signerFormOrganization = "d"
                   , signerFormEmail = "e"
                   , signerFormPhone = "f"
@@ -131,7 +133,10 @@ view {url, code, locale, petitionStatus, formStatus, form} =
       div []
         [ text "Загрузка петиции" ]
     Loaded petition ->
-      div []
+      div
+        [ style "margin" "50px 20px" 
+        , style "width" "550px"   
+        ]
         [ 
           h1 [] [text (petition.petitionName) ],
           p  [] [text (petition.petitionDescription) ],
@@ -152,21 +157,11 @@ toString err =
 
 validate : Validation () SignerForm
 validate = 
-    -- map9 
-    --   SignerForm
-    --     (field "first_name" string)
-    --     (field "last_name" string)
-    --     (field "country" string)
-    --     (field "organization" string)
-    --     (field "email" string)
-    --     (field "phone" string)
-    --     (field "birth_year" int)
-    --     (field "gender" string)
-    --     (field "notifies_enabled" bool)
     succeed SignerForm
         |> andMap (field "first_name" string)
         |> andMap (field "last_name" string)
         |> andMap (field "country" string)
+        |> andMap (field "city" string)
         |> andMap (field "organization" string)
         |> andMap (field "email" string)
         |> andMap (field "phone" string)
@@ -198,6 +193,9 @@ formView form =
         country =
             Form.getFieldAsString "country" form
 
+        city =
+            Form.getFieldAsString "city" form
+
         organization =
             Form.getFieldAsString "organization" form
 
@@ -215,44 +213,27 @@ formView form =
 
         notifiesEnabled =
             Form.getFieldAsBool "notifies_enabled" form
+
+        genderOptions = [("M", "Male"), ("F", "Female")]
             
     in
-    div []
-        [ label [] [ text "Frist Name" ]
-        , Input.textInput firstName []
-        , errorFor firstName
+      div
+        [ class "form-horizontal"
+        -- , style "margin" "50px 20px" 
+        -- , style "width" "550px"   
+        ]
+        [ legend [] [ text "Elm Simple Form example" ]    
 
-        , label [] [ text "Last Name" ]
-        , Input.textInput lastName []
-        , errorFor lastName
-
-        , label [] [ text "Country" ]
-        , Input.textInput country []
-        , errorFor country 
-
-        , label [] [ text "Organization" ]
-        , Input.textInput organization []
-        , errorFor organization
-
-        , label [] [ text "email" ]
-        , Input.textInput email []
-        , errorFor email 
-
-        , label [] [ text "phone" ]
-        , Input.textInput phone []
-        , errorFor phone 
-
-        , label [] [ text "Birth Year" ]
-        , Input.textInput birthYear []
-        , errorFor birthYear
-
-        , label [] [ text "Gender" ]
-        , Input.textInput gender []
-        , errorFor gender 
-
-        , label [] [ text "Notifies Enabled" ]
-        , Input.checkboxInput notifiesEnabled []
-        , errorFor notifiesEnabled
+        , textGroup "First Name" (Form.getFieldAsString "first_name" form)        
+        , textGroup "Last Name" (Form.getFieldAsString "last_name" form)        
+        , textGroup "Country" (Form.getFieldAsString "country" form)        
+        , textGroup "City" (Form.getFieldAsString "city" form)        
+        , textGroup "Organization" (Form.getFieldAsString "organization" form)        
+        , textGroup "Email" (Form.getFieldAsString "email" form)        
+        , textGroup "Phone" (Form.getFieldAsString "phone" form)        
+        , textGroup "Birth Year" (Form.getFieldAsString "birth_year" form)        
+        , selectGroup genderOptions "Gender" (Form.getFieldAsString "gender" form)        
+        , checkboxGroup "Notifies Enabled" (Form.getFieldAsBool "notifiesEnabled" form)        
 
         , button
             [ onClick Form.Submit ]

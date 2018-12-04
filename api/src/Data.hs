@@ -105,24 +105,26 @@ instance FromJSON PetitionLocale
 
 -- ** Signer
 
-data Signer' a b c d e f g h k l m = Signer { 
+data Signer' a b c d e f g h k l m n = Signer { 
     _signerId              :: a,
     _signerPetitionId      :: b,
     _signerFirstName       :: c,
     _signerLastName        :: d,
     _signerCountry         :: e,
-    _signerOrganization    :: f,
-    _signerEmail           :: g,
-    _signerPhone           :: h,
-    _signerBirthYear       :: k,
-    _signerGender          :: l,
-    _signerNotifiesEnabled :: m
+    _signerCity            :: f, 
+    _signerOrganization    :: g,
+    _signerEmail           :: h,
+    _signerPhone           :: k,
+    _signerBirthYear       :: l,
+    _signerGender          :: m,
+    _signerNotifiesEnabled :: n
 } deriving Generic
-type Signer = Signer' Int Int Text Text Text Text Text Text Int Text Bool
+type Signer = Signer' Int Int Text Text Text Text Text Text Text Int Text Bool
 
 type SignerField = Signer' 
                       (Field SqlInt4) 
                       (Field SqlInt4) 
+                      (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
@@ -136,6 +138,7 @@ type SignerField = Signer'
 type SignerFieldMod = Signer' 
                       (Maybe (Field SqlInt4))
                       (Field SqlInt4) 
+                      (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
@@ -158,6 +161,7 @@ data SignerForm = SignerForm {
     _signerFormFirstName       :: Text,
     _signerFormLastName        :: Text,
     _signerFormCountry         :: Text,
+    _signerFormCity            :: Text,
     _signerFormOrganization    :: Text,
     _signerFormEmail           :: Text,
     _signerFormPhone           :: Text,
