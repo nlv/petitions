@@ -75,10 +75,8 @@ getHtmlPetitionByCode code locale = do
         H.script $ do
           H.toHtml ("var app = Elm.Main.init({ \
                   \  node: document.getElementById('petition'), \
-                  \  flags: {url: 'https://petitions.nika.news:8080', code: " `append` code `append` ", locale: " `append` locale' `append` ("} \
+                  \  flags: {url: 'https://petitions.nika.news:8080', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
                   \              });" :: Text))
-        H.h1 "Templates!"
-        H.p "This will be type-checked, rendered and served"    
 
 postSigner :: Text -> SignerForm -> Handler ()
 postSigner code signerForm = do
