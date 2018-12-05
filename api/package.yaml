@@ -41,6 +41,8 @@ dependencies:
   - opaleye
   - servant
   - servant-server
+  - servant-blaze
+  - blaze-html
   - transformers
   - microlens
   - aeson

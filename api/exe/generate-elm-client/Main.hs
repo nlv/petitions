@@ -26,7 +26,7 @@ spec = Spec ["Generated", "Api"]
              : toElmEncoderSource  (Proxy :: Proxy SignerForm)
             --  : toElmTypeSource    (Proxy :: Proxy PetitionId)
             --  : toElmDecoderSource (Proxy :: Proxy PetitionId)
-             : generateElmForAPI  (Proxy :: Proxy Api))
+             : generateElmForAPI  (Proxy :: Proxy RestApi))
 
 
 main :: IO ()
