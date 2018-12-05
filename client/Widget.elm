@@ -4,9 +4,11 @@ import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
 import Http
+import List as List exposing (map)
 
-import Form exposing (Form)
+import Form exposing (Form, getErrors)
 import Form.Input as Input
+import Form.Field as Field
 import Form.Validate as Validate exposing (..)
 import View.Bootstrap exposing (..)
 -- import Html.Events exposing (onClick)
@@ -26,8 +28,10 @@ type PetitionStatus
 type FormStatus
   = FormFailure Http.Error
   | Sending
+  | Sent
   | Ready
   | None
+  | Opss
 
 type alias Model = 
   {
@@ -47,6 +51,7 @@ init {url, code, locale} =
     , locale = locale
     , petitionStatus = Loading
     , formStatus = None
+    -- , form = Form.initial [("gender", Field.string "M")] validate }
     , form = Form.initial [] validate }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
@@ -72,19 +77,6 @@ type Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg ({ url, code, locale, form } as model) =
-  let signer0 = { 
-                    signerFormFirstName  = "a"
-                  , signerFormLastName = "b"
-                  , signerFormCountry = "c"
-                  , signerFormCity = "c"
-                  , signerFormOrganization = "d"
-                  , signerFormEmail = "e"
-                  , signerFormPhone = "f"
-                  , signerFormBirthYear = 22
-                  , signerFormGender = "M"
-                  , signerFormNotifiesEnabled = False
-                }
-  in
   case msg of
     GotPetition result ->
       case result of
@@ -102,24 +94,20 @@ update msg ({ url, code, locale, form } as model) =
             Http.send SentForm (postPetitionByCodeSigner url code signer)
           )
         ( Form.Submit, Nothing ) ->
-          (
-            { model | formStatus = Sending }, 
-            Http.send SentForm (postPetitionByCodeSigner url code signer0)
-          )
+          ( { model | formStatus = Opss }, Cmd.none )
         _ ->
           ({ model | form = Form.update validate formMsg form }, Cmd.none)
 
     SentForm result ->
       case result of
         Ok () ->
-          ({model | formStatus = Ready}, Cmd.none)
+          ({model | formStatus = Sent}, Cmd.none)
 
         Err err ->
           ({model | formStatus = FormFailure err}, Cmd.none)
 
     NoOp ->
         (model, Cmd.none)
-
 
 -- VIEW
 
@@ -128,52 +116,76 @@ view {url, code, locale, petitionStatus, formStatus, form} =
   case petitionStatus of
     PetitionFailure err ->
       div []
-        [ text ("Ошибка получения петиции: " ++ (toString err))]
+        [ text ("Error of petition getting: " ++ (toString err))]
     Loading ->
       div []
-        [ text "Загрузка петиции" ]
+        [ text "Loading petition" ]
     Loaded petition ->
       div
         [ style "margin" "50px 20px" 
         , style "width" "550px"   
         ]
-        [ 
-          h1 [] [text (petition.petitionName) ],
-          p  [] [text (petition.petitionDescription) ],
-          Html.map FormMsg (formView form)
-        ]
+        [ viewPetition petition
+        , case formStatus of
+            Ready -> Html.map FormMsg (formView form)
+            None -> Html.map FormMsg (formView form)
+            Sending -> text "Sending form..."
+            Sent -> text "Congratuations! Your voice has been accounted"
+            FormFailure err -> text ("Error of sending form: " ++ (toString err))
+            Opss -> Html.map 
+                      FormMsg 
+                      (
+                      div
+                        []
+                        [ p [] [text "Please, fill all required fields"]
+                        ,formView form
+                        ]
+                      )
+         ]
+
+getFormErrorsString : Form () SignerForm -> List (Html Form.Msg)
+getFormErrorsString form =
+    List.map (\(a, b) -> text (a ++ ": " ++ (Debug.toString b))) (getErrors form)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
+
+viewPetition : Petition -> Html Msg
+viewPetition petition = 
+    div
+      []
+      [
+          h1 [] [text (petition.petitionName) ],
+          p  [] [text (petition.petitionDescription) ]
+      ]
  
 toString err =
   case err of
-    Http.BadUrl url              -> "Плохой url: " ++ url
-    Http.Timeout                 -> "Вышло время"
-    Http.NetworkError            -> "Ошибка сети"
-    Http.BadStatus response      -> "Плохой статус: " ++ response.status.message
-    Http.BadPayload str response -> "Битый формат ответа: " ++ str
+    Http.BadUrl url              -> "Bad url: " ++ url
+    Http.Timeout                 -> "Timeout"
+    Http.NetworkError            -> "Network error"
+    Http.BadStatus response      -> "Bad response status: " ++ response.status.message
+    Http.BadPayload str response -> "Bad response format: " ++ str
 
 validate : Validation () SignerForm
 validate = 
     succeed SignerForm
-        |> andMap (field "first_name" string)
-        |> andMap (field "last_name" string)
-        |> andMap (field "country" string)
-        |> andMap (field "city" string)
-        |> andMap (field "organization" string)
-        |> andMap (field "email" string)
-        |> andMap (field "phone" string)
-        |> andMap (field "birth_year" int)
-        |> andMap (field "gender" string)
+        |> andMap (field "first_name" (string |> andThen nonEmpty))
+        |> andMap (field "last_name" (string |> andThen nonEmpty))
+        |> andMap (field "country" (string |> andThen nonEmpty))
+        |> andMap (field "city" (string |> andThen nonEmpty))
+        |> andMap (field "organization" string |> defaultValue "")
+        |> andMap (field "email" (oneOf [emptyString, email]))
+        |> andMap (field "phone" (string |> defaultValue ""))
+        |> andMap (field "birth_year" (int |> andThen (minInt 1900)))
+        |> andMap (field "gender" string |> defaultValue "M")
         |> andMap (field "notifies_enabled" bool)
 
 
 formView : Form () SignerForm -> Html Form.Msg
 formView form =
     let
-        -- error presenter
         errorFor field =
             case field.liveError of
                 Just error ->
@@ -219,23 +231,35 @@ formView form =
     in
       div
         [ class "form-horizontal"
-        -- , style "margin" "50px 20px" 
-        -- , style "width" "550px"   
         ]
-        [ legend [] [ text "Elm Simple Form example" ]    
-
-        , textGroup "First Name" (Form.getFieldAsString "first_name" form)        
-        , textGroup "Last Name" (Form.getFieldAsString "last_name" form)        
-        , textGroup "Country" (Form.getFieldAsString "country" form)        
-        , textGroup "City" (Form.getFieldAsString "city" form)        
-        , textGroup "Organization" (Form.getFieldAsString "organization" form)        
-        , textGroup "Email" (Form.getFieldAsString "email" form)        
-        , textGroup "Phone" (Form.getFieldAsString "phone" form)        
-        , textGroup "Birth Year" (Form.getFieldAsString "birth_year" form)        
+        [ legend [] [ text "Petition form" ]    
+        -- , div [] (getFormErrorsString form)
+        , textGroup "First Name* " (Form.getFieldAsString "first_name" form)
+        , textGroup "Last Name* " (Form.getFieldAsString "last_name" form)
+        , textGroup "Country* " (Form.getFieldAsString "country" form)
+        , textGroup "City* " (Form.getFieldAsString "city" form)
+        , textGroup "Organization" (Form.getFieldAsString "organization" form)
+        , textGroup "Email" (Form.getFieldAsString "email" form)
+        , textGroup "Phone" (Form.getFieldAsString "phone" form)
+        , textGroup "Birth Year* " (Form.getFieldAsString "birth_year" form)        
         , selectGroup genderOptions "Gender" (Form.getFieldAsString "gender" form)        
         , checkboxGroup "Notifies Enabled" (Form.getFieldAsBool "notifiesEnabled" form)        
 
-        , button
-            [ onClick Form.Submit ]
-            [ text "Submit" ]
+        , formActions
+            [ button
+                [ onClick Form.Submit
+                , class "btn btn-primary"
+                ]
+                [ text "Submit" ]
+            , text " "
+            , button
+                [ onClick (Form.Reset [])
+                , class "btn btn-default"
+                ]
+                [ text "Reset" ]
+            ]
+
+        -- , button
+        --     [ onClick Form.Submit ]
+        --     [ text "Submit" ]
         ]

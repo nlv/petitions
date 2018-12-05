@@ -24,7 +24,7 @@ type alias GroupBuilder a =
     String -> FieldState () a -> Html Form.Msg
 
 
--- formGroup : String -> Maybe (Error CustomError) -> List (Html Form.Msg) -> Html Form.Msg
+-- formGroup : String -> Maybe (Error ()) -> List (Html Form.Msg) -> Html Form.Msg
 formGroup : String -> Maybe (ErrorValue ()) -> List (Html Form.Msg) -> Html Form.Msg
 formGroup labelQ maybeError inputs =
     div
@@ -48,6 +48,7 @@ textGroup : GroupBuilder String
 textGroup labelQ state =
     formGroup labelQ
         state.liveError
+        -- state.error
         [ Input.textInput state
             [ class "form-control"
             , value (Maybe.withDefault "" state.value)
@@ -70,6 +71,7 @@ checkboxGroup : GroupBuilder Bool
 checkboxGroup labelQ state =
     formGroup ""
         state.liveError
+        -- state.error
         [ div
             [ class "checkbox" ]
             [ label []
@@ -84,6 +86,7 @@ selectGroup : List ( String, String ) -> GroupBuilder String
 selectGroup options labelQ state =
     formGroup labelQ
         state.liveError
+        -- state.error
         [ Input.selectInput options state [ class "form-control" ] ]
 
 
@@ -107,7 +110,7 @@ errorClass maybeError =
     Maybe.map (\_ -> "has-error") maybeError |> Maybe.withDefault ""
 
 
--- errorMessage : Maybe (Error CustomError) -> Html Form.Msg
+-- errorMessage : Maybe (Error ()) -> Html Form.Msg
 errorMessage : Maybe (ErrorValue ()) -> Html Form.Msg
 errorMessage maybeError =
     case maybeError of
@@ -115,7 +118,7 @@ errorMessage maybeError =
             p
                 [ class "help-block" ]
                 -- [ text (fromInt error) ]
-                [ text (Debug.toString error) ]
+                [ text ("Error: " ++ (Debug.toString error)) ]
 
         Nothing ->
             span
