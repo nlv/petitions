@@ -12,7 +12,7 @@ import Form.Field as Field
 import Form.Validate as Validate exposing (..)
 import View.Bootstrap exposing (..)
 import Markdown exposing (..)
-import String exposing (toInt)
+import String exposing (toInt, fromInt)
 -- import Html.Events exposing (onClick)
 
 
@@ -25,7 +25,7 @@ main =
 type PetitionStatus
   = PetitionFailure Http.Error
   | Loading
-  | Loaded Petition
+  | Loaded (Petition, Int)
 
 type FormStatus
   = FormFailure Http.Error
@@ -72,7 +72,7 @@ prepareLocale locale
 -- UPDATE
 
 type Msg
-  = GotPetition (Result Http.Error Petition)
+  = GotPetition (Result Http.Error (Petition, Int))
   | SentForm (Result Http.Error ())
   | NoOp
   | FormMsg Form.Msg
@@ -122,15 +122,25 @@ view {url, code, locale, petitionStatus, formStatus, form} =
     Loading ->
       div []
         [ text "Loading petition" ]
-    Loaded petition ->
+    Loaded (petition, cnt) ->
       div
         [ style "margin" "50px 20px" 
         , style "width" "90%"   
         ]
-        [ viewPetition petition
+        [ viewPetition petition 
         , case formStatus of
-            Ready -> Html.map FormMsg (formView form)
-            None -> Html.map FormMsg (formView form)
+            Ready -> 
+                div
+                    []
+                    [ viewSignersCount cnt
+                    , Html.map FormMsg (formView form)
+                    ]
+            None -> 
+                div
+                    []
+                    [ viewSignersCount cnt
+                    , Html.map FormMsg (formView form)
+                    ]
             Sending -> text "Sending form..."
             Sent -> div
                       []
@@ -138,6 +148,7 @@ view {url, code, locale, petitionStatus, formStatus, form} =
                       , p
                           [ class "alert alert-success" ]
                           [ text "Thank you! Your vote was taken into account!" ]
+                      , viewSignersCount cnt
                       ]
             FormFailure err -> text ("Error of sending form: " ++ (toString err))
             Opss -> Html.map 
@@ -150,6 +161,12 @@ view {url, code, locale, petitionStatus, formStatus, form} =
                         ]
                       )
          ]
+
+viewSignersCount : Int -> Html Msg
+viewSignersCount cnt = 
+  p
+    [ class "alert alert-info" ]
+    [ text ("the petition was signed by " ++ (fromInt cnt) ++ " people") ]
 
 getFormErrorsString : Form () SignerForm -> List (Html Form.Msg)
 getFormErrorsString form =

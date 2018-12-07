@@ -16,7 +16,7 @@ import qualified Text.Blaze.Html5   as H
 type Api = RestApi :<|> HtmlApi
 
 type RestApi = 
-       "petition" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[JSON] Petition 
+       "petition" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[JSON] (Petition, Int)
   :<|> "petition" :> Capture "code" Text :> "signer" :> ReqBody '[JSON] SignerForm :> Post '[JSON] ()
 
 type HtmlApi = 

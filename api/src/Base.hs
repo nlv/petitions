@@ -11,7 +11,8 @@
 
 module Base (
   getPetitionByCode,
-  insertSigner
+  insertSigner,
+  getSignersCount
   )  where
 
 import GHC.Generics
@@ -161,6 +162,16 @@ insertSigner conn code signerForm = do
           }
       pure True
     _ -> pure False
+
+getSignersCount :: Pg.Connection -> Int -> IO Int
+getSignersCount conn pid = do
+  res <- (Pg.query 
+            conn 
+            "SELECT COUNT(*) cnt FROM signers WHERE petition_id = ?" 
+            (Pg.Only pid)) :: IO [Pg.Only Int]
+  case res of
+     (Pg.Only x) : _ -> pure x
+     _               -> pure 0
 
 signerForm2Mod :: Int -> SignerForm -> SignerFieldMod
 signerForm2Mod pid form = 

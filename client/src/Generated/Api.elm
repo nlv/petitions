@@ -69,7 +69,7 @@ encodeSignerForm x =
         , ( "_signerFormNotifiesEnabled", Json.Encode.bool x.signerFormNotifiesEnabled )
         ]
 
-getPetitionByCode : String -> String -> Maybe (String) -> Http.Request (Petition)
+getPetitionByCode : String -> String -> Maybe (String) -> Http.Request ((Petition, Int))
 getPetitionByCode url capture_code query_locale =
     let
         params =
@@ -97,7 +97,7 @@ getPetitionByCode url capture_code query_locale =
             , body =
                 Http.emptyBody
             , expect =
-                Http.expectJson decodePetition
+                Http.expectJson (map2 (\a b -> (a,b)) (index 0 decodePetition) (index 1 int))
             , timeout =
                 Nothing
             , withCredentials =

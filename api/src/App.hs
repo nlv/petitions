@@ -51,13 +51,14 @@ mkApp = return $ (cors corsPolicy) $ logStdoutDev $ static $ (serve api server)
 server :: Server Api
 server = (getPetitionByCode :<|> postSigner) :<|> getHtmlPetitionByCode 
 
-
-getPetitionByCode :: Text -> Maybe Text -> Handler Petition
+getPetitionByCode :: Text -> Maybe Text -> Handler (Petition, Int)
 getPetitionByCode code locale = do
   conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
-    Just p -> pure p
+    Just p -> do
+      cnt <- liftIO $ B.getSignersCount conn (_petitionId p)
+      pure (p, cnt)
     -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
     _      -> throwE err404
 
