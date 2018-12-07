@@ -125,7 +125,7 @@ view {url, code, locale, petitionStatus, formStatus, form} =
     Loaded petition ->
       div
         [ style "margin" "50px 20px" 
-        , style "width" "550px"   
+        , style "width" "90%"   
         ]
         [ viewPetition petition
         , case formStatus of
@@ -174,6 +174,7 @@ viewPetition petition =
           , attribute "data-target" "#petition-content"
           ]
           [ text "Show full text"] 
+      , br [] []
 
       , div 
         [ class "modal"

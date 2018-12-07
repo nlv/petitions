@@ -7162,14 +7162,21 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
-var author$project$View$Bootstrap$colQ = F2(
-	function (i, content) {
+var author$project$View$Bootstrap$colQ = F3(
+	function (i, hidden, content) {
+		var h = function () {
+			if (hidden) {
+				return 'hidden';
+			} else {
+				return '';
+			}
+		}();
 		return A2(
 			elm$html$Html$div,
 			_List_fromArray(
 				[
 					elm$html$Html$Attributes$class(
-					'col-xs-' + elm$core$String$fromInt(i))
+					'col-sm-' + (elm$core$String$fromInt(i) + (' col-xs-12 ' + h)))
 				]),
 			content);
 	});
@@ -7192,27 +7199,41 @@ var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var author$project$View$Bootstrap$errorMessage = function (maybeError) {
 	if (maybeError.$ === 'Just') {
 		var error = maybeError.a;
-		return A2(
-			elm$html$Html$p,
+		return A3(
+			author$project$View$Bootstrap$colQ,
+			4,
+			false,
 			_List_fromArray(
 				[
-					elm$html$Html$Attributes$class('help-block')
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text(
-					'Error: ' + elm$core$Debug$toString(error))
+					A2(
+					elm$html$Html$p,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('help-block')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							'Error: ' + elm$core$Debug$toString(error))
+						]))
 				]));
 	} else {
-		return A2(
-			elm$html$Html$span,
+		return A3(
+			author$project$View$Bootstrap$colQ,
+			4,
+			true,
 			_List_fromArray(
 				[
-					elm$html$Html$Attributes$class('help-block')
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text('\u2007')
+					A2(
+					elm$html$Html$span,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('help-block')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text('\u2007')
+						]))
 				]));
 	}
 };
@@ -7234,9 +7255,10 @@ var author$project$View$Bootstrap$formGroup = F4(
 				]),
 			_List_fromArray(
 				[
-					A2(
+					A3(
 					author$project$View$Bootstrap$colQ,
 					3,
+					false,
 					_List_fromArray(
 						[
 							A2(
@@ -7250,14 +7272,8 @@ var author$project$View$Bootstrap$formGroup = F4(
 									elm$html$Html$text(labelQ)
 								]))
 						])),
-					A2(author$project$View$Bootstrap$colQ, 5, inputs),
-					A2(
-					author$project$View$Bootstrap$colQ,
-					4,
-					_List_fromArray(
-						[
-							author$project$View$Bootstrap$errorMessage(maybeError)
-						]))
+					A3(author$project$View$Bootstrap$colQ, 5, false, inputs),
+					author$project$View$Bootstrap$errorMessage(maybeError)
 				]));
 	});
 var elm$html$Html$input = _VirtualDom_node('input');
@@ -7771,6 +7787,7 @@ var author$project$Main$toString = function (err) {
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
+var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$h2 = _VirtualDom_node('h2');
 var elm$html$Html$h5 = _VirtualDom_node('h5');
 var elm$virtual_dom$VirtualDom$attribute = F2(
@@ -7824,6 +7841,7 @@ var author$project$Main$viewPetition = function (petition) {
 					[
 						elm$html$Html$text('Show full text')
 					])),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
 				elm$html$Html$div,
 				_List_fromArray(
@@ -7932,7 +7950,6 @@ var author$project$Main$viewPetition = function (petition) {
 					]))
 			]));
 };
-var elm$html$Html$br = _VirtualDom_node('br');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
@@ -7970,7 +7987,7 @@ var author$project$Main$view = function (_n0) {
 				_List_fromArray(
 					[
 						A2(elm$html$Html$Attributes$style, 'margin', '50px 20px'),
-						A2(elm$html$Html$Attributes$style, 'width', '550px')
+						A2(elm$html$Html$Attributes$style, 'width', '90%')
 					]),
 				_List_fromArray(
 					[

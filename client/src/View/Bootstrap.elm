@@ -14,9 +14,13 @@ row content =
     div [ class "row" ] content
 
 
-colQ : Int -> List (Html Form.Msg) -> Html Form.Msg
-colQ i content =
-    div [ class ("col-xs-" ++ fromInt i) ] content
+colQ : Int -> Bool -> List (Html Form.Msg) -> Html Form.Msg
+colQ i hidden content =
+    let h = case hidden of
+            True -> "hidden"
+            False -> ""
+    in
+    div [ class ("col-sm-" ++ fromInt i ++ " col-xs-12 " ++ h) ] content
 
 
 type alias GroupBuilder a =
@@ -31,12 +35,11 @@ formGroup hidden labelQ maybeError inputs =
         [ case hidden of
             True  -> class "hidden"
             False -> class ("row form-group " ++ (errorClass maybeError) ) ]
-        [ colQ 3
+        [ colQ 3 False
             [ label [ class "control-label" ] [ text labelQ ] ]
-        , colQ 5
+        , colQ 5 False
             inputs
-        , colQ 4
-            [ errorMessage maybeError ]
+        , errorMessage maybeError
         ]
 
 
@@ -128,13 +131,20 @@ errorMessage : Maybe (ErrorValue ()) -> Html Form.Msg
 errorMessage maybeError =
     case maybeError of
         Just error ->
-            p
-                [ class "help-block" ]
-                -- [ text (fromInt error) ]
-                [ text ("Error: " ++ (Debug.toString error)) ]
+            colQ 
+                4 
+                False
+                [ p 
+                    [ class "help-block" ] 
+                    [ text ("Error: " ++ (Debug.toString error)) ]
+                ]
 
         Nothing ->
-            span
-                [ class "help-block" ]
-                -- [ text "\x2007" ]
-                [ text "\u{2007}" ]
+            colQ 
+                4 
+                True
+                [ span
+                    [ class "help-block" ]
+                    -- [ text "\x2007" ]
+                    [ text "\u{2007}" ]
+                ]
