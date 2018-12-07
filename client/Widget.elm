@@ -1,5 +1,5 @@
 import Browser
-import Html exposing (Html, button, div, text, h1, h3, h5, p, label, br, legend, span)
+import Html exposing (Html, button, div, text, h1, h2, h3, h5, p, label, br, legend, span)
 import Html.Attributes exposing (class, style, type_, attribute, id, tabindex)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
@@ -156,8 +156,10 @@ viewPetition : Petition -> Html Msg
 viewPetition petition = 
     div
       []
-      [ h1 [class "display-1"] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
-      , toHtml [class "display-3"] petition.petitionDescription
+      -- [ h1 [class "display-2"] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
+      [ h2 [] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
+      -- , toHtml [class "display-3"] petition.petitionDescription
+      , toHtml [] petition.petitionDescription
       , button 
           [ type_ "button"
           , class "btn btn-primary"
