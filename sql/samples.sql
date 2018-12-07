@@ -6,19 +6,42 @@ VALUES
 ;
 
 INSERT INTO petitions
-(code, name, description, locale)
+(code, name, description, content, locale)
 VALUES 
-('for-all-goods', 'За все хорошее!', 'Надо добиться улучшение жизни НАРОДА!!!!!!', 'ru'),
-('stop-cars', 'STOP CARS!', 'STOP USING CARS!!!!!!!', 'en')
+( 'for-all-goods'
+, 'За все хорошее!'
+, 'Надо добиться улучшение жизни НАРОДА!!!!!!'
+, 'Надо добиться улучшение жизни НАРОДА!!!!!!'
+, 'ru'
+),
+( 'stop-cars'
+, 'STOP CARS!'
+, 'STOP USING CARS!!!!!!!'
+, 'STOP USING CARS!!!!!!!'
+, 'en')
 ;
 
 INSERT INTO petitions_locale
-(petition_id, locale, name, description)
+(petition_id, locale, name, description, content)
 VALUES
-((SELECT id FROM petitions WHERE name = 'За все хорошее!'), 'en', 'For all goods', 'We have done it'),
-((SELECT id FROM petitions WHERE name = 'STOP CARS!'), 'ru', 'Стоп машинам!', 'Ходить пешком!'),
-((SELECT id FROM petitions WHERE name = 'STOP CARS!'), 'de', 'Ahtung! STOP AVTO!', 'Shprihen ze dojch!')
-;
+( (SELECT id FROM petitions WHERE name = 'За все хорошее!')
+, 'en'
+, 'For all goods'
+, 'We have done it'
+, 'We have done it'
+),
+( (SELECT id FROM petitions WHERE name = 'STOP CARS!')
+, 'ru'
+, 'Стоп машинам!'
+, 'Ходить пешком!'
+, 'Ходить пешком!'
+),
+( (SELECT id FROM petitions WHERE name = 'STOP CARS!')
+, 'de'
+, 'Ahtung! STOP AVTO!'
+, 'Shprihen ze dojch!'
+, 'Shprihen ze dojch!'
+);
 
 INSERT INTO signers
 (

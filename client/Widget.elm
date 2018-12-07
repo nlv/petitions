@@ -158,6 +158,7 @@ viewPetition petition =
       []
       [ h1 [class "display-1"] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
       , toHtml [class "display-3"] petition.petitionDescription
+      , toHtml [class "display-4"] petition.petitionContent
           -- h3 [class "display-3"] [text (petition.petitionDescription) ]
       ]
  
@@ -259,8 +260,4 @@ formView form =
                 ]
                 [ text "Reset" ]
             ]
-
-        -- , button
-        --     [ onClick Form.Submit ]
-        --     [ text "Submit" ]
         ]

@@ -5194,9 +5194,9 @@ var NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2(elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var author$project$Generated$Api$Petition = F5(
-	function (petitionId, petitionCode, petitionName, petitionDescription, petitionLocale) {
-		return {petitionCode: petitionCode, petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
+var author$project$Generated$Api$Petition = F6(
+	function (petitionId, petitionCode, petitionName, petitionDescription, petitionContent, petitionLocale) {
+		return {petitionCode: petitionCode, petitionContent: petitionContent, petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
 	});
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$string = _Json_decodeString;
@@ -5207,21 +5207,25 @@ var author$project$Generated$Api$decodePetition = A3(
 	elm$json$Json$Decode$string,
 	A3(
 		NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'_petitionDescription',
+		'_petitionContent',
 		elm$json$Json$Decode$string,
 		A3(
 			NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'_petitionName',
+			'_petitionDescription',
 			elm$json$Json$Decode$string,
 			A3(
 				NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-				'_petitionCode',
+				'_petitionName',
 				elm$json$Json$Decode$string,
 				A3(
 					NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-					'_petitionId',
-					elm$json$Json$Decode$int,
-					elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition))))));
+					'_petitionCode',
+					elm$json$Json$Decode$string,
+					A3(
+						NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						'_petitionId',
+						elm$json$Json$Decode$int,
+						elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition)))))));
 var elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(
@@ -7958,7 +7962,14 @@ var author$project$Main$viewPetition = function (petition) {
 					[
 						elm$html$Html$Attributes$class('display-3')
 					]),
-				petition.petitionDescription)
+				petition.petitionDescription),
+				A2(
+				elm_explorations$markdown$Markdown$toHtml,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('display-4')
+					]),
+				petition.petitionContent)
 			]));
 };
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;

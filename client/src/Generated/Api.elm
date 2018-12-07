@@ -13,6 +13,7 @@ type alias Petition =
     , petitionCode : String
     , petitionName : String
     , petitionDescription : String
+    , petitionContent : String
     , petitionLocale : String
     }
 
@@ -23,6 +24,7 @@ decodePetition =
         |> required "_petitionCode" string
         |> required "_petitionName" string
         |> required "_petitionDescription" string
+        |> required "_petitionContent" string
         |> required "_petitionLocale" string
 
 type alias SignerForm =

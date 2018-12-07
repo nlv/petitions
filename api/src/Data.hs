@@ -45,19 +45,21 @@ import Opaleye (Field, SqlInt4, SqlText, SqlBool)
 -- instance ToJSON   PetitionId
 -- instance FromJSON PetitionId
 
-data Petition' a b c d e = Petition { 
-    _petitionId                :: a,
-    _petitionCode              :: b,
-    _petitionName              :: c,
-    _petitionDescription       :: d,
-    _petitionLocale            :: e
+data Petition' a b c d e f = Petition { 
+    _petitionId          :: a,
+    _petitionCode        :: b,
+    _petitionName        :: c,
+    _petitionDescription :: d,
+    _petitionContent     :: e,
+    _petitionLocale      :: f
 } deriving Generic
 -- type Petition = Petition' PetitionId Text Text Text Text
-type Petition = Petition' Int Text Text Text Text
+type Petition = Petition' Int Text Text Text Text Text
 
 type PetitionField = Petition' 
                       -- PetitionIdField
                       (Field SqlInt4) 
+                      (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
                       (Field SqlText) 
@@ -78,19 +80,21 @@ instance FromJSON Petition
 -- instance ToJSON   PetitionLocaleId
 -- instance FromJSON PetitionLocaleId
 
-data PetitionLocale' a b c d e = PetitionLocale { 
+data PetitionLocale' a b c d e f = PetitionLocale { 
     _petitionLocaleId          :: a,
     _petitionLocaleName        :: b,
     _petitionLocaleDescription :: c,
-    _petitionLocaleLocale      :: d,
-    _petitionLocalePetitionId  :: e
+    _petitionLocaleContent     :: d,
+    _petitionLocaleLocale      :: e,
+    _petitionLocalePetitionId  :: f
 } deriving Generic
 -- type PetitionLocale = PetitionLocale' PetitionLocaleId Text Text Text PetitionId
-type PetitionLocale = PetitionLocale' Int Text Text Text Int
+type PetitionLocale = PetitionLocale' Int Text Text Text Text Int
 
 type PetitionLocaleField = PetitionLocale' 
                             -- PetitionLocaleIdField
                             (Field SqlInt4) 
+                            (Field SqlText) 
                             (Field SqlText) 
                             (Field SqlText) 
                             (Field SqlText) 

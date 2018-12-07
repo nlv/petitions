@@ -53,6 +53,7 @@ petitionTable = table "petitions"
                     _petitionCode        = tableField "code",
                     _petitionName        = tableField "name",
                     _petitionDescription = tableField "description",
+                    _petitionContent     = tableField "content",
                     _petitionLocale      = tableField "locale"
                   })
 
@@ -69,6 +70,7 @@ petitionLocaleTable = table "petitions_locale"
                     _petitionLocaleId          = tableField "id",
                     _petitionLocaleName        = tableField "name",
                     _petitionLocaleDescription = tableField "description",
+                    _petitionLocaleContent     = tableField "content",
                     _petitionLocaleLocale      = tableField "locale",
                     -- _petitionLocalePetitionId  = pPetitionId (PetitionId (tableField "petition_id"))
                     _petitionLocalePetitionId  = (tableField "petition_id")
@@ -131,6 +133,7 @@ getPetitionByCode conn code locale = do
         (_petitionCode p'')
         (_petitionLocaleName l'')
         (_petitionLocaleDescription l'')
+        (_petitionLocaleContent l'')
         (_petitionLocaleLocale l'')
 
 getPetitionLocale :: Pg.Connection -> Int -> Text -> IO (Maybe PetitionLocale)

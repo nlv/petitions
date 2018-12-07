@@ -7,6 +7,7 @@ CREATE TABLE petitions (
     ,code        VARCHAR(40)  NOT NULL UNIQUE
     ,name        VARCHAR(255) NOT NULL UNIQUE
     ,description TEXT         NOT NULL
+    ,content     TEXT         NOT NULL
     ,locale      VARCHAR(10)  NOT NULL REFERENCES locales (code)
     ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
 );
@@ -17,6 +18,7 @@ CREATE TABLE petitions_locale (
     ,locale      VARCHAR(10)  NOT NULL REFERENCES locales (code)
     ,name        VARCHAR(255) NOT NULL 
     ,description TEXT         NOT NULL
+    ,content     TEXT         NOT NULL
     ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
     ,UNIQUE (petition_id, locale)
 );
@@ -39,24 +41,3 @@ CREATE TABLE signers (
     ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
     ,CHECK (email IS NOT NULL OR phone IS NOT NULL)
 );
-
-CREATE VIEW vpetitions AS
-SELECT 
-      p.id
-     ,p.code
-     ,p.name
-     ,p.description
-     ,p.locale
-     ,TRUE is_default
-FROM petitions AS p
-UNION ALL
-SELECT 
-      p.id
-     ,p.code
-     ,l.name
-     ,l.description
-     ,l.locale
-     ,FALSE is_default
-FROM petitions AS p
-INNER JOIN petitions_locale AS l ON l.petition_id = p.id
-;
