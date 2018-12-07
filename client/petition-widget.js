@@ -7930,7 +7930,26 @@ var author$project$Main$toString = function (err) {
 			return 'Bad response format: ' + str;
 	}
 };
+var elm$core$Basics$negate = function (n) {
+	return -n;
+};
 var elm$html$Html$h1 = _VirtualDom_node('h1');
+var elm$html$Html$h5 = _VirtualDom_node('h5');
+var elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var elm$html$Html$Attributes$attribute = elm$virtual_dom$VirtualDom$attribute;
+var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
+var elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		elm$core$String$fromInt(n));
+};
 var elm_explorations$markdown$Markdown$defaultOptions = {
 	defaultHighlighting: elm$core$Maybe$Nothing,
 	githubFlavored: elm$core$Maybe$Just(
@@ -7964,12 +7983,124 @@ var author$project$Main$viewPetition = function (petition) {
 					]),
 				petition.petitionDescription),
 				A2(
-				elm_explorations$markdown$Markdown$toHtml,
+				elm$html$Html$button,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$class('display-4')
+						elm$html$Html$Attributes$type_('button'),
+						elm$html$Html$Attributes$class('btn btn-primary'),
+						A2(elm$html$Html$Attributes$attribute, 'data-toggle', 'modal'),
+						A2(elm$html$Html$Attributes$attribute, 'data-target', '#petition-content')
 					]),
-				petition.petitionContent)
+				_List_fromArray(
+					[
+						elm$html$Html$text('Show full text')
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal fade'),
+						elm$html$Html$Attributes$id('petition-content'),
+						elm$html$Html$Attributes$tabindex(-1),
+						A2(elm$html$Html$Attributes$attribute, 'role', 'dialog'),
+						A2(elm$html$Html$Attributes$attribute, 'aria-labelledby', 'petition-content-title'),
+						A2(elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-dialog modal-dialog-centered'),
+								A2(elm$html$Html$Attributes$attribute, 'role', 'document')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('modal-content')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('modal-header')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$h5,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('modal-title'),
+														elm$html$Html$Attributes$id('petition-content-title')
+													]),
+												_List_fromArray(
+													[
+														elm$html$Html$text('SIGN PETITION: ' + petition.petitionName)
+													])),
+												A2(
+												elm$html$Html$button,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$type_('button'),
+														elm$html$Html$Attributes$class('close'),
+														A2(elm$html$Html$Attributes$attribute, 'data-dismiss', 'modal'),
+														A2(elm$html$Html$Attributes$attribute, 'aria-label', 'close')
+													]),
+												_List_fromArray(
+													[
+														A2(
+														elm$html$Html$span,
+														_List_fromArray(
+															[
+																A2(elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
+															]),
+														_List_fromArray(
+															[
+																elm$html$Html$text('X')
+															]))
+													]))
+											])),
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('modal-body')
+											]),
+										_List_fromArray(
+											[
+												A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionContent)
+											])),
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('modal-footer')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$button,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$type_('button'),
+														elm$html$Html$Attributes$class('btn btn-secondary'),
+														A2(elm$html$Html$Attributes$attribute, 'data-dismiss', 'modal')
+													]),
+												_List_fromArray(
+													[
+														elm$html$Html$text('Close')
+													]))
+											]))
+									]))
+							]))
+					]))
 			]));
 };
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;

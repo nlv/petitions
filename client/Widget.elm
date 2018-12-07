@@ -1,6 +1,6 @@
 import Browser
-import Html exposing (Html, button, div, text, h1, h3, p, label, br, legend)
-import Html.Attributes exposing (class, style)
+import Html exposing (Html, button, div, text, h1, h3, h5, p, label, br, legend, span)
+import Html.Attributes exposing (class, style, type_, attribute, id, tabindex)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
 import Http
@@ -158,8 +158,56 @@ viewPetition petition =
       []
       [ h1 [class "display-1"] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
       , toHtml [class "display-3"] petition.petitionDescription
-      , toHtml [class "display-4"] petition.petitionContent
-          -- h3 [class "display-3"] [text (petition.petitionDescription) ]
+      , button 
+          [ type_ "button"
+          , class "btn btn-primary"
+          , attribute "data-toggle" "modal"
+          , attribute "data-target" "#petition-content"
+          ]
+          [ text "Show full text"] 
+
+      , div 
+        [ class "modal fade"
+        , id "petition-content"
+        , tabindex (-1)
+        , attribute "role" "dialog"
+        , attribute "aria-labelledby" "petition-content-title"
+        , attribute "aria-hidden" "true"
+        ]
+        [ div 
+          [ class "modal-dialog modal-dialog-centered"
+          , attribute "role" "document"
+          ]
+          [ div 
+            [ class "modal-content" ]
+            [ div
+                [ class "modal-header" ]
+                [ h5 
+                    [ class "modal-title"
+                    , id "petition-content-title"
+                    ]
+                    [text ("SIGN PETITION: " ++ petition.petitionName)]
+                , button
+                    [ type_ "button"
+                    , class "close"
+                    , attribute "data-dismiss" "modal"
+                    , attribute "aria-label" "close"
+                    ]
+                    [ span [attribute "aria-hidden" "true"] [text "X"] ]
+                ]
+            , div [class "modal-body"] [ toHtml [] petition.petitionContent]
+            , div 
+              [ class "modal-footer" ]
+              [ button
+                  [ type_ "button"
+                  , class "btn btn-secondary"
+                  , attribute "data-dismiss" "modal"
+                  ]
+                  [ text "Close"]
+              ]
+            ]
+          ]
+        ]
       ]
  
 toString err =

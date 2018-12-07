@@ -69,6 +69,9 @@ getHtmlPetitionByCode code locale = do
       H.meta H.! A.charset "UTF-8"
       H.title "Petition"
       H.script H.! A.type_ "text/javascript" H.! A.src "https://petitions.nika.news:8080/static/petition-widget.js" $ mempty
+      H.script H.! A.type_ "text/javascript" H.! A.src "https://code.jquery.com/jquery-3.3.1.slim.min.js" $ mempty
+      H.script H.! A.type_ "text/javascript" H.! A.src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" $ mempty
+      H.script H.! A.type_ "text/javascript" H.! A.src "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" $ mempty
       H.link H.! A.rel "stylesheet" H.! A.href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
       H.body $ do
         H.div H.! A.id "petition" $ mempty
