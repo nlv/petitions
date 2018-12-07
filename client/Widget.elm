@@ -167,7 +167,7 @@ viewPetition petition =
           [ text "Show full text"] 
 
       , div 
-        [ class "modal fade"
+        [ class "modal"
         , id "petition-content"
         , tabindex (-1)
         , attribute "role" "dialog"

@@ -7999,7 +7999,7 @@ var author$project$Main$viewPetition = function (petition) {
 				elm$html$Html$div,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$class('modal fade'),
+						elm$html$Html$Attributes$class('modal'),
 						elm$html$Html$Attributes$id('petition-content'),
 						elm$html$Html$Attributes$tabindex(-1),
 						A2(elm$html$Html$Attributes$attribute, 'role', 'dialog'),
