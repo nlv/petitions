@@ -1,10 +1,3 @@
-INSERT INTO locales
-VALUES
-('ru'),
-('en'),
-('de')
-;
-
 INSERT INTO petitions
 (code, name, description, content, locale)
 VALUES 
