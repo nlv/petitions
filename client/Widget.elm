@@ -176,7 +176,7 @@ viewSignersCount cntQ =
         [ br [] []
         , p
             [ class "alert alert-info" ]
-            [ text ("the petition was signed by " ++ (fromInt cnt) ++ " people") ]
+            [ text ("The petition was signed by " ++ (fromInt cnt) ++ " people") ]
         ]
     Nothing -> div [] []
 

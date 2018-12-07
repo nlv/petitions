@@ -7983,7 +7983,7 @@ var author$project$Main$viewSignersCount = function (cntQ) {
 					_List_fromArray(
 						[
 							elm$html$Html$text(
-							'the petition was signed by ' + (elm$core$String$fromInt(cnt) + ' people'))
+							'The petition was signed by ' + (elm$core$String$fromInt(cnt) + ' people'))
 						]))
 				]));
 	} else {
