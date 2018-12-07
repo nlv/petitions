@@ -2033,107 +2033,6 @@ function _Url_percentDecode(string)
 	}
 }
 
-// CREATE
-
-var _Regex_never = /.^/;
-
-var _Regex_fromStringWith = F2(function(options, string)
-{
-	var flags = 'g';
-	if (options.multiline) { flags += 'm'; }
-	if (options.caseInsensitive) { flags += 'i'; }
-
-	try
-	{
-		return elm$core$Maybe$Just(new RegExp(string, flags));
-	}
-	catch(error)
-	{
-		return elm$core$Maybe$Nothing;
-	}
-});
-
-
-// USE
-
-var _Regex_contains = F2(function(re, string)
-{
-	return string.match(re) !== null;
-});
-
-
-var _Regex_findAtMost = F3(function(n, re, str)
-{
-	var out = [];
-	var number = 0;
-	var string = str;
-	var lastIndex = re.lastIndex;
-	var prevLastIndex = -1;
-	var result;
-	while (number++ < n && (result = re.exec(string)))
-	{
-		if (prevLastIndex == re.lastIndex) break;
-		var i = result.length - 1;
-		var subs = new Array(i);
-		while (i > 0)
-		{
-			var submatch = result[i];
-			subs[--i] = submatch
-				? elm$core$Maybe$Just(submatch)
-				: elm$core$Maybe$Nothing;
-		}
-		out.push(A4(elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
-		prevLastIndex = re.lastIndex;
-	}
-	re.lastIndex = lastIndex;
-	return _List_fromArray(out);
-});
-
-
-var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
-{
-	var count = 0;
-	function jsReplacer(match)
-	{
-		if (count++ >= n)
-		{
-			return match;
-		}
-		var i = arguments.length - 3;
-		var submatches = new Array(i);
-		while (i > 0)
-		{
-			var submatch = arguments[i];
-			submatches[--i] = submatch
-				? elm$core$Maybe$Just(submatch)
-				: elm$core$Maybe$Nothing;
-		}
-		return replacer(A4(elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
-	}
-	return string.replace(re, jsReplacer);
-});
-
-var _Regex_splitAtMost = F3(function(n, re, str)
-{
-	var string = str;
-	var out = [];
-	var start = re.lastIndex;
-	var restoreLastIndex = re.lastIndex;
-	while (n--)
-	{
-		var result = re.exec(string);
-		if (!result) break;
-		out.push(string.slice(start, result.index));
-		start = re.lastIndex;
-	}
-	out.push(string.slice(start));
-	re.lastIndex = restoreLastIndex;
-	return _List_fromArray(out);
-});
-
-var _Regex_infinity = Infinity;
-
-
 
 function _Process_sleep(time)
 {
@@ -6157,22 +6056,6 @@ var etaque$elm_form$Form$Validate$defaultValue = F3(
 				a,
 				validation(validationField)));
 	});
-var etaque$elm_form$Form$Error$InvalidEmail = {$: 'InvalidEmail'};
-var etaque$elm_form$Form$Tree$Value = function (a) {
-	return {$: 'Value', a: a};
-};
-var etaque$elm_form$Form$Error$value = etaque$elm_form$Form$Tree$Value;
-var elm$regex$Regex$Match = F4(
-	function (match, index, number, submatches) {
-		return {index: index, match: match, number: number, submatches: submatches};
-	});
-var elm$regex$Regex$contains = _Regex_contains;
-var etaque$elm_form$Form$Error$InvalidFormat = {$: 'InvalidFormat'};
-var etaque$elm_form$Form$Validate$format = F3(
-	function (regex, s, validationField) {
-		return A2(elm$regex$Regex$contains, regex, s) ? elm$core$Result$Ok(s) : elm$core$Result$Err(
-			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$InvalidFormat));
-	});
 var elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -6184,67 +6067,10 @@ var elm$core$Result$mapError = F2(
 				f(e));
 		}
 	});
-var etaque$elm_form$Form$Validate$mapError = F2(
-	function (f, validation) {
-		return function (validationField) {
-			return A2(
-				elm$core$Result$mapError,
-				f,
-				validation(validationField));
-		};
-	});
-var etaque$elm_form$Form$Error$Empty = {$: 'Empty'};
-var etaque$elm_form$Form$Error$InvalidString = {$: 'InvalidString'};
-var etaque$elm_form$Form$Field$asString = function (field) {
-	if ((field.$ === 'Value') && (field.a.$ === 'String')) {
-		var s = field.a.a;
-		return elm$core$Maybe$Just(s);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var etaque$elm_form$Form$Validate$string = function (v) {
-	var _n0 = etaque$elm_form$Form$Field$asString(v);
-	if (_n0.$ === 'Just') {
-		var s = _n0.a;
-		return elm$core$String$isEmpty(s) ? elm$core$Result$Err(
-			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$Empty)) : elm$core$Result$Ok(s);
-	} else {
-		return elm$core$Result$Err(
-			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$InvalidString));
-	}
-};
-var elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
-var elm$regex$Regex$never = _Regex_never;
-var etaque$elm_form$Form$Validate$validEmailPattern = A2(
-	elm$core$Maybe$withDefault,
-	elm$regex$Regex$never,
-	A2(
-		elm$regex$Regex$fromStringWith,
-		{caseInsensitive: true, multiline: false},
-		'^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'));
-var etaque$elm_form$Form$Validate$email = A2(
-	etaque$elm_form$Form$Validate$andThen,
-	function (s) {
-		return A2(
-			etaque$elm_form$Form$Validate$mapError,
-			function (_n0) {
-				return etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$InvalidEmail);
-			},
-			A2(etaque$elm_form$Form$Validate$format, etaque$elm_form$Form$Validate$validEmailPattern, s));
-	},
-	etaque$elm_form$Form$Validate$string);
-var etaque$elm_form$Form$Validate$emptyString = function (v) {
-	var _n0 = etaque$elm_form$Form$Field$asString(v);
-	if (_n0.$ === 'Just') {
-		var s = _n0.a;
-		return elm$core$String$isEmpty(s) ? elm$core$Result$Ok(s) : elm$core$Result$Err(
-			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$InvalidString));
-	} else {
-		return elm$core$Result$Ok('');
-	}
-};
 var etaque$elm_form$Form$Field$EmptyField = {$: 'EmptyField'};
+var etaque$elm_form$Form$Tree$Value = function (a) {
+	return {$: 'Value', a: a};
+};
 var etaque$elm_form$Form$Tree$getAtName = F2(
 	function (name, value) {
 		if (value.$ === 'Group') {
@@ -6291,6 +6117,15 @@ var elm$core$Result$fromMaybe = F2(
 	});
 var elm$core$String$toInt = _String_toInt;
 var etaque$elm_form$Form$Error$InvalidInt = {$: 'InvalidInt'};
+var etaque$elm_form$Form$Error$value = etaque$elm_form$Form$Tree$Value;
+var etaque$elm_form$Form$Field$asString = function (field) {
+	if ((field.$ === 'Value') && (field.a.$ === 'String')) {
+		var s = field.a.a;
+		return elm$core$Maybe$Just(s);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
 var etaque$elm_form$Form$Validate$int = function (v) {
 	return A2(
 		elm$core$Result$fromMaybe,
@@ -6300,59 +6135,24 @@ var etaque$elm_form$Form$Validate$int = function (v) {
 			elm$core$String$toInt,
 			etaque$elm_form$Form$Field$asString(v)));
 };
-var elm$core$Basics$ge = _Utils_ge;
-var etaque$elm_form$Form$Error$SmallerIntThan = function (a) {
-	return {$: 'SmallerIntThan', a: a};
-};
-var etaque$elm_form$Form$Validate$minInt = F3(
-	function (min, i, validationField) {
-		return (_Utils_cmp(i, min) > -1) ? elm$core$Result$Ok(i) : elm$core$Result$Err(
-			etaque$elm_form$Form$Error$value(
-				etaque$elm_form$Form$Error$SmallerIntThan(min)));
-	});
+var etaque$elm_form$Form$Error$Empty = {$: 'Empty'};
 var etaque$elm_form$Form$Validate$nonEmpty = F2(
 	function (s, validationField) {
 		return elm$core$String$isEmpty(s) ? elm$core$Result$Err(
 			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$Empty)) : elm$core$Result$Ok(s);
 	});
-var elm$core$List$map = F2(
-	function (f, xs) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, acc) {
-					return A2(
-						elm$core$List$cons,
-						f(x),
-						acc);
-				}),
-			_List_Nil,
-			xs);
-	});
-var etaque$elm_form$Form$Validate$oneOf = F2(
-	function (validations, validationField) {
-		var walkResults = F2(
-			function (result, combined) {
-				var _n0 = _Utils_Tuple2(combined, result);
-				if (_n0.a.$ === 'Ok') {
-					return combined;
-				} else {
-					return result;
-				}
-			});
-		var results = A2(
-			elm$core$List$map,
-			function (v) {
-				return v(validationField);
-			},
-			validations);
-		return A3(
-			elm$core$List$foldl,
-			walkResults,
-			elm$core$Result$Err(
-				etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$Empty)),
-			results);
-	});
+var etaque$elm_form$Form$Error$InvalidString = {$: 'InvalidString'};
+var etaque$elm_form$Form$Validate$string = function (v) {
+	var _n0 = etaque$elm_form$Form$Field$asString(v);
+	if (_n0.$ === 'Just') {
+		var s = _n0.a;
+		return elm$core$String$isEmpty(s) ? elm$core$Result$Err(
+			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$Empty)) : elm$core$Result$Ok(s);
+	} else {
+		return elm$core$Result$Err(
+			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$InvalidString));
+	}
+};
 var etaque$elm_form$Form$Validate$succeed = F2(
 	function (a, validationField) {
 		return elm$core$Result$Ok(a);
@@ -6371,10 +6171,7 @@ var author$project$Main$validate = A2(
 			A2(
 				etaque$elm_form$Form$Validate$field,
 				'birth_year',
-				A2(
-					etaque$elm_form$Form$Validate$andThen,
-					etaque$elm_form$Form$Validate$minInt(1900),
-					etaque$elm_form$Form$Validate$int)),
+				A2(etaque$elm_form$Form$Validate$defaultValue, 1990, etaque$elm_form$Form$Validate$int)),
 			A2(
 				etaque$elm_form$Form$Validate$andMap,
 				A2(
@@ -6386,9 +6183,7 @@ var author$project$Main$validate = A2(
 					A2(
 						etaque$elm_form$Form$Validate$field,
 						'email',
-						etaque$elm_form$Form$Validate$oneOf(
-							_List_fromArray(
-								[etaque$elm_form$Form$Validate$emptyString, etaque$elm_form$Form$Validate$email]))),
+						A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
 					A2(
 						etaque$elm_form$Form$Validate$andMap,
 						A2(
@@ -6426,6 +6221,20 @@ var elm$core$Task$Perform = function (a) {
 var elm$core$Task$andThen = _Scheduler_andThen;
 var elm$core$Task$succeed = _Scheduler_succeed;
 var elm$core$Task$init = elm$core$Task$succeed(_Utils_Tuple0);
+var elm$core$List$map = F2(
+	function (f, xs) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, acc) {
+					return A2(
+						elm$core$List$cons,
+						f(x),
+						acc);
+				}),
+			_List_Nil,
+			xs);
+	});
 var elm$core$Task$map = F2(
 	function (func, taskA) {
 		return A2(
@@ -7408,14 +7217,20 @@ var author$project$View$Bootstrap$errorMessage = function (maybeError) {
 	}
 };
 var elm$html$Html$label = _VirtualDom_node('label');
-var author$project$View$Bootstrap$formGroup = F3(
-	function (labelQ, maybeError, inputs) {
+var author$project$View$Bootstrap$formGroup = F4(
+	function (hidden, labelQ, maybeError, inputs) {
 		return A2(
 			elm$html$Html$div,
 			_List_fromArray(
 				[
-					elm$html$Html$Attributes$class(
-					'row form-group ' + author$project$View$Bootstrap$errorClass(maybeError))
+					function () {
+					if (hidden) {
+						return elm$html$Html$Attributes$class('hidden');
+					} else {
+						return elm$html$Html$Attributes$class(
+							'row form-group ' + author$project$View$Bootstrap$errorClass(maybeError));
+					}
+				}()
 				]),
 			_List_fromArray(
 				[
@@ -7532,8 +7347,9 @@ var etaque$elm_form$Form$Input$checkboxInput = F2(
 	});
 var author$project$View$Bootstrap$checkboxGroup = F2(
 	function (labelQ, state) {
-		return A3(
+		return A4(
 			author$project$View$Bootstrap$formGroup,
+			false,
 			'',
 			state.liveError,
 			_List_fromArray(
@@ -7636,8 +7452,9 @@ var etaque$elm_form$Form$Input$selectInput = F3(
 	});
 var author$project$View$Bootstrap$selectGroup = F3(
 	function (options, labelQ, state) {
-		return A3(
+		return A4(
 			author$project$View$Bootstrap$formGroup,
+			false,
 			labelQ,
 			state.liveError,
 			_List_fromArray(
@@ -7700,8 +7517,9 @@ var etaque$elm_form$Form$Input$baseInput = F5(
 var etaque$elm_form$Form$Input$textInput = A3(etaque$elm_form$Form$Input$baseInput, 'text', etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Text);
 var author$project$View$Bootstrap$textGroup = F2(
 	function (labelQ, state) {
-		return A3(
+		return A4(
 			author$project$View$Bootstrap$formGroup,
+			false,
 			labelQ,
 			state.liveError,
 			_List_fromArray(
@@ -7712,6 +7530,26 @@ var author$project$View$Bootstrap$textGroup = F2(
 					_List_fromArray(
 						[
 							elm$html$Html$Attributes$class('form-control'),
+							elm$html$Html$Attributes$value(
+							A2(elm$core$Maybe$withDefault, '', state.value))
+						]))
+				]));
+	});
+var author$project$View$Bootstrap$textGroupHidden = F2(
+	function (labelQ, state) {
+		return A4(
+			author$project$View$Bootstrap$formGroup,
+			true,
+			labelQ,
+			state.liveError,
+			_List_fromArray(
+				[
+					A2(
+					etaque$elm_form$Form$Input$textInput,
+					state,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('form-control hidden'),
 							elm$html$Html$Attributes$value(
 							A2(elm$core$Maybe$withDefault, '', state.value))
 						]))
@@ -7863,20 +7701,20 @@ var author$project$Main$formView = function (form) {
 				A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
 				A2(
 				author$project$View$Bootstrap$textGroup,
-				'Email',
+				'Email/Phone* ',
 				A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
 				A2(
-				author$project$View$Bootstrap$textGroup,
+				author$project$View$Bootstrap$textGroupHidden,
 				'Phone',
 				A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
 				A2(
-				author$project$View$Bootstrap$textGroup,
-				'Birth Year* ',
+				author$project$View$Bootstrap$textGroupHidden,
+				'Birth Year',
 				A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
 				A3(
 				author$project$View$Bootstrap$selectGroup,
 				genderOptions,
-				'Gender',
+				'Gender*',
 				A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
 				A2(
 				author$project$View$Bootstrap$checkboxGroup,
@@ -8094,6 +7932,7 @@ var author$project$Main$viewPetition = function (petition) {
 					]))
 			]));
 };
+var elm$html$Html$br = _VirtualDom_node('br');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
@@ -8151,7 +7990,23 @@ var author$project$Main$view = function (_n0) {
 							case 'Sending':
 								return elm$html$Html$text('Sending form...');
 							case 'Sent':
-								return elm$html$Html$text('Congratuations! Your voice has been accounted');
+								return A2(
+									elm$html$Html$div,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(elm$html$Html$br, _List_Nil, _List_Nil),
+											A2(
+											elm$html$Html$p,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$class('alert alert-success')
+												]),
+											_List_fromArray(
+												[
+													elm$html$Html$text('Thank you! Your vote was taken into account!')
+												]))
+										]));
 							case 'FormFailure':
 								var err = formStatus.a;
 								return elm$html$Html$text(

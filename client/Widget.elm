@@ -12,6 +12,7 @@ import Form.Field as Field
 import Form.Validate as Validate exposing (..)
 import View.Bootstrap exposing (..)
 import Markdown exposing (..)
+import String exposing (toInt)
 -- import Html.Events exposing (onClick)
 
 
@@ -131,7 +132,13 @@ view {url, code, locale, petitionStatus, formStatus, form} =
             Ready -> Html.map FormMsg (formView form)
             None -> Html.map FormMsg (formView form)
             Sending -> text "Sending form..."
-            Sent -> text "Congratuations! Your voice has been accounted"
+            Sent -> div
+                      []
+                      [ br [] []
+                      , p
+                          [ class "alert alert-success" ]
+                          [ text "Thank you! Your vote was taken into account!" ]
+                      ]
             FormFailure err -> text ("Error of sending form: " ++ (toString err))
             Opss -> Html.map 
                       FormMsg 
@@ -228,9 +235,11 @@ validate =
         |> andMap (field "country" (string |> andThen nonEmpty))
         |> andMap (field "city" (string |> andThen nonEmpty))
         |> andMap (field "organization" string |> defaultValue "")
-        |> andMap (field "email" (oneOf [emptyString, email]))
+        |> andMap (field "email" (string |> andThen nonEmpty))
+        -- |> andMap (field "email" (oneOf [emptyString, email]))
         |> andMap (field "phone" (string |> defaultValue ""))
-        |> andMap (field "birth_year" (int |> andThen (minInt 1900)))
+        |> andMap (field "birth_year" (int |> defaultValue 1990))
+        -- |> andMap (field "birth_year" (int |> andThen (minInt 1900) |> andThen (maxInt 1999)))
         |> andMap (field "gender" string |> defaultValue "M")
         |> andMap (field "notifies_enabled" bool)
 
@@ -291,10 +300,10 @@ formView form =
         , textGroup "Country* " (Form.getFieldAsString "country" form)
         , textGroup "City* " (Form.getFieldAsString "city" form)
         , textGroup "Organization" (Form.getFieldAsString "organization" form)
-        , textGroup "Email" (Form.getFieldAsString "email" form)
-        , textGroup "Phone" (Form.getFieldAsString "phone" form)
-        , textGroup "Birth Year* " (Form.getFieldAsString "birth_year" form)        
-        , selectGroup genderOptions "Gender" (Form.getFieldAsString "gender" form)        
+        , textGroup "Email/Phone* " (Form.getFieldAsString "email" form)
+        , textGroupHidden "Phone" (Form.getFieldAsString "phone" form)
+        , textGroupHidden "Birth Year" (Form.getFieldAsString "birth_year" form)        
+        , selectGroup genderOptions "Gender*" (Form.getFieldAsString "gender" form)        
         , checkboxGroup "Notifies Enabled" (Form.getFieldAsBool "notifiesEnabled" form)        
 
         , formActions

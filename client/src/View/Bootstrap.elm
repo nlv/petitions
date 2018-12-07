@@ -25,10 +25,12 @@ type alias GroupBuilder a =
 
 
 -- formGroup : String -> Maybe (Error ()) -> List (Html Form.Msg) -> Html Form.Msg
-formGroup : String -> Maybe (ErrorValue ()) -> List (Html Form.Msg) -> Html Form.Msg
-formGroup labelQ maybeError inputs =
+formGroup : Bool -> String -> Maybe (ErrorValue ()) -> List (Html Form.Msg) -> Html Form.Msg
+formGroup hidden labelQ maybeError inputs =
     div
-        [ class ("row form-group " ++ (errorClass maybeError) ) ]
+        [ case hidden of
+            True  -> class "hidden"
+            False -> class ("row form-group " ++ (errorClass maybeError) ) ]
         [ colQ 3
             [ label [ class "control-label" ] [ text labelQ ] ]
         , colQ 5
@@ -46,11 +48,22 @@ formActions content =
 
 textGroup : GroupBuilder String
 textGroup labelQ state =
-    formGroup labelQ
+    formGroup False labelQ
         state.liveError
         -- state.error
         [ Input.textInput state
             [ class "form-control"
+            , value (Maybe.withDefault "" state.value)
+            ]
+        ]
+
+textGroupHidden : GroupBuilder String
+textGroupHidden labelQ state =
+    formGroup True labelQ
+        state.liveError
+        -- state.error
+        [ Input.textInput state
+            [ class "form-control hidden"
             , value (Maybe.withDefault "" state.value)
             ]
         ]
@@ -69,7 +82,7 @@ textGroup labelQ state =
 
 checkboxGroup : GroupBuilder Bool
 checkboxGroup labelQ state =
-    formGroup ""
+    formGroup False ""
         state.liveError
         -- state.error
         [ div
@@ -84,7 +97,7 @@ checkboxGroup labelQ state =
 
 selectGroup : List ( String, String ) -> GroupBuilder String
 selectGroup options labelQ state =
-    formGroup labelQ
+    formGroup False labelQ
         state.liveError
         -- state.error
         [ Input.selectInput options state [ class "form-control" ] ]
