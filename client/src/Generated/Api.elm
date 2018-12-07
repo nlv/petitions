@@ -104,7 +104,7 @@ getPetitionByCode url capture_code query_locale =
                 False
             }
 
-postPetitionByCodeSigner : String -> String -> SignerForm -> Http.Request (())
+postPetitionByCodeSigner : String -> String -> SignerForm -> Http.Request (Int)
 postPetitionByCodeSigner url capture_code body =
     Http.request
         { method =
@@ -121,7 +121,8 @@ postPetitionByCodeSigner url capture_code body =
                 ]
         , body =
             Http.jsonBody (encodeSignerForm body)
-        , expect = Http.expectStringResponse (\_ -> Ok ())
+        , expect =
+            Http.expectJson int
             -- Http.expectStringResponse
             --     (\{body2} ->
             --         if String.isEmpty body2 then

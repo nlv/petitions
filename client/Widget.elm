@@ -25,7 +25,7 @@ main =
 type PetitionStatus
   = PetitionFailure Http.Error
   | Loading
-  | Loaded (Petition, Int)
+  | Loaded Petition
 
 type FormStatus
   = FormFailure Http.Error
@@ -42,6 +42,7 @@ type alias Model =
     ,locale         : String
     ,petitionStatus : PetitionStatus
     ,formStatus     : FormStatus
+    ,signersCount   : Maybe Int
     ,form           : Form () SignerForm 
   }
 
@@ -54,7 +55,9 @@ init {url, code, locale} =
     , petitionStatus = Loading
     , formStatus = None
     -- , form = Form.initial [("gender", Field.string "M")] validate }
-    , form = Form.initial [] validate }
+    , form = Form.initial [] validate 
+    , signersCount = Nothing
+    }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
 
@@ -73,7 +76,7 @@ prepareLocale locale
 
 type Msg
   = GotPetition (Result Http.Error (Petition, Int))
-  | SentForm (Result Http.Error ())
+  | SentForm (Result Http.Error Int)
   | NoOp
   | FormMsg Form.Msg
 
@@ -82,11 +85,13 @@ update msg ({ url, code, locale, form } as model) =
   case msg of
     GotPetition result ->
       case result of
-        Ok petition ->
-          ({model | petitionStatus = Loaded petition, formStatus = Ready}, Cmd.none)
+        Ok (petition, cnt) ->
+          ( {model | petitionStatus = Loaded petition, signersCount = Just cnt, formStatus = Ready}
+          , Cmd.none
+          )
 
         Err err ->
-          ({model | petitionStatus = PetitionFailure err}, Cmd.none)
+          ({model | petitionStatus = PetitionFailure err, signersCount = Nothing}, Cmd.none)
 
     FormMsg formMsg ->
       case ( formMsg, Form.getOutput form ) of
@@ -102,8 +107,8 @@ update msg ({ url, code, locale, form } as model) =
 
     SentForm result ->
       case result of
-        Ok () ->
-          ({model | formStatus = Sent}, Cmd.none)
+        Ok cnt ->
+          ({model | formStatus = Sent, signersCount = Just cnt}, Cmd.none)
 
         Err err ->
           ({model | formStatus = FormFailure err}, Cmd.none)
@@ -114,7 +119,7 @@ update msg ({ url, code, locale, form } as model) =
 -- VIEW
 
 view : Model -> Html Msg
-view {url, code, locale, petitionStatus, formStatus, form} =
+view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
   case petitionStatus of
     PetitionFailure err ->
       div []
@@ -122,7 +127,7 @@ view {url, code, locale, petitionStatus, formStatus, form} =
     Loading ->
       div []
         [ text "Loading petition" ]
-    Loaded (petition, cnt) ->
+    Loaded petition ->
       div
         [ style "margin" "50px 20px" 
         , style "width" "90%"   
@@ -132,13 +137,13 @@ view {url, code, locale, petitionStatus, formStatus, form} =
             Ready -> 
                 div
                     []
-                    [ viewSignersCount cnt
+                    [ viewSignersCount signersCount
                     , Html.map FormMsg (formView form)
                     ]
             None -> 
                 div
                     []
-                    [ viewSignersCount cnt
+                    [ viewSignersCount signersCount
                     , Html.map FormMsg (formView form)
                     ]
             Sending -> text "Sending form..."
@@ -148,7 +153,7 @@ view {url, code, locale, petitionStatus, formStatus, form} =
                       , p
                           [ class "alert alert-success" ]
                           [ text "Thank you! Your vote was taken into account!" ]
-                      , viewSignersCount cnt
+                      , viewSignersCount signersCount
                       ]
             FormFailure err -> text ("Error of sending form: " ++ (toString err))
             Opss -> Html.map 
@@ -162,11 +167,18 @@ view {url, code, locale, petitionStatus, formStatus, form} =
                       )
          ]
 
-viewSignersCount : Int -> Html Msg
-viewSignersCount cnt = 
-  p
-    [ class "alert alert-info" ]
-    [ text ("the petition was signed by " ++ (fromInt cnt) ++ " people") ]
+viewSignersCount : (Maybe Int) -> Html Msg
+viewSignersCount cntQ =
+  case cntQ of 
+    (Just cnt) -> 
+      div
+        []
+        [ br [] []
+        , p
+            [ class "alert alert-info" ]
+            [ text ("the petition was signed by " ++ (fromInt cnt) ++ " people") ]
+        ]
+    Nothing -> div [] []
 
 getFormErrorsString : Form () SignerForm -> List (Html Form.Msg)
 getFormErrorsString form =

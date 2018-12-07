@@ -148,7 +148,7 @@ getPetitionLocale conn pid locale = do
             p:ps' -> Just p
             _         -> Nothing
 
-insertSigner :: Pg.Connection -> Text -> SignerForm -> IO Bool
+insertSigner :: Pg.Connection -> Text -> SignerForm -> IO (Maybe Int)
 insertSigner conn code signerForm = do
   petition' <- getPetitionByCode conn code Nothing
   case petition' of
@@ -160,8 +160,9 @@ insertSigner conn code signerForm = do
           , iReturning  = rCount
           , iOnConflict = Nothing
           }
-      pure True
-    _ -> pure False
+      cnt <- getSignersCount conn (_petitionId petition)
+      pure (Just cnt)
+    _ -> pure Nothing
 
 getSignersCount :: Pg.Connection -> Int -> IO Int
 getSignersCount conn pid = do

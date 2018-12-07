@@ -17,7 +17,7 @@ type Api = RestApi :<|> HtmlApi
 
 type RestApi = 
        "petition" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[JSON] (Petition, Int)
-  :<|> "petition" :> Capture "code" Text :> "signer" :> ReqBody '[JSON] SignerForm :> Post '[JSON] ()
+  :<|> "petition" :> Capture "code" Text :> "signer" :> ReqBody '[JSON] SignerForm :> Post '[JSON] Int
 
 type HtmlApi = 
       "petition.html" :> Capture "code" Text :> QueryParam "locale" Text :> Get '[HTML] H.Html 

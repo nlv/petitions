@@ -82,11 +82,11 @@ getHtmlPetitionByCode code locale = do
       H.script H.! A.type_ "text/javascript" H.! A.src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" $ mempty
       H.script H.! A.type_ "text/javascript" H.! A.src "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" $ mempty
 
-postSigner :: Text -> SignerForm -> Handler ()
+postSigner :: Text -> SignerForm -> Handler Int
 postSigner code signerForm = do
   conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
   inserted <- liftIO $ B.insertSigner conn code signerForm
   case inserted of 
-    True -> pure ()
-    False -> throwE err404
+    Just cnt -> pure cnt
+    Nothing -> throwE err404
 

@@ -6392,6 +6392,7 @@ var author$project$Main$init = function (_n0) {
 			formStatus: author$project$Main$None,
 			locale: locale,
 			petitionStatus: author$project$Main$Loading,
+			signersCount: elm$core$Maybe$Nothing,
 			url: url
 		},
 		A2(
@@ -6476,10 +6477,7 @@ var author$project$Generated$Api$postPetitionByCodeSigner = F3(
 			{
 				body: elm$http$Http$jsonBody(
 					author$project$Generated$Api$encodeSignerForm(body)),
-				expect: elm$http$Http$expectStringResponse(
-					function (_n0) {
-						return elm$core$Result$Ok(_Utils_Tuple0);
-					}),
+				expect: elm$http$Http$expectJson(elm$json$Json$Decode$int),
 				headers: _List_Nil,
 				method: 'POST',
 				timeout: elm$core$Maybe$Nothing,
@@ -7070,13 +7068,16 @@ var author$project$Main$update = F2(
 			case 'GotPetition':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
-					var petition = result.a;
+					var _n2 = result.a;
+					var petition = _n2.a;
+					var cnt = _n2.b;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
 								formStatus: author$project$Main$Ready,
-								petitionStatus: author$project$Main$Loaded(petition)
+								petitionStatus: author$project$Main$Loaded(petition),
+								signersCount: elm$core$Maybe$Just(cnt)
 							}),
 						elm$core$Platform$Cmd$none);
 				} else {
@@ -7085,19 +7086,20 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								petitionStatus: author$project$Main$PetitionFailure(err)
+								petitionStatus: author$project$Main$PetitionFailure(err),
+								signersCount: elm$core$Maybe$Nothing
 							}),
 						elm$core$Platform$Cmd$none);
 				}
 			case 'FormMsg':
 				var formMsg = msg.a;
-				var _n2 = _Utils_Tuple2(
+				var _n3 = _Utils_Tuple2(
 					formMsg,
 					etaque$elm_form$Form$getOutput(form));
-				if (_n2.a.$ === 'Submit') {
-					if (_n2.b.$ === 'Just') {
-						var _n3 = _n2.a;
-						var signer = _n2.b.a;
+				if (_n3.a.$ === 'Submit') {
+					if (_n3.b.$ === 'Just') {
+						var _n4 = _n3.a;
+						var signer = _n3.b.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -7107,8 +7109,8 @@ var author$project$Main$update = F2(
 								author$project$Main$SentForm,
 								A3(author$project$Generated$Api$postPetitionByCodeSigner, url, code, signer)));
 					} else {
-						var _n4 = _n2.a;
-						var _n5 = _n2.b;
+						var _n5 = _n3.a;
+						var _n6 = _n3.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -7127,10 +7129,14 @@ var author$project$Main$update = F2(
 			case 'SentForm':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
+					var cnt = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{formStatus: author$project$Main$Sent}),
+							{
+								formStatus: author$project$Main$Sent,
+								signersCount: elm$core$Maybe$Just(cnt)
+							}),
 						elm$core$Platform$Cmd$none);
 				} else {
 					var err = result.a;
@@ -7959,18 +7965,30 @@ var author$project$Main$viewPetition = function (petition) {
 					]))
 			]));
 };
-var author$project$Main$viewSignersCount = function (cnt) {
-	return A2(
-		elm$html$Html$p,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('alert alert-info')
-			]),
-		_List_fromArray(
-			[
-				elm$html$Html$text(
-				'the petition was signed by ' + (elm$core$String$fromInt(cnt) + ' people'))
-			]));
+var author$project$Main$viewSignersCount = function (cntQ) {
+	if (cntQ.$ === 'Just') {
+		var cnt = cntQ.a;
+		return A2(
+			elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(elm$html$Html$br, _List_Nil, _List_Nil),
+					A2(
+					elm$html$Html$p,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('alert alert-info')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							'the petition was signed by ' + (elm$core$String$fromInt(cnt) + ' people'))
+						]))
+				]));
+	} else {
+		return A2(elm$html$Html$div, _List_Nil, _List_Nil);
+	}
 };
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
@@ -7981,6 +7999,7 @@ var author$project$Main$view = function (_n0) {
 	var code = _n0.code;
 	var locale = _n0.locale;
 	var petitionStatus = _n0.petitionStatus;
+	var signersCount = _n0.signersCount;
 	var formStatus = _n0.formStatus;
 	var form = _n0.form;
 	switch (petitionStatus.$) {
@@ -8003,9 +8022,7 @@ var author$project$Main$view = function (_n0) {
 						elm$html$Html$text('Loading petition')
 					]));
 		default:
-			var _n2 = petitionStatus.a;
-			var petition = _n2.a;
-			var cnt = _n2.b;
+			var petition = petitionStatus.a;
 			return A2(
 				elm$html$Html$div,
 				_List_fromArray(
@@ -8024,7 +8041,7 @@ var author$project$Main$view = function (_n0) {
 									_List_Nil,
 									_List_fromArray(
 										[
-											author$project$Main$viewSignersCount(cnt),
+											author$project$Main$viewSignersCount(signersCount),
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
@@ -8036,7 +8053,7 @@ var author$project$Main$view = function (_n0) {
 									_List_Nil,
 									_List_fromArray(
 										[
-											author$project$Main$viewSignersCount(cnt),
+											author$project$Main$viewSignersCount(signersCount),
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
@@ -8061,7 +8078,7 @@ var author$project$Main$view = function (_n0) {
 												[
 													elm$html$Html$text('Thank you! Your vote was taken into account!')
 												])),
-											author$project$Main$viewSignersCount(cnt)
+											author$project$Main$viewSignersCount(signersCount)
 										]));
 							case 'FormFailure':
 								var err = formStatus.a;
