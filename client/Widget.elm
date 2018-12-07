@@ -1,5 +1,5 @@
 import Browser
-import Html exposing (Html, button, div, text, h1, p, label, br, legend)
+import Html exposing (Html, button, div, text, h1, h3, p, label, br, legend)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
@@ -11,6 +11,7 @@ import Form.Input as Input
 import Form.Field as Field
 import Form.Validate as Validate exposing (..)
 import View.Bootstrap exposing (..)
+import Markdown exposing (..)
 -- import Html.Events exposing (onClick)
 
 
@@ -155,9 +156,9 @@ viewPetition : Petition -> Html Msg
 viewPetition petition = 
     div
       []
-      [
-          h1 [] [text (petition.petitionName) ],
-          p  [] [text (petition.petitionDescription) ]
+      [ h1 [class "display-1"] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
+      , toHtml [class "display-3"] petition.petitionDescription
+          -- h3 [class "display-3"] [text (petition.petitionDescription) ]
       ]
  
 toString err =
