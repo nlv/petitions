@@ -7933,7 +7933,7 @@ var author$project$Main$toString = function (err) {
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var elm$html$Html$h1 = _VirtualDom_node('h1');
+var elm$html$Html$h2 = _VirtualDom_node('h2');
 var elm$html$Html$h5 = _VirtualDom_node('h5');
 var elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
@@ -7966,22 +7966,13 @@ var author$project$Main$viewPetition = function (petition) {
 		_List_fromArray(
 			[
 				A2(
-				elm$html$Html$h1,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('display-1')
-					]),
+				elm$html$Html$h2,
+				_List_Nil,
 				_List_fromArray(
 					[
 						elm$html$Html$text('SIGN THE PETITION: ' + petition.petitionName)
 					])),
-				A2(
-				elm_explorations$markdown$Markdown$toHtml,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('display-3')
-					]),
-				petition.petitionDescription),
+				A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
 				A2(
 				elm$html$Html$button,
 				_List_fromArray(
