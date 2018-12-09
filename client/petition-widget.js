@@ -7152,9 +7152,124 @@ var author$project$Main$update = F2(
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Main$FillRequiredFieldsMsg = {$: 'FillRequiredFieldsMsg'};
 var author$project$Main$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
+var author$project$Main$ThankYouMsg = {$: 'ThankYouMsg'};
+var author$project$Main$BirthYearMsg = {$: 'BirthYearMsg'};
+var author$project$Main$CityMsg = {$: 'CityMsg'};
+var author$project$Main$CountryMsg = {$: 'CountryMsg'};
+var author$project$Main$EmailPhoneMsg = {$: 'EmailPhoneMsg'};
+var author$project$Main$FemaleMsg = {$: 'FemaleMsg'};
+var author$project$Main$FirstNameMsg = {$: 'FirstNameMsg'};
+var author$project$Main$GenderMsg = {$: 'GenderMsg'};
+var author$project$Main$KeepMeUpdateMsg = {$: 'KeepMeUpdateMsg'};
+var author$project$Main$LastNameMsg = {$: 'LastNameMsg'};
+var author$project$Main$MaleMsg = {$: 'MaleMsg'};
+var author$project$Main$OrganizationMsg = {$: 'OrganizationMsg'};
+var author$project$Main$PetitionFormMsg = {$: 'PetitionFormMsg'};
+var author$project$Main$PhoneMsg = {$: 'PhoneMsg'};
+var author$project$Main$ResetMsg = {$: 'ResetMsg'};
+var author$project$Main$SubmitMsg = {$: 'SubmitMsg'};
+var author$project$Main$m = F2(
+	function (locale, msg) {
+		if (locale === 'ru') {
+			switch (msg.$) {
+				case 'PetitionFormMsg':
+					return 'Укажите Ваши данные';
+				case 'ShowFullTextMsg':
+					return 'Показать полный текст';
+				case 'FirstNameMsg':
+					return 'Имя*';
+				case 'LastNameMsg':
+					return 'Фамилия*';
+				case 'CountryMsg':
+					return 'Страна*';
+				case 'CityMsg':
+					return 'Город*';
+				case 'OrganizationMsg':
+					return 'Организация';
+				case 'EmailPhoneMsg':
+					return 'Эл. почта/Телефон*';
+				case 'PhoneMsg':
+					return 'Телефон';
+				case 'BirthYearMsg':
+					return 'Год рождения';
+				case 'GenderMsg':
+					return 'Пол*';
+				case 'MaleMsg':
+					return 'Мужской';
+				case 'FemaleMsg':
+					return 'Женский';
+				case 'KeepMeUpdateMsg':
+					return 'Информировать меня о петиции и других событиях';
+				case 'SubmitMsg':
+					return 'Отправить';
+				case 'ResetMsg':
+					return 'Очистить';
+				case 'ThankYouMsg':
+					return 'Благодарим Вас! Ваш голос учтен!';
+				case 'FillRequiredFieldsMsg':
+					return 'Заполните обязательные поля.';
+				case 'WasSignedMsg':
+					return 'Петицию подисали ';
+				case 'PeopleMsg':
+					return ' человек';
+				case 'SignPetitionMsg':
+					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
+				default:
+					return 'Закрыть';
+			}
+		} else {
+			switch (msg.$) {
+				case 'PetitionFormMsg':
+					return 'Petition Form';
+				case 'ShowFullTextMsg':
+					return 'Show full text';
+				case 'FirstNameMsg':
+					return 'First Name*';
+				case 'LastNameMsg':
+					return 'Last Name*';
+				case 'CountryMsg':
+					return 'Country*';
+				case 'CityMsg':
+					return 'City*';
+				case 'OrganizationMsg':
+					return 'Organization';
+				case 'EmailPhoneMsg':
+					return 'Email/Phone*';
+				case 'PhoneMsg':
+					return 'Phone*';
+				case 'BirthYearMsg':
+					return 'BirthYear';
+				case 'GenderMsg':
+					return 'Gender*';
+				case 'MaleMsg':
+					return 'Male';
+				case 'FemaleMsg':
+					return 'Female';
+				case 'KeepMeUpdateMsg':
+					return 'Keep me updated via-email on this petition and related issues. ';
+				case 'SubmitMsg':
+					return 'Submit';
+				case 'ResetMsg':
+					return 'Reset';
+				case 'ThankYouMsg':
+					return 'Thank you! Your vote was taken into account!';
+				case 'FillRequiredFieldsMsg':
+					return 'Please, fill all required fields';
+				case 'WasSignedMsg':
+					return 'The petition was signed by ';
+				case 'PeopleMsg':
+					return ' people';
+				case 'SignPetitionMsg':
+					return 'SIGN THE PETITION: ';
+				default:
+					return 'Close';
+			}
+		}
+	});
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -7660,127 +7775,136 @@ var etaque$elm_form$Form$getStringAt = F2(
 			A2(etaque$elm_form$Form$getFieldAt, name, model));
 	});
 var etaque$elm_form$Form$getFieldAsString = etaque$elm_form$Form$getField(etaque$elm_form$Form$getStringAt);
-var author$project$Main$formView = function (form) {
-	var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
-	var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
-	var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
-	var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
-	var genderOptions = _List_fromArray(
-		[
-			_Utils_Tuple2('M', 'Male'),
-			_Utils_Tuple2('F', 'Female')
-		]);
-	var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
-	var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
-	var errorFor = function (field) {
-		var _n0 = field.liveError;
-		if (_n0.$ === 'Just') {
-			var error = _n0.a;
-			return A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('error')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(
-						elm$core$Debug$toString(error))
-					]));
-		} else {
-			return elm$html$Html$text('');
-		}
-	};
-	var email = A2(etaque$elm_form$Form$getFieldAsString, 'email', form);
-	var country = A2(etaque$elm_form$Form$getFieldAsString, 'country', form);
-	var city = A2(etaque$elm_form$Form$getFieldAsString, 'city', form);
-	var birthYear = A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form);
-	return A2(
-		elm$html$Html$div,
-		_List_fromArray(
+var author$project$Main$formView = F2(
+	function (locale, form) {
+		var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
+		var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
+		var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
+		var mm = author$project$Main$m(locale);
+		var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
+		var genderOptions = _List_fromArray(
 			[
-				elm$html$Html$Attributes$class('form-horizontal')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$legend,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('Petition form')
-					])),
-				A2(
-				author$project$View$Bootstrap$textGroup,
-				'First Name* ',
-				A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
-				A2(
-				author$project$View$Bootstrap$textGroup,
-				'Last Name* ',
-				A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
-				A2(
-				author$project$View$Bootstrap$textGroup,
-				'Country* ',
-				A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
-				A2(
-				author$project$View$Bootstrap$textGroup,
-				'City* ',
-				A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
-				A2(
-				author$project$View$Bootstrap$textGroup,
-				'Organization',
-				A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
-				A2(
-				author$project$View$Bootstrap$textGroup,
-				'Email/Phone* ',
-				A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
-				A2(
-				author$project$View$Bootstrap$textGroupHidden,
-				'Phone',
-				A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
-				A2(
-				author$project$View$Bootstrap$textGroupHidden,
-				'Birth Year',
-				A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
-				A3(
-				author$project$View$Bootstrap$selectGroup,
-				genderOptions,
-				'Gender*',
-				A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
-				A2(
-				author$project$View$Bootstrap$checkboxGroup,
-				'Notifies Enabled',
-				A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
-				author$project$View$Bootstrap$formActions(
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$button,
-						_List_fromArray(
-							[
-								elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit),
-								elm$html$Html$Attributes$class('btn btn-primary')
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text('Submit')
-							])),
-						elm$html$Html$text(' '),
-						A2(
-						elm$html$Html$button,
-						_List_fromArray(
-							[
-								elm$html$Html$Events$onClick(
-								etaque$elm_form$Form$Reset(_List_Nil)),
-								elm$html$Html$Attributes$class('btn btn-default')
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text('Reset')
-							]))
-					]))
-			]));
-};
+				_Utils_Tuple2(
+				'M',
+				mm(author$project$Main$MaleMsg)),
+				_Utils_Tuple2(
+				'F',
+				mm(author$project$Main$FemaleMsg))
+			]);
+		var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
+		var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
+		var errorFor = function (field) {
+			var _n0 = field.liveError;
+			if (_n0.$ === 'Just') {
+				var error = _n0.a;
+				return A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('error')
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							elm$core$Debug$toString(error))
+						]));
+			} else {
+				return elm$html$Html$text('');
+			}
+		};
+		var email = A2(etaque$elm_form$Form$getFieldAsString, 'email', form);
+		var country = A2(etaque$elm_form$Form$getFieldAsString, 'country', form);
+		var city = A2(etaque$elm_form$Form$getFieldAsString, 'city', form);
+		var birthYear = A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form);
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('form-horizontal')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$legend,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							mm(author$project$Main$PetitionFormMsg))
+						])),
+					A2(
+					author$project$View$Bootstrap$textGroup,
+					mm(author$project$Main$FirstNameMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
+					A2(
+					author$project$View$Bootstrap$textGroup,
+					mm(author$project$Main$LastNameMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
+					A2(
+					author$project$View$Bootstrap$textGroup,
+					mm(author$project$Main$CountryMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
+					A2(
+					author$project$View$Bootstrap$textGroup,
+					mm(author$project$Main$CityMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
+					A2(
+					author$project$View$Bootstrap$textGroup,
+					mm(author$project$Main$OrganizationMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
+					A2(
+					author$project$View$Bootstrap$textGroup,
+					mm(author$project$Main$EmailPhoneMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
+					A2(
+					author$project$View$Bootstrap$textGroupHidden,
+					mm(author$project$Main$PhoneMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
+					A2(
+					author$project$View$Bootstrap$textGroupHidden,
+					mm(author$project$Main$BirthYearMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
+					A3(
+					author$project$View$Bootstrap$selectGroup,
+					genderOptions,
+					mm(author$project$Main$GenderMsg),
+					A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
+					A2(
+					author$project$View$Bootstrap$checkboxGroup,
+					mm(author$project$Main$KeepMeUpdateMsg),
+					A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
+					author$project$View$Bootstrap$formActions(
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$button,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit),
+									elm$html$Html$Attributes$class('btn btn-primary')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(
+									mm(author$project$Main$SubmitMsg))
+								])),
+							elm$html$Html$text(' '),
+							A2(
+							elm$html$Html$button,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(
+									etaque$elm_form$Form$Reset(_List_Nil)),
+									elm$html$Html$Attributes$class('btn btn-default')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(
+									mm(author$project$Main$ResetMsg))
+								]))
+						]))
+				]));
+	});
 var author$project$Main$toString = function (err) {
 	switch (err.$) {
 		case 'BadUrl':
@@ -7799,6 +7923,9 @@ var author$project$Main$toString = function (err) {
 			return 'Bad response format: ' + str;
 	}
 };
+var author$project$Main$CloseMsg = {$: 'CloseMsg'};
+var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
+var author$project$Main$SignPetitionMsg = {$: 'SignPetitionMsg'};
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -7829,167 +7956,185 @@ var elm_explorations$markdown$Markdown$defaultOptions = {
 };
 var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Main$viewPetition = function (petition) {
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$h2,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('SIGN THE PETITION: ' + petition.petitionName)
-					])),
-				A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
-				A2(
-				elm$html$Html$button,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$type_('button'),
-						elm$html$Html$Attributes$class('btn btn-primary'),
-						A2(elm$html$Html$Attributes$attribute, 'data-toggle', 'modal'),
-						A2(elm$html$Html$Attributes$attribute, 'data-target', '#petition-content')
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text('Show full text')
-					])),
-				A2(elm$html$Html$br, _List_Nil, _List_Nil),
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('modal'),
-						elm$html$Html$Attributes$id('petition-content'),
-						elm$html$Html$Attributes$tabindex(-1),
-						A2(elm$html$Html$Attributes$attribute, 'role', 'dialog'),
-						A2(elm$html$Html$Attributes$attribute, 'aria-labelledby', 'petition-content-title'),
-						A2(elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('modal-dialog modal-dialog-centered'),
-								A2(elm$html$Html$Attributes$attribute, 'role', 'document')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-content')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-header')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$h5,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('modal-title'),
-														elm$html$Html$Attributes$id('petition-content-title')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('SIGN PETITION: ' + petition.petitionName)
-													])),
-												A2(
-												elm$html$Html$button,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$type_('button'),
-														elm$html$Html$Attributes$class('close'),
-														A2(elm$html$Html$Attributes$attribute, 'data-dismiss', 'modal'),
-														A2(elm$html$Html$Attributes$attribute, 'aria-label', 'close')
-													]),
-												_List_fromArray(
-													[
-														A2(
-														elm$html$Html$span,
-														_List_fromArray(
-															[
-																A2(elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
-															]),
-														_List_fromArray(
-															[
-																elm$html$Html$text('X')
-															]))
-													]))
-											])),
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-body')
-											]),
-										_List_fromArray(
-											[
-												A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionContent)
-											])),
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-footer')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$button,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$type_('button'),
-														elm$html$Html$Attributes$class('btn btn-secondary'),
-														A2(elm$html$Html$Attributes$attribute, 'data-dismiss', 'modal')
-													]),
-												_List_fromArray(
-													[
-														elm$html$Html$text('Close')
-													]))
-											]))
-									]))
-							]))
-					]))
-			]));
-};
-var author$project$Main$viewSignersCount = function (cntQ) {
-	if (cntQ.$ === 'Just') {
-		var cnt = cntQ.a;
+var author$project$Main$viewPetition = F2(
+	function (locale, petition) {
+		var mm = author$project$Main$m(locale);
 		return A2(
 			elm$html$Html$div,
 			_List_Nil,
 			_List_fromArray(
 				[
-					A2(elm$html$Html$br, _List_Nil, _List_Nil),
 					A2(
-					elm$html$Html$p,
+					elm$html$Html$h2,
+					_List_Nil,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$class('alert alert-info')
+							elm$html$Html$text(
+							_Utils_ap(
+								mm(author$project$Main$SignPetitionMsg),
+								petition.petitionName))
+						])),
+					A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
+					A2(
+					elm$html$Html$button,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$type_('button'),
+							elm$html$Html$Attributes$class('btn btn-primary'),
+							A2(elm$html$Html$Attributes$attribute, 'data-toggle', 'modal'),
+							A2(elm$html$Html$Attributes$attribute, 'data-target', '#petition-content')
 						]),
 					_List_fromArray(
 						[
 							elm$html$Html$text(
-							'The petition was signed by ' + (elm$core$String$fromInt(cnt) + ' people'))
+							mm(author$project$Main$ShowFullTextMsg))
+						])),
+					A2(elm$html$Html$br, _List_Nil, _List_Nil),
+					A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('modal'),
+							elm$html$Html$Attributes$id('petition-content'),
+							elm$html$Html$Attributes$tabindex(-1),
+							A2(elm$html$Html$Attributes$attribute, 'role', 'dialog'),
+							A2(elm$html$Html$Attributes$attribute, 'aria-labelledby', 'petition-content-title'),
+							A2(elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$div,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('modal-dialog modal-dialog-centered'),
+									A2(elm$html$Html$Attributes$attribute, 'role', 'document')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$div,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$class('modal-content')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											elm$html$Html$div,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$class('modal-header')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													elm$html$Html$h5,
+													_List_fromArray(
+														[
+															elm$html$Html$Attributes$class('modal-title'),
+															elm$html$Html$Attributes$id('petition-content-title')
+														]),
+													_List_fromArray(
+														[
+															elm$html$Html$text(
+															_Utils_ap(
+																mm(author$project$Main$SignPetitionMsg),
+																petition.petitionName))
+														])),
+													A2(
+													elm$html$Html$button,
+													_List_fromArray(
+														[
+															elm$html$Html$Attributes$type_('button'),
+															elm$html$Html$Attributes$class('close'),
+															A2(elm$html$Html$Attributes$attribute, 'data-dismiss', 'modal'),
+															A2(elm$html$Html$Attributes$attribute, 'aria-label', 'close')
+														]),
+													_List_fromArray(
+														[
+															A2(
+															elm$html$Html$span,
+															_List_fromArray(
+																[
+																	A2(elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
+																]),
+															_List_fromArray(
+																[
+																	elm$html$Html$text('X')
+																]))
+														]))
+												])),
+											A2(
+											elm$html$Html$div,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$class('modal-body')
+												]),
+											_List_fromArray(
+												[
+													A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionContent)
+												])),
+											A2(
+											elm$html$Html$div,
+											_List_fromArray(
+												[
+													elm$html$Html$Attributes$class('modal-footer')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													elm$html$Html$button,
+													_List_fromArray(
+														[
+															elm$html$Html$Attributes$type_('button'),
+															elm$html$Html$Attributes$class('btn btn-secondary'),
+															A2(elm$html$Html$Attributes$attribute, 'data-dismiss', 'modal')
+														]),
+													_List_fromArray(
+														[
+															elm$html$Html$text(
+															mm(author$project$Main$CloseMsg))
+														]))
+												]))
+										]))
+								]))
 						]))
 				]));
-	} else {
-		return A2(elm$html$Html$div, _List_Nil, _List_Nil);
-	}
-};
+	});
+var author$project$Main$PeopleMsg = {$: 'PeopleMsg'};
+var author$project$Main$WasSignedMsg = {$: 'WasSignedMsg'};
+var author$project$Main$viewSignersCount = F2(
+	function (locale, cntQ) {
+		var mm = author$project$Main$m(locale);
+		if (cntQ.$ === 'Just') {
+			var cnt = cntQ.a;
+			return A2(
+				elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(elm$html$Html$br, _List_Nil, _List_Nil),
+						A2(
+						elm$html$Html$p,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('alert alert-info')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								_Utils_ap(
+									mm(author$project$Main$WasSignedMsg),
+									_Utils_ap(
+										elm$core$String$fromInt(cnt),
+										mm(author$project$Main$PeopleMsg))))
+							]))
+					]));
+		} else {
+			return A2(elm$html$Html$div, _List_Nil, _List_Nil);
+		}
+	});
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
@@ -8002,6 +8147,7 @@ var author$project$Main$view = function (_n0) {
 	var signersCount = _n0.signersCount;
 	var formStatus = _n0.formStatus;
 	var form = _n0.form;
+	var mm = author$project$Main$m(locale);
 	switch (petitionStatus.$) {
 		case 'PetitionFailure':
 			var err = petitionStatus.a;
@@ -8032,7 +8178,7 @@ var author$project$Main$view = function (_n0) {
 					]),
 				_List_fromArray(
 					[
-						author$project$Main$viewPetition(petition),
+						A2(author$project$Main$viewPetition, locale, petition),
 						function () {
 						switch (formStatus.$) {
 							case 'Ready':
@@ -8041,11 +8187,11 @@ var author$project$Main$view = function (_n0) {
 									_List_Nil,
 									_List_fromArray(
 										[
-											author$project$Main$viewSignersCount(signersCount),
+											A2(author$project$Main$viewSignersCount, locale, signersCount),
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
-											author$project$Main$formView(form))
+											A2(author$project$Main$formView, locale, form))
 										]));
 							case 'None':
 								return A2(
@@ -8053,11 +8199,11 @@ var author$project$Main$view = function (_n0) {
 									_List_Nil,
 									_List_fromArray(
 										[
-											author$project$Main$viewSignersCount(signersCount),
+											A2(author$project$Main$viewSignersCount, locale, signersCount),
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
-											author$project$Main$formView(form))
+											A2(author$project$Main$formView, locale, form))
 										]));
 							case 'Sending':
 								return elm$html$Html$text('Sending form...');
@@ -8076,9 +8222,10 @@ var author$project$Main$view = function (_n0) {
 												]),
 											_List_fromArray(
 												[
-													elm$html$Html$text('Thank you! Your vote was taken into account!')
+													elm$html$Html$text(
+													mm(author$project$Main$ThankYouMsg))
 												])),
-											author$project$Main$viewSignersCount(signersCount)
+											A2(author$project$Main$viewSignersCount, locale, signersCount)
 										]));
 							case 'FormFailure':
 								var err = formStatus.a;
@@ -8098,9 +8245,10 @@ var author$project$Main$view = function (_n0) {
 												_List_Nil,
 												_List_fromArray(
 													[
-														elm$html$Html$text('Please, fill all required fields')
+														elm$html$Html$text(
+														mm(author$project$Main$FillRequiredFieldsMsg))
 													])),
-												author$project$Main$formView(form)
+												A2(author$project$Main$formView, locale, form)
 											])));
 						}
 					}()
