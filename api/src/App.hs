@@ -5,6 +5,7 @@ module App where
 import Control.Monad.Trans.Except
 import Control.Monad.IO.Class
 import Data.Text
+import Data.Text.Lazy (fromStrict)
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai
 import Network.Wai.Handler.Warp
@@ -21,6 +22,7 @@ import qualified Database.PostgreSQL.Simple as Pg
 import           Servant.HTML.Blaze
 import qualified Text.Blaze.Html5   as H
 import qualified Text.Blaze.Html5.Attributes   as A
+import Text.Markdown
 
 api :: Proxy Api
 api = Proxy
@@ -49,7 +51,7 @@ mkApp :: IO Application
 mkApp = return $ (cors corsPolicy) $ logStdoutDev $ static $ (serve api server)
 
 server :: Server Api
-server = (getPetitionByCode :<|> postSigner) :<|> getHtmlPetitionByCode 
+server = (getPetitionByCode :<|> postSigner) :<|> getHtmlPetitionByCode :<|> getHtmlPetitionTextByCode
 
 getPetitionByCode :: Text -> Maybe Text -> Handler (Petition, Int)
 getPetitionByCode code locale = do
@@ -81,6 +83,24 @@ getHtmlPetitionByCode code locale = do
       H.script H.! A.type_ "text/javascript" H.! A.src "https://code.jquery.com/jquery-3.3.1.slim.min.js" $ mempty
       H.script H.! A.type_ "text/javascript" H.! A.src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" $ mempty
       H.script H.! A.type_ "text/javascript" H.! A.src "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" $ mempty
+
+getHtmlPetitionTextByCode :: Text -> Maybe Text -> Handler H.Html
+getHtmlPetitionTextByCode code locale = do
+  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
+  p' <- liftIO $ B.getPetitionByCode conn code locale
+  case p' of
+    Just p -> do
+      pure $ H.docTypeHtml $ do
+        H.head $ do
+          H.meta H.! A.charset "UTF-8"
+          H.link H.! A.rel "stylesheet" H.! A.href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+          H.script H.! A.type_ "text/javascript" H.! A.src "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" $ mempty
+          H.title $ H.text (_petitionName p)
+          H.body $ do
+            H.div H.! A.class_ "container" $ do
+              H.h1 $ H.text (_petitionName p)
+              markdown def (fromStrict $ _petitionContent p)
+    _      -> throwE err404
 
 postSigner :: Text -> SignerForm -> Handler Int
 postSigner code signerForm = do
