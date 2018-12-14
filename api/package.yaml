@@ -34,10 +34,12 @@ executables:
 dependencies:
   - base
   - text
+  - bytestring
   # - beam-core
   # - beam-postgres
   - postgresql-simple
   - product-profunctors
+  - optparse-applicative
   - opaleye
   - servant
   - servant-server
@@ -46,6 +48,7 @@ dependencies:
   - transformers
   - microlens
   - aeson
+  - markdown
   - http-types
   - wai
   - wai-cors
@@ -53,3 +56,4 @@ dependencies:
   - wai-middleware-static
   - warp
   - warp-tls
+  - dhall

@@ -1,6 +1,6 @@
 import Browser
-import Html exposing (Html, button, div, text, h1, h2, h3, h5, p, label, br, legend, span)
-import Html.Attributes exposing (class, style, type_, attribute, id, tabindex)
+import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span)
+import Html.Attributes exposing (class, style, type_, attribute, id, tabindex, href, target)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
 import Http
@@ -55,7 +55,7 @@ init {url, code, locale} =
     , petitionStatus = Loading
     , formStatus = None
     -- , form = Form.initial [("gender", Field.string "M")] validate }
-    , form = Form.initial [] validate 
+    , form = Form.initial [("notifies_enabled", Field.bool True)] validate 
     , signersCount = Nothing
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
@@ -134,7 +134,7 @@ view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
         [ style "margin" "50px 20px" 
         , style "width" "90%"   
         ]
-        [ viewPetition locale petition 
+        [ viewPetition url code locale petition 
         , case formStatus of
             Ready -> 
                 div
@@ -192,8 +192,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-viewPetition : String -> Petition -> Html Msg
-viewPetition locale petition = 
+viewPetition : String -> String -> String -> Petition -> Html Msg
+viewPetition url code locale petition = 
     let mm = m locale
     in
     div
@@ -202,13 +202,19 @@ viewPetition locale petition =
       [ h2 [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
       -- , toHtml [class "display-3"] petition.petitionDescription
       , toHtml [] petition.petitionDescription
-      , button 
-          [ type_ "button"
+      , a
+          [ target "_blank"
           , class "btn btn-primary"
-          , attribute "data-toggle" "modal"
-          , attribute "data-target" "#petition-content"
+          , href (url ++ "/petitionText.html/" ++ code ++ "?locale=" ++ locale)
           ]
           [ text (mm ShowFullTextMsg)] 
+      -- , button 
+      --     [ type_ "button"
+      --     , class "btn btn-primary"
+      --     , attribute "data-toggle" "modal"
+      --     , attribute "data-target" "#petition-content"
+      --     ]
+      --     [ text (mm ShowFullTextMsg)] 
       , br [] []
 
       , div 

@@ -6381,6 +6381,10 @@ var etaque$elm_form$Form$initial = F2(
 		return etaque$elm_form$Form$F(
 			A2(etaque$elm_form$Form$updateValidate, validation, model));
 	});
+var etaque$elm_form$Form$Field$Bool = function (a) {
+	return {$: 'Bool', a: a};
+};
+var etaque$elm_form$Form$Field$bool = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$Bool, etaque$elm_form$Form$Tree$Value);
 var author$project$Main$init = function (_n0) {
 	var url = _n0.url;
 	var code = _n0.code;
@@ -6388,7 +6392,15 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			code: code,
-			form: A2(etaque$elm_form$Form$initial, _List_Nil, author$project$Main$validate),
+			form: A2(
+				etaque$elm_form$Form$initial,
+				_List_fromArray(
+					[
+						_Utils_Tuple2(
+						'notifies_enabled',
+						etaque$elm_form$Form$Field$bool(true))
+					]),
+				author$project$Main$validate),
 			formStatus: author$project$Main$None,
 			locale: locale,
 			petitionStatus: author$project$Main$Loading,
@@ -7466,9 +7478,6 @@ var etaque$elm_form$Form$Input = F3(
 	function (a, b, c) {
 		return {$: 'Input', a: a, b: b, c: c};
 	});
-var etaque$elm_form$Form$Field$Bool = function (a) {
-	return {$: 'Bool', a: a};
-};
 var etaque$elm_form$Form$Input$checkboxInput = F2(
 	function (state, attrs) {
 		var formAttrs = _List_fromArray(
@@ -7929,6 +7938,7 @@ var author$project$Main$SignPetitionMsg = {$: 'SignPetitionMsg'};
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
+var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$h2 = _VirtualDom_node('h2');
 var elm$html$Html$h5 = _VirtualDom_node('h5');
@@ -7940,6 +7950,12 @@ var elm$virtual_dom$VirtualDom$attribute = F2(
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
 var elm$html$Html$Attributes$attribute = elm$virtual_dom$VirtualDom$attribute;
+var elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$tabindex = function (n) {
 	return A2(
@@ -7947,6 +7963,7 @@ var elm$html$Html$Attributes$tabindex = function (n) {
 		'tabIndex',
 		elm$core$String$fromInt(n));
 };
+var elm$html$Html$Attributes$target = elm$html$Html$Attributes$stringProperty('target');
 var elm_explorations$markdown$Markdown$defaultOptions = {
 	defaultHighlighting: elm$core$Maybe$Nothing,
 	githubFlavored: elm$core$Maybe$Just(
@@ -7956,8 +7973,8 @@ var elm_explorations$markdown$Markdown$defaultOptions = {
 };
 var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Main$viewPetition = F2(
-	function (locale, petition) {
+var author$project$Main$viewPetition = F4(
+	function (url, code, locale, petition) {
 		var mm = author$project$Main$m(locale);
 		return A2(
 			elm$html$Html$div,
@@ -7976,13 +7993,12 @@ var author$project$Main$viewPetition = F2(
 						])),
 					A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
 					A2(
-					elm$html$Html$button,
+					elm$html$Html$a,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$type_('button'),
+							elm$html$Html$Attributes$target('_blank'),
 							elm$html$Html$Attributes$class('btn btn-primary'),
-							A2(elm$html$Html$Attributes$attribute, 'data-toggle', 'modal'),
-							A2(elm$html$Html$Attributes$attribute, 'data-target', '#petition-content')
+							elm$html$Html$Attributes$href(url + ('/petitionText.html/' + (code + ('?locale=' + locale))))
 						]),
 					_List_fromArray(
 						[
@@ -8178,7 +8194,7 @@ var author$project$Main$view = function (_n0) {
 					]),
 				_List_fromArray(
 					[
-						A2(author$project$Main$viewPetition, locale, petition),
+						A4(author$project$Main$viewPetition, url, code, locale, petition),
 						function () {
 						switch (formStatus.$) {
 							case 'Ready':
