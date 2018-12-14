@@ -6,6 +6,8 @@ import Control.Monad.Trans.Except
 import Control.Monad.IO.Class
 import Data.Text
 import Data.Text.Lazy (fromStrict)
+import Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as BS
 import qualified Network.HTTP.Types as HTTP
 import Network.Wai
 import Network.Wai.Handler.Warp
@@ -17,6 +19,7 @@ import Servant
 import System.IO
 import Data
 import Api
+import qualified Config as Cfg
 import qualified Base as B
 import qualified Database.PostgreSQL.Simple as Pg
 import           Servant.HTML.Blaze
@@ -35,27 +38,34 @@ corsPolicy _ = Just $ simpleCorsResourcePolicy
 
 run :: IO ()
 run = do
-  let port = 8080
-  -- let port = 80
+  config <- Cfg.loadConfig "./config.dhall"
+  let serverCfg = Cfg.server config
+  let url = pack $ Cfg.url serverCfg
+  let port = fromIntegral (Cfg.port serverCfg)
+  let crtFile = Cfg.crtFile $ Cfg.tls config
+  let keyFile = Cfg.keyFile $ Cfg.tls config
+  let dbconnect = BS.pack $ Cfg.dbconnect config
       warpOpts =
         setPort port $
         setBeforeMainLoop (hPutStrLn stderr ("listening on port " ++ show port)) $
         defaultSettings
-      -- tlsOpts = tlsSettings "/etc/ssl/certs/ssl-cert-snakeoil.pem" "/etc/ssl/private/ssl-cert-snakeoil.key"
-      tlsOpts = tlsSettings "crt.txt" "private-key.txt"
-  runTLS tlsOpts warpOpts =<< mkApp
+      tlsOpts = tlsSettings crtFile keyFile
+  runTLS tlsOpts warpOpts =<< mkApp url port dbconnect
   -- runServer warpOpts =<< mkApp
 
-mkApp :: IO Application
+mkApp :: Text -> Int -> ByteString -> IO Application
 -- mkApp = return $ simpleCors (serve api server)
-mkApp = return $ (cors corsPolicy) $ logStdoutDev $ static $ (serve api server)
+mkApp url port dbconnect = 
+  return $ (cors corsPolicy) $ logStdoutDev $ static $ (serve api $ server url port dbconnect)
 
-server :: Server Api
-server = (getPetitionByCode :<|> postSigner) :<|> getHtmlPetitionByCode :<|> getHtmlPetitionTextByCode
+server :: Text -> Int -> ByteString -> Server Api
+server url port db = ((getPetitionByCode db) :<|> postSigner db) 
+       :<|> (getHtmlPetitionByCode url port)
+       :<|> (getHtmlPetitionTextByCode db)
 
-getPetitionByCode :: Text -> Maybe Text -> Handler (Petition, Int)
-getPetitionByCode code locale = do
-  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
+getPetitionByCode :: ByteString -> Text -> Maybe Text -> Handler (Petition, Int)
+getPetitionByCode dbconnect code locale = do
+  conn <- liftIO $ Pg.connectPostgreSQL dbconnect
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
     Just p -> do
@@ -64,29 +74,30 @@ getPetitionByCode code locale = do
     -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
     _      -> throwE err404
 
-getHtmlPetitionByCode :: Text -> Maybe Text -> Handler H.Html
-getHtmlPetitionByCode code locale = do
+getHtmlPetitionByCode :: Text -> Int -> Text -> Maybe Text -> Handler H.Html
+getHtmlPetitionByCode url port code locale = do
   let locale' = maybe ("default"::Text) id locale
+  let url' = url `append` ":" `append` (pack $ show port)
   pure $ H.docTypeHtml $ do
     H.head $ do
       H.meta H.! A.charset "UTF-8"
       H.title "Petition"
-      H.script H.! A.type_ "text/javascript" H.! A.src "https://petitions.nika.news:8080/static/petition-widget.js" $ mempty
+      H.script H.! A.type_ "text/javascript" H.! A.src (H.textValue $ url' `append` "/static/petition-widget.js") $ mempty
       H.link H.! A.rel "stylesheet" H.! A.href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
       H.body $ do
         H.div H.! A.id "petition" $ mempty
         H.script $ do
           H.toHtml ("var app = Elm.Main.init({ \
                   \  node: document.getElementById('petition'), \
-                  \  flags: {url: 'https://petitions.nika.news:8080', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
+                  \  flags: {url: '" `append` url' `append` "', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
                   \              });" :: Text))
       H.script H.! A.type_ "text/javascript" H.! A.src "https://code.jquery.com/jquery-3.3.1.slim.min.js" $ mempty
       H.script H.! A.type_ "text/javascript" H.! A.src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" $ mempty
       H.script H.! A.type_ "text/javascript" H.! A.src "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" $ mempty
 
-getHtmlPetitionTextByCode :: Text -> Maybe Text -> Handler H.Html
-getHtmlPetitionTextByCode code locale = do
-  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
+getHtmlPetitionTextByCode :: ByteString -> Text -> Maybe Text -> Handler H.Html
+getHtmlPetitionTextByCode dbconnect code locale = do
+  conn <- liftIO $ Pg.connectPostgreSQL dbconnect
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
     Just p -> do
@@ -102,9 +113,9 @@ getHtmlPetitionTextByCode code locale = do
               markdown def (fromStrict $ _petitionContent p)
     _      -> throwE err404
 
-postSigner :: Text -> SignerForm -> Handler Int
-postSigner code signerForm = do
-  conn <- liftIO $ Pg.connectPostgreSQL "dbname=petitions user=nlv" 
+postSigner :: ByteString -> Text -> SignerForm -> Handler Int
+postSigner dbconnect code signerForm = do
+  conn <- liftIO $ Pg.connectPostgreSQL dbconnect
   inserted <- liftIO $ B.insertSigner conn code signerForm
   case inserted of 
     Just cnt -> pure cnt

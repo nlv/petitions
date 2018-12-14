@@ -34,6 +34,7 @@ executables:
 dependencies:
   - base
   - text
+  - bytestring
   # - beam-core
   # - beam-postgres
   - postgresql-simple
@@ -54,3 +55,4 @@ dependencies:
   - wai-middleware-static
   - warp
   - warp-tls
+  - dhall
