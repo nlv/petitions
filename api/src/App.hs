@@ -38,7 +38,8 @@ corsPolicy _ = Just $ simpleCorsResourcePolicy
 
 run :: IO ()
 run = do
-  config <- Cfg.loadConfig "./config.dhall"
+  opts <- Cfg.getOpts
+  config <- Cfg.loadConfig (Cfg.configFile opts) 
   let serverCfg = Cfg.server config
   let url = pack $ Cfg.url serverCfg
   let port = fromIntegral (Cfg.port serverCfg)

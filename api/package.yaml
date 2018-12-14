@@ -39,6 +39,7 @@ dependencies:
   # - beam-postgres
   - postgresql-simple
   - product-profunctors
+  - optparse-applicative
   - opaleye
   - servant
   - servant-server
