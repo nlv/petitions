@@ -7225,7 +7225,7 @@ var author$project$Main$m = F2(
 				case 'FillRequiredFieldsMsg':
 					return 'Заполните обязательные поля.';
 				case 'WasSignedMsg':
-					return 'Петицию подисали ';
+					return 'Петицию подписали ';
 				case 'PeopleMsg':
 					return ' человек';
 				case 'SignPetitionMsg':

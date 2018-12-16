@@ -411,7 +411,7 @@ m locale msg =
         ResetMsg -> "Очистить"
         ThankYouMsg -> "Благодарим Вас! Ваш голос учтен!"
         FillRequiredFieldsMsg -> "Заполните обязательные поля."
-        WasSignedMsg -> "Петицию подисали "
+        WasSignedMsg -> "Петицию подписали "
         PeopleMsg -> " человек"
         SignPetitionMsg -> "ПОДПИШИТЕ ПЕТИЦИЮ: "
         CloseMsg -> "Закрыть"
