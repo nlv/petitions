@@ -115,7 +115,9 @@ update msg ({ url, code, locale, form } as model) =
             Http.send SentForm (postPetitionByCodeSigner url code signer)
           )
         ( Form.Submit, Nothing ) ->
-          ( { model | formStatus = Opss }, Cmd.none )
+          ( { model | formStatus = Opss }
+          , Task.perform (always (SetFlash (mm FillRequiredFieldsMsg))) now
+          )
         _ ->
           ({ model | form = Form.update validate formMsg form }, Cmd.none)
 
@@ -274,14 +276,14 @@ formView locale flash form =
         notifiesEnabled = Form.getFieldAsBool "notifies_enabled" form
         genderOptions = [("M", (mm MaleMsg)), ("F", (mm FemaleMsg))]
 
-        title = 
-          Maybe.map (\x -> x) (Flash.getMessage flash) |> Maybe.withDefault (mm PetitionFormMsg)
+        (title, titleClass) = 
+          Maybe.map (\x -> (x, "alert")) (Flash.getMessage flash) |> Maybe.withDefault (mm PetitionFormMsg, "")
             
     in
       div
         [ id "petition-form" ]
         -- [ h1 [] [ text (mm PetitionFormMsg) ]
-        [ h1 [] [ text title ]
+        [ h1 [class titleClass] [ text title ]
         , textGroup (mm FirstNameMsg) (Form.getFieldAsString "first_name" form)
         , textGroup (mm LastNameMsg) (Form.getFieldAsString "last_name" form)
         , textGroup (mm CountryMsg) (Form.getFieldAsString "country" form)

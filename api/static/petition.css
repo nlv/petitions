@@ -221,6 +221,10 @@ body {
     justify-content: center;
 }
 
-.has-error {
-    border-color: red !important;
+.alert {
+    background-color: lightskyblue;
 }
+
+/* .has-error {
+    border-color: red !important;
+} */

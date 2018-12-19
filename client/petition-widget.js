@@ -6583,6 +6583,7 @@ var author$project$Generated$Api$postPetitionByCodeSigner = F3(
 				withCredentials: false
 			});
 	});
+var author$project$Main$FillRequiredFieldsMsg = {$: 'FillRequiredFieldsMsg'};
 var author$project$Main$FormFailure = function (a) {
 	return {$: 'FormFailure', a: a};
 };
@@ -7325,7 +7326,12 @@ var author$project$Main$update = F2(
 							_Utils_update(
 								model,
 								{formStatus: author$project$Main$Opss}),
-							elm$core$Platform$Cmd$none);
+							A2(
+								elm$core$Task$perform,
+								elm$core$Basics$always(
+									author$project$Main$SetFlash(
+										mm(author$project$Main$FillRequiredFieldsMsg))),
+								elm$time$Time$now));
 					}
 				} else {
 					return _Utils_Tuple2(
@@ -7788,15 +7794,6 @@ var author$project$Main$formView = F3(
 		var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
 		var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
 		var mm = author$project$Main$m(locale);
-		var title = A2(
-			elm$core$Maybe$withDefault,
-			mm(author$project$Main$PetitionFormMsg),
-			A2(
-				elm$core$Maybe$map,
-				function (x) {
-					return x;
-				},
-				author$project$Flash$getMessage(flash)));
 		var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
 		var genderOptions = _List_fromArray(
 			[
@@ -7810,9 +7807,9 @@ var author$project$Main$formView = F3(
 		var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
 		var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
 		var errorFor = function (field) {
-			var _n0 = field.liveError;
-			if (_n0.$ === 'Just') {
-				var error = _n0.a;
+			var _n1 = field.liveError;
+			if (_n1.$ === 'Just') {
+				var error = _n1.a;
 				return A2(
 					elm$html$Html$div,
 					_List_fromArray(
@@ -7832,6 +7829,19 @@ var author$project$Main$formView = F3(
 		var country = A2(etaque$elm_form$Form$getFieldAsString, 'country', form);
 		var city = A2(etaque$elm_form$Form$getFieldAsString, 'city', form);
 		var birthYear = A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form);
+		var _n0 = A2(
+			elm$core$Maybe$withDefault,
+			_Utils_Tuple2(
+				mm(author$project$Main$PetitionFormMsg),
+				''),
+			A2(
+				elm$core$Maybe$map,
+				function (x) {
+					return _Utils_Tuple2(x, 'alert');
+				},
+				author$project$Flash$getMessage(flash)));
+		var title = _n0.a;
+		var titleClass = _n0.b;
 		return A2(
 			elm$html$Html$div,
 			_List_fromArray(
@@ -7842,7 +7852,10 @@ var author$project$Main$formView = F3(
 				[
 					A2(
 					elm$html$Html$h1,
-					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class(titleClass)
+						]),
 					_List_fromArray(
 						[
 							elm$html$Html$text(title)
