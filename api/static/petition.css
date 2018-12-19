@@ -194,15 +194,33 @@ body {
     margin-top: 0rem;
 }
 
-/* Style for "Заполните" */
-width: 151px;
-height: 17px;
-color: #444444;
-font-family: "Proxima Nova - Semibold";
-font-size: 18px;
-font-weight: 400;
-line-height: 18px;
+#petition-form button {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    border-radius: 4px;
+    color: #555555;
+    display:block;
+    width:100px;
+    margin: 20px 5px;
+    text-align:center;
+    padding: 4px 6px;
+    vertical-align: middle;
+    text-decoration:none;
+}
 
+#petition-form button:hover, #petition-form button:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+    outline: 0 none;
+}
 
+#petition-form .controls {
+    display: flex;
+    justify-content: center;
+}
 
-
+.has-error {
+    border-color: red !important;
+}

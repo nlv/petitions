@@ -23,6 +23,9 @@ main =
 
 -- MODEL
 
+initFormValues =
+  [("gender", Field.string "M"), ("notifies_enabled", Field.bool True)]
+
 type PetitionStatus
   = PetitionFailure Http.Error
   | Loading
@@ -55,7 +58,7 @@ init {url, code, locale} =
     , locale = locale
     , petitionStatus = Loading
     , formStatus = None
-    , form = Form.initial [("gender", Field.string "M"), ("notifies_enabled", Field.bool True)] validate 
+    , form = Form.initial initFormValues validate 
     , signersCount = Nothing
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
@@ -282,25 +285,21 @@ formView locale form =
         , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
         , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
         , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
+        , formActions
+            [ button
+                [ onClick Form.Submit
+                ]
+                [ text (mm SubmitMsg) ]
+            , button
+                [ onClick (Form.Reset initFormValues)
+                ]
+                [ text (mm ResetMsg) ]
+            ]
         ]
         -- [ class "form-horizontal"
         -- ]
         -- [ legend [] [ text (mm PetitionFormMsg) ]    
         -- -- , div [] (getFormErrorsString form)
-
-        -- , formActions
-        --     [ button
-        --         [ onClick Form.Submit
-        --         , class "btn btn-primary"
-        --         ]
-        --         [ text (mm SubmitMsg) ]
-        --     , text " "
-        --     , button
-        --         [ onClick (Form.Reset [])
-        --         , class "btn btn-default"
-        --         ]
-        --         [ text (mm ResetMsg) ]
-        --     ]
 
 type TextMessage 
   = PetitionFormMsg

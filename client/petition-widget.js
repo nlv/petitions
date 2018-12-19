@@ -5868,6 +5868,26 @@ var author$project$Main$GotPetition = function (a) {
 };
 var author$project$Main$Loading = {$: 'Loading'};
 var author$project$Main$None = {$: 'None'};
+var etaque$elm_form$Form$Field$Bool = function (a) {
+	return {$: 'Bool', a: a};
+};
+var etaque$elm_form$Form$Tree$Value = function (a) {
+	return {$: 'Value', a: a};
+};
+var etaque$elm_form$Form$Field$bool = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$Bool, etaque$elm_form$Form$Tree$Value);
+var etaque$elm_form$Form$Field$String = function (a) {
+	return {$: 'String', a: a};
+};
+var etaque$elm_form$Form$Field$string = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Tree$Value);
+var author$project$Main$initFormValues = _List_fromArray(
+	[
+		_Utils_Tuple2(
+		'gender',
+		etaque$elm_form$Form$Field$string('M')),
+		_Utils_Tuple2(
+		'notifies_enabled',
+		etaque$elm_form$Form$Field$bool(true))
+	]);
 var author$project$Main$prepareLocale = function (locale) {
 	if (locale === 'default') {
 		return elm$core$Maybe$Nothing;
@@ -6077,9 +6097,6 @@ var elm$core$Result$mapError = F2(
 		}
 	});
 var etaque$elm_form$Form$Field$EmptyField = {$: 'EmptyField'};
-var etaque$elm_form$Form$Tree$Value = function (a) {
-	return {$: 'Value', a: a};
-};
 var etaque$elm_form$Form$Tree$getAtName = F2(
 	function (name, value) {
 		if (value.$ === 'Group') {
@@ -6381,14 +6398,6 @@ var etaque$elm_form$Form$initial = F2(
 		return etaque$elm_form$Form$F(
 			A2(etaque$elm_form$Form$updateValidate, validation, model));
 	});
-var etaque$elm_form$Form$Field$Bool = function (a) {
-	return {$: 'Bool', a: a};
-};
-var etaque$elm_form$Form$Field$bool = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$Bool, etaque$elm_form$Form$Tree$Value);
-var etaque$elm_form$Form$Field$String = function (a) {
-	return {$: 'String', a: a};
-};
-var etaque$elm_form$Form$Field$string = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Tree$Value);
 var author$project$Main$init = function (_n0) {
 	var url = _n0.url;
 	var code = _n0.code;
@@ -6396,18 +6405,7 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			code: code,
-			form: A2(
-				etaque$elm_form$Form$initial,
-				_List_fromArray(
-					[
-						_Utils_Tuple2(
-						'gender',
-						etaque$elm_form$Form$Field$string('M')),
-						_Utils_Tuple2(
-						'notifies_enabled',
-						etaque$elm_form$Form$Field$bool(true))
-					]),
-				author$project$Main$validate),
+			form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
 			formStatus: author$project$Main$None,
 			locale: locale,
 			petitionStatus: author$project$Main$Loading,
@@ -7188,6 +7186,8 @@ var author$project$Main$MaleMsg = {$: 'MaleMsg'};
 var author$project$Main$OrganizationMsg = {$: 'OrganizationMsg'};
 var author$project$Main$PetitionFormMsg = {$: 'PetitionFormMsg'};
 var author$project$Main$PhoneMsg = {$: 'PhoneMsg'};
+var author$project$Main$ResetMsg = {$: 'ResetMsg'};
+var author$project$Main$SubmitMsg = {$: 'SubmitMsg'};
 var author$project$Main$m = F2(
 	function (locale, msg) {
 		if (locale === 'ru') {
@@ -7416,6 +7416,15 @@ var author$project$View$Form$checkboxGroup = F2(
 						]))
 				]));
 	});
+var author$project$View$Form$formActions = function (content) {
+	return A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('controls')
+			]),
+		content);
+};
 var author$project$View$Form$errorClass = function (maybeError) {
 	return A2(
 		elm$core$Maybe$withDefault,
@@ -7561,7 +7570,7 @@ var author$project$View$Form$textGroup = F2(
 					elm$html$Html$Attributes$value(
 					A2(elm$core$Maybe$withDefault, '', state.value)),
 					elm$html$Html$Attributes$class(
-					author$project$View$Form$errorClass(state.liveError))
+					author$project$View$Form$errorClass(state.error))
 				]));
 	});
 var author$project$View$Form$textGroupHidden = F2(
@@ -7578,8 +7587,19 @@ var author$project$View$Form$textGroupHidden = F2(
 				]));
 	});
 var elm$core$Debug$toString = _Debug_toString;
+var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
+var etaque$elm_form$Form$Reset = function (a) {
+	return {$: 'Reset', a: a};
+};
+var etaque$elm_form$Form$Submit = {$: 'Submit'};
 var etaque$elm_form$Form$getBoolAt = F2(
 	function (name, _n0) {
 		var model = _n0.a;
@@ -7739,7 +7759,34 @@ var author$project$Main$formView = F2(
 					A2(
 					author$project$View$Form$checkboxGroup,
 					mm(author$project$Main$KeepMeUpdateMsg),
-					A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form))
+					A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
+					author$project$View$Form$formActions(
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$button,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit)
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(
+									mm(author$project$Main$SubmitMsg))
+								])),
+							A2(
+							elm$html$Html$button,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(
+									etaque$elm_form$Form$Reset(author$project$Main$initFormValues))
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(
+									mm(author$project$Main$ResetMsg))
+								]))
+						]))
 				]));
 	});
 var author$project$Main$toString = function (err) {

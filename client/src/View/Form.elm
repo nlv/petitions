@@ -36,10 +36,9 @@ type alias GroupBuilder a =
 --         ]
 
 
--- formActions : List (Html Form.Msg) -> Html Form.Msg
--- formActions content =
---     row
---         [ div [ class "col-xs-offset-3 col-xs-9" ] content ]
+formActions : List (Html Form.Msg) -> Html Form.Msg
+formActions content =
+    div [ class "controls" ] content 
 
 
 textGroup : GroupBuilder String
@@ -47,7 +46,8 @@ textGroup labelQ state =
     Input.textInput state
             [ placeholder labelQ
             , value (Maybe.withDefault "" state.value)
-            , class (errorClass state.liveError) 
+            -- , class (errorClass state.liveError) 
+            , class (errorClass state.error) 
             ]
 
 textGroupHidden : GroupBuilder String
