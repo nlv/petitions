@@ -1,6 +1,6 @@
 import Browser
-import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span)
-import Html.Attributes exposing (class, style, type_, attribute, id, tabindex, href, target)
+import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span, img)
+import Html.Attributes exposing (class, style, type_, attribute, id, tabindex, href, target, src)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
 import Http
@@ -10,9 +10,10 @@ import Form exposing (Form, getErrors)
 import Form.Input as Input
 import Form.Field as Field
 import Form.Validate as Validate exposing (..)
-import View.Bootstrap exposing (..)
+import View.Form exposing (..)
 import Markdown exposing (..)
 import String exposing (toInt, fromInt)
+import Maybe exposing (map, withDefault)
 -- import Html.Events exposing (onClick)
 
 
@@ -54,8 +55,7 @@ init {url, code, locale} =
     , locale = locale
     , petitionStatus = Loading
     , formStatus = None
-    -- , form = Form.initial [("gender", Field.string "M")] validate }
-    , form = Form.initial [("notifies_enabled", Field.bool True)] validate 
+    , form = Form.initial [("gender", Field.string "M"), ("notifies_enabled", Field.bool True)] validate 
     , signersCount = Nothing
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
@@ -131,23 +131,13 @@ view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
         [ text "Loading petition" ]
     Loaded petition ->
       div
-        [ style "margin" "50px 20px" 
-        , style "width" "90%"   
-        ]
-        [ viewPetition url code locale petition 
+        []
+        [ viewPetition url code locale petition signersCount
         , case formStatus of
             Ready -> 
-                div
-                    []
-                    [ viewSignersCount locale signersCount
-                    , Html.map FormMsg (formView locale form)
-                    ]
+                div [] [ Html.map FormMsg (formView locale form) ]
             None -> 
-                div
-                    []
-                    [ viewSignersCount locale signersCount
-                    , Html.map FormMsg (formView locale form)
-                    ]
+                div [] [ Html.map FormMsg (formView locale form) ]
             Sending -> text "Sending form..."
             Sent -> div
                       []
@@ -155,34 +145,36 @@ view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
                       , p
                           [ class "alert alert-success" ]
                           [ text (mm ThankYouMsg) ]
-                      , viewSignersCount locale signersCount
+                      -- , viewSignersCount locale signersCount
                       ]
             FormFailure err -> text ("Error of sending form: " ++ (toString err))
-            Opss -> Html.map 
-                      FormMsg 
-                      (
-                      div
-                        []
-                        [ p [] [text (mm FillRequiredFieldsMsg)]
-                        ,formView locale form
-                        ]
-                      )
-         ]
-
-viewSignersCount : String -> (Maybe Int) -> Html Msg
-viewSignersCount locale cntQ =
-  let mm = m locale
-  in
-  case cntQ of 
-    (Just cnt) -> 
-      div
-        []
-        [ br [] []
-        , p
-            [ class "alert alert-info" ]
-            [ text ((mm WasSignedMsg) ++ (fromInt cnt) ++ (mm PeopleMsg)) ]
+            Opss -> 
+                div [] [ Html.map FormMsg (formView locale form) ]
+                -- Html.map 
+                --           FormMsg 
+                --           (
+                --           div
+                --             []
+                --             [ p [] [text (mm FillRequiredFieldsMsg)]
+                --             ,formView locale form
+                --             ]
+                --           )
         ]
-    Nothing -> div [] []
+
+-- viewSignersCount : String -> (Maybe Int) -> Html Msg
+-- viewSignersCount locale cntQ =
+--   let mm = m locale
+--   in
+--   case cntQ of 
+--     (Just cnt) -> 
+--       div
+--         []
+--         [ br [] []
+--         , p
+--             [ class "alert alert-info" ]
+--             [ text ((mm WasSignedMsg) ++ (fromInt cnt) ++ (mm PeopleMsg)) ]
+--         ]
+--     Nothing -> div [] []
 
 getFormErrorsString : Form () SignerForm -> List (Html Form.Msg)
 getFormErrorsString form =
@@ -192,74 +184,38 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-viewPetition : String -> String -> String -> Petition -> Html Msg
-viewPetition url code locale petition = 
+viewPetition : String -> String -> String -> Petition -> (Maybe Int) -> Html Msg
+viewPetition url code locale petition cnt = 
     let mm = m locale
+        cntQ = withDefault "?" (map fromInt cnt)
     in
     div
-      []
-      -- [ h1 [class "display-2"] [text ("SIGN THE PETITION: " ++ petition.petitionName) ]
-      [ h2 [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
-      -- , toHtml [class "display-3"] petition.petitionDescription
-      , toHtml [] petition.petitionDescription
-      , a
-          [ target "_blank"
-          , class "btn btn-primary"
-          , href (url ++ "/petitionText.html/" ++ code ++ "?locale=" ++ locale)
-          ]
-          [ text (mm ShowFullTextMsg)] 
-      -- , button 
-      --     [ type_ "button"
-      --     , class "btn btn-primary"
-      --     , attribute "data-toggle" "modal"
-      --     , attribute "data-target" "#petition-content"
-      --     ]
-      --     [ text (mm ShowFullTextMsg)] 
-      , br [] []
-
+      [id "petition-info"]
+      -- [ h [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
+      [ h1 [] [text "Подпишите петицию в защиту Украинской Православной Церкви" ]
+      , img [src (url ++ "/static/petition.png")] []
       , div 
-        [ class "modal"
-        , id "petition-content"
-        , tabindex (-1)
-        , attribute "role" "dialog"
-        , attribute "aria-labelledby" "petition-content-title"
-        , attribute "aria-hidden" "true"
+        [ id "petition-info-signed"]
+        [ div [ id "petition-info-signed-div1"] [text (mm WasSignedMsg)] 
+        , div [ id "petition-info-signed-div2" ] [ text cntQ ] 
         ]
-        [ div 
-          [ class "modal-dialog modal-dialog-centered"
-          , attribute "role" "document"
-          ]
-          [ div 
-            [ class "modal-content" ]
-            [ div
-                [ class "modal-header" ]
-                [ h5 
-                    [ class "modal-title"
-                    , id "petition-content-title"
-                    ]
-                    [text ((mm SignPetitionMsg) ++ petition.petitionName)]
-                , button
-                    [ type_ "button"
-                    , class "close"
-                    , attribute "data-dismiss" "modal"
-                    , attribute "aria-label" "close"
-                    ]
-                    [ span [attribute "aria-hidden" "true"] [text "X"] ]
-                ]
-            , div [class "modal-body"] [ toHtml [] petition.petitionContent]
-            , div 
-              [ class "modal-footer" ]
-              [ button
-                  [ type_ "button"
-                  , class "btn btn-secondary"
-                  , attribute "data-dismiss" "modal"
-                  ]
-                  [ text (mm CloseMsg)]
+      , div 
+        [ id "petition-info-description" ]
+        [ toHtml [] petition.petitionDescription 
+        , p
+          [ class "read-more"]
+          [ a
+              [ target "_blank"
+              , class "btn btn-primary"
+              , href (url ++ "/petitionText.html/" ++ code ++ "?locale=" ++ locale)
               ]
-            ]
+              [ text (mm ShowFullTextMsg)] 
           ]
         ]
+      , div [ id "petition-info-separator" ] []
+
       ]
+
  
 toString err =
   case err of
@@ -300,44 +256,22 @@ formView locale form =
                     text ""
 
         -- fields states
-        firstName =
-            Form.getFieldAsString "first_name" form
-
-        lastName =
-            Form.getFieldAsString "last_name" form
-
-        country =
-            Form.getFieldAsString "country" form
-
-        city =
-            Form.getFieldAsString "city" form
-
-        organization =
-            Form.getFieldAsString "organization" form
-
-        email =
-            Form.getFieldAsString "email" form
-
-        phone =
-            Form.getFieldAsString "phone" form
-
-        birthYear =
-            Form.getFieldAsString "birth_year" form
-
-        gender =
-            Form.getFieldAsString "gender" form
-
-        notifiesEnabled =
-            Form.getFieldAsBool "notifies_enabled" form
-
+        firstName = Form.getFieldAsString "first_name" form
+        lastName = Form.getFieldAsString "last_name" form
+        country = Form.getFieldAsString "country" form
+        city = Form.getFieldAsString "city" form
+        organization = Form.getFieldAsString "organization" form
+        email = Form.getFieldAsString "email" form
+        phone = Form.getFieldAsString "phone" form
+        birthYear = Form.getFieldAsString "birth_year" form
+        gender = Form.getFieldAsString "gender" form
+        notifiesEnabled = Form.getFieldAsBool "notifies_enabled" form
         genderOptions = [("M", (mm MaleMsg)), ("F", (mm FemaleMsg))]
             
     in
       div
-        [ class "form-horizontal"
-        ]
-        [ legend [] [ text (mm PetitionFormMsg) ]    
-        -- , div [] (getFormErrorsString form)
+        [ id "petition-form" ]
+        [ h1 [] [ text (mm PetitionFormMsg) ]
         , textGroup (mm FirstNameMsg) (Form.getFieldAsString "first_name" form)
         , textGroup (mm LastNameMsg) (Form.getFieldAsString "last_name" form)
         , textGroup (mm CountryMsg) (Form.getFieldAsString "country" form)
@@ -348,21 +282,25 @@ formView locale form =
         , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
         , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
         , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
-
-        , formActions
-            [ button
-                [ onClick Form.Submit
-                , class "btn btn-primary"
-                ]
-                [ text (mm SubmitMsg) ]
-            , text " "
-            , button
-                [ onClick (Form.Reset [])
-                , class "btn btn-default"
-                ]
-                [ text (mm ResetMsg) ]
-            ]
         ]
+        -- [ class "form-horizontal"
+        -- ]
+        -- [ legend [] [ text (mm PetitionFormMsg) ]    
+        -- -- , div [] (getFormErrorsString form)
+
+        -- , formActions
+        --     [ button
+        --         [ onClick Form.Submit
+        --         , class "btn btn-primary"
+        --         ]
+        --         [ text (mm SubmitMsg) ]
+        --     , text " "
+        --     , button
+        --         [ onClick (Form.Reset [])
+        --         , class "btn btn-default"
+        --         ]
+        --         [ text (mm ResetMsg) ]
+        --     ]
 
 type TextMessage 
   = PetitionFormMsg
@@ -393,8 +331,8 @@ m locale msg =
   case locale of
     "ru" -> 
       case msg of 
-        PetitionFormMsg -> "Укажите Ваши данные"
-        ShowFullTextMsg -> "Показать полный текст"
+        PetitionFormMsg -> "Заполните форму"
+        ShowFullTextMsg -> "Читать полностью"
         FirstNameMsg  -> "Имя*"
         LastNameMsg -> "Фамилия*"
         CountryMsg -> "Страна*"
@@ -411,14 +349,14 @@ m locale msg =
         ResetMsg -> "Очистить"
         ThankYouMsg -> "Благодарим Вас! Ваш голос учтен!"
         FillRequiredFieldsMsg -> "Заполните обязательные поля."
-        WasSignedMsg -> "Петицию подписали "
+        WasSignedMsg -> "Подписало:"
         PeopleMsg -> " человек"
         SignPetitionMsg -> "ПОДПИШИТЕ ПЕТИЦИЮ: "
         CloseMsg -> "Закрыть"
     _ -> 
       case msg of 
-        PetitionFormMsg -> "Petition Form"
-        ShowFullTextMsg -> "Show full text"
+        PetitionFormMsg -> "Fill the form"
+        ShowFullTextMsg -> "Read full text"
         FirstNameMsg  -> "First Name*"
         LastNameMsg -> "Last Name*"
         CountryMsg -> "Country*"
@@ -435,7 +373,7 @@ m locale msg =
         ResetMsg -> "Reset"
         ThankYouMsg -> "Thank you! Your vote was taken into account!"
         FillRequiredFieldsMsg -> "Please, fill all required fields"
-        WasSignedMsg -> "The petition was signed by "
+        WasSignedMsg -> "Signed by:"
         PeopleMsg -> " people"
         SignPetitionMsg -> "SIGN THE PETITION: "
         CloseMsg -> "Close"
