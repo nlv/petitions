@@ -1,4 +1,6 @@
 import Browser
+import Time exposing (now)
+import Task exposing (perform)
 import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span, img)
 import Html.Attributes exposing (class, style, type_, attribute, id, tabindex, href, target, src)
 import Html.Events exposing (onClick)
@@ -11,6 +13,7 @@ import Form.Input as Input
 import Form.Field as Field
 import Form.Validate as Validate exposing (..)
 import View.Form exposing (..)
+import Flash exposing (..)
 import Markdown exposing (..)
 import String exposing (toInt, fromInt)
 import Maybe exposing (map, withDefault)
@@ -25,6 +28,8 @@ main =
 
 initFormValues =
   [("gender", Field.string "M"), ("notifies_enabled", Field.bool True)]
+
+flashTimeout = 5000
 
 type PetitionStatus
   = PetitionFailure Http.Error
@@ -48,6 +53,7 @@ type alias Model =
     ,formStatus     : FormStatus
     ,signersCount   : Maybe Int
     ,form           : Form () SignerForm 
+    ,flash          : Flash.State
   }
 
 init : {url: String, code: String, locale: String} -> (Model, Cmd Msg)
@@ -60,6 +66,7 @@ init {url, code, locale} =
     , formStatus = None
     , form = Form.initial initFormValues validate 
     , signersCount = Nothing
+    , flash = Flash.none
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
@@ -82,9 +89,13 @@ type Msg
   | SentForm (Result Http.Error Int)
   | NoOp
   | FormMsg Form.Msg
+  | SetFlash String
+  | RemoveFlash 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg ({ url, code, locale, form } as model) =
+  let mm = m locale
+  in
   case msg of
     GotPetition result ->
       case result of
@@ -111,7 +122,9 @@ update msg ({ url, code, locale, form } as model) =
     SentForm result ->
       case result of
         Ok cnt ->
-          ({model | formStatus = Sent, signersCount = Just cnt}, Cmd.none)
+          ( {model | formStatus = Sent, signersCount = Just cnt, form = Form.initial initFormValues validate}
+          , Task.perform (always (SetFlash (mm ThankYouMsg))) now
+          )
 
         Err err ->
           ({model | formStatus = FormFailure err}, Cmd.none)
@@ -119,10 +132,21 @@ update msg ({ url, code, locale, form } as model) =
     NoOp ->
         (model, Cmd.none)
 
+    SetFlash flashMessage ->
+      let
+        ( message, cmd) = 
+          Flash.setFlash RemoveFlash flashTimeout flashMessage
+      in
+        ({ model | flash = message }, cmd)    
+
+    RemoveFlash ->
+      ({ model | flash = Flash.none }, Cmd.none)        
+
+
 -- VIEW
 
 view : Model -> Html Msg
-view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
+view {url, code, locale, petitionStatus, signersCount, formStatus, form, flash} =
   let mm = m locale
   in
   case petitionStatus of
@@ -138,21 +162,15 @@ view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
         [ viewPetition url code locale petition signersCount
         , case formStatus of
             Ready -> 
-                div [] [ Html.map FormMsg (formView locale form) ]
+                div [] [ Html.map FormMsg (formView locale flash form) ]
             None -> 
-                div [] [ Html.map FormMsg (formView locale form) ]
+                div [] [ Html.map FormMsg (formView locale flash form) ]
             Sending -> text "Sending form..."
-            Sent -> div
-                      []
-                      [ br [] []
-                      , p
-                          [ class "alert alert-success" ]
-                          [ text (mm ThankYouMsg) ]
-                      -- , viewSignersCount locale signersCount
-                      ]
+            Sent -> 
+                div [] [ Html.map FormMsg (formView locale flash form) ]
             FormFailure err -> text ("Error of sending form: " ++ (toString err))
             Opss -> 
-                div [] [ Html.map FormMsg (formView locale form) ]
+                div [] [ Html.map FormMsg (formView locale flash form) ]
                 -- Html.map 
                 --           FormMsg 
                 --           (
@@ -163,21 +181,6 @@ view {url, code, locale, petitionStatus, signersCount, formStatus, form} =
                 --             ]
                 --           )
         ]
-
--- viewSignersCount : String -> (Maybe Int) -> Html Msg
--- viewSignersCount locale cntQ =
---   let mm = m locale
---   in
---   case cntQ of 
---     (Just cnt) -> 
---       div
---         []
---         [ br [] []
---         , p
---             [ class "alert alert-info" ]
---             [ text ((mm WasSignedMsg) ++ (fromInt cnt) ++ (mm PeopleMsg)) ]
---         ]
---     Nothing -> div [] []
 
 getFormErrorsString : Form () SignerForm -> List (Html Form.Msg)
 getFormErrorsString form =
@@ -245,8 +248,8 @@ validate =
         |> andMap (field "notifies_enabled" bool)
 
 
-formView : String -> Form () SignerForm -> Html Form.Msg
-formView locale form =
+formView : String -> Flash.State -> Form () SignerForm -> Html Form.Msg
+formView locale flash form =
     let
         mm = m locale
         errorFor field =
@@ -270,11 +273,15 @@ formView locale form =
         gender = Form.getFieldAsString "gender" form
         notifiesEnabled = Form.getFieldAsBool "notifies_enabled" form
         genderOptions = [("M", (mm MaleMsg)), ("F", (mm FemaleMsg))]
+
+        title = 
+          Maybe.map (\x -> x) (Flash.getMessage flash) |> Maybe.withDefault (mm PetitionFormMsg)
             
     in
       div
         [ id "petition-form" ]
-        [ h1 [] [ text (mm PetitionFormMsg) ]
+        -- [ h1 [] [ text (mm PetitionFormMsg) ]
+        [ h1 [] [ text title ]
         , textGroup (mm FirstNameMsg) (Form.getFieldAsString "first_name" form)
         , textGroup (mm LastNameMsg) (Form.getFieldAsString "last_name" form)
         , textGroup (mm CountryMsg) (Form.getFieldAsString "country" form)

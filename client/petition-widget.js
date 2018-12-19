@@ -2513,6 +2513,52 @@ function _Platform_mergeExportsDebug(moduleName, obj, exports)
 
 
 
+function _Time_now(millisToPosix)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(millisToPosix(Date.now())));
+	});
+}
+
+var _Time_setInterval = F2(function(interval, task)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
+		return function() { clearInterval(id); };
+	});
+});
+
+function _Time_here()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(
+			A2(elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
+		));
+	});
+}
+
+
+function _Time_getZoneName()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		try
+		{
+			var name = elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
+		}
+		catch (e)
+		{
+			var name = elm$time$Time$Offset(new Date().getTimezoneOffset());
+		}
+		callback(_Scheduler_succeed(name));
+	});
+}
+
+
+
 
 // HELPERS
 
@@ -4608,6 +4654,14 @@ function _Browser_load(url)
 		}
 	}));
 }
+var author$project$Flash$State = function (a) {
+	return {$: 'State', a: a};
+};
+var elm$core$Basics$identity = function (x) {
+	return x;
+};
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
+var author$project$Flash$none = author$project$Flash$State(elm$core$Maybe$Nothing);
 var elm$core$Basics$apR = F2(
 	function (x, f) {
 		return f(x);
@@ -4863,7 +4917,6 @@ var elm$core$Array$initialize = F2(
 var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5135,9 +5188,6 @@ var elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
 var elm$core$Basics$not = _Basics_not;
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
@@ -6405,6 +6455,7 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			code: code,
+			flash: author$project$Flash$none,
 			form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
 			formStatus: author$project$Main$None,
 			locale: locale,
@@ -6426,6 +6477,27 @@ var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$none;
 };
+var elm$core$Basics$always = F2(
+	function (a, _n0) {
+		return a;
+	});
+var elm$core$Process$sleep = _Process_sleep;
+var elm$core$Task$perform = F2(
+	function (toMessage, task) {
+		return elm$core$Task$command(
+			elm$core$Task$Perform(
+				A2(elm$core$Task$map, toMessage, task)));
+	});
+var author$project$Flash$setFlash = F3(
+	function (msg, timeout, flashMessage) {
+		return _Utils_Tuple2(
+			author$project$Flash$State(
+				elm$core$Maybe$Just(flashMessage)),
+			A2(
+				elm$core$Task$perform,
+				elm$core$Basics$always(msg),
+				elm$core$Process$sleep(timeout)));
+	});
 var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
@@ -6522,13 +6594,133 @@ var author$project$Main$PetitionFailure = function (a) {
 	return {$: 'PetitionFailure', a: a};
 };
 var author$project$Main$Ready = {$: 'Ready'};
+var author$project$Main$RemoveFlash = {$: 'RemoveFlash'};
 var author$project$Main$Sending = {$: 'Sending'};
 var author$project$Main$Sent = {$: 'Sent'};
 var author$project$Main$SentForm = function (a) {
 	return {$: 'SentForm', a: a};
 };
+var author$project$Main$SetFlash = function (a) {
+	return {$: 'SetFlash', a: a};
+};
+var author$project$Main$ThankYouMsg = {$: 'ThankYouMsg'};
+var author$project$Main$flashTimeout = 5000;
+var author$project$Main$m = F2(
+	function (locale, msg) {
+		if (locale === 'ru') {
+			switch (msg.$) {
+				case 'PetitionFormMsg':
+					return 'Заполните форму';
+				case 'ShowFullTextMsg':
+					return 'Читать полностью';
+				case 'FirstNameMsg':
+					return 'Имя*';
+				case 'LastNameMsg':
+					return 'Фамилия*';
+				case 'CountryMsg':
+					return 'Страна*';
+				case 'CityMsg':
+					return 'Город*';
+				case 'OrganizationMsg':
+					return 'Организация';
+				case 'EmailPhoneMsg':
+					return 'Эл. почта/Телефон*';
+				case 'PhoneMsg':
+					return 'Телефон';
+				case 'BirthYearMsg':
+					return 'Год рождения';
+				case 'GenderMsg':
+					return 'Пол*';
+				case 'MaleMsg':
+					return 'Мужской';
+				case 'FemaleMsg':
+					return 'Женский';
+				case 'KeepMeUpdateMsg':
+					return 'Информировать меня о петиции и других событиях';
+				case 'SubmitMsg':
+					return 'Отправить';
+				case 'ResetMsg':
+					return 'Очистить';
+				case 'ThankYouMsg':
+					return 'Благодарим Вас! Ваш голос учтен!';
+				case 'FillRequiredFieldsMsg':
+					return 'Заполните обязательные поля.';
+				case 'WasSignedMsg':
+					return 'Подписало:';
+				case 'PeopleMsg':
+					return ' человек';
+				case 'SignPetitionMsg':
+					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
+				default:
+					return 'Закрыть';
+			}
+		} else {
+			switch (msg.$) {
+				case 'PetitionFormMsg':
+					return 'Fill the form';
+				case 'ShowFullTextMsg':
+					return 'Read full text';
+				case 'FirstNameMsg':
+					return 'First Name*';
+				case 'LastNameMsg':
+					return 'Last Name*';
+				case 'CountryMsg':
+					return 'Country*';
+				case 'CityMsg':
+					return 'City*';
+				case 'OrganizationMsg':
+					return 'Organization';
+				case 'EmailPhoneMsg':
+					return 'Email/Phone*';
+				case 'PhoneMsg':
+					return 'Phone*';
+				case 'BirthYearMsg':
+					return 'BirthYear';
+				case 'GenderMsg':
+					return 'Gender*';
+				case 'MaleMsg':
+					return 'Male';
+				case 'FemaleMsg':
+					return 'Female';
+				case 'KeepMeUpdateMsg':
+					return 'Keep me updated via-email on this petition and related issues. ';
+				case 'SubmitMsg':
+					return 'Submit';
+				case 'ResetMsg':
+					return 'Reset';
+				case 'ThankYouMsg':
+					return 'Thank you! Your vote was taken into account!';
+				case 'FillRequiredFieldsMsg':
+					return 'Please, fill all required fields';
+				case 'WasSignedMsg':
+					return 'Signed by:';
+				case 'PeopleMsg':
+					return ' people';
+				case 'SignPetitionMsg':
+					return 'SIGN THE PETITION: ';
+				default:
+					return 'Close';
+			}
+		}
+	});
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
+var elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var elm$time$Time$customZone = elm$time$Time$Zone;
+var elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var elm$time$Time$millisToPosix = elm$time$Time$Posix;
+var elm$time$Time$now = _Time_now(elm$time$Time$millisToPosix);
 var etaque$elm_form$Form$getOutput = function (_n0) {
 	var model = _n0.a;
 	return model.output;
@@ -7081,6 +7273,7 @@ var author$project$Main$update = F2(
 		var code = model.code;
 		var locale = model.locale;
 		var form = model.form;
+		var mm = author$project$Main$m(locale);
 		switch (msg.$) {
 			case 'GotPetition':
 				var result = msg.a;
@@ -7151,10 +7344,16 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
+								form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
 								formStatus: author$project$Main$Sent,
 								signersCount: elm$core$Maybe$Just(cnt)
 							}),
-						elm$core$Platform$Cmd$none);
+						A2(
+							elm$core$Task$perform,
+							elm$core$Basics$always(
+								author$project$Main$SetFlash(
+									mm(author$project$Main$ThankYouMsg))),
+							elm$time$Time$now));
 				} else {
 					var err = result.a;
 					return _Utils_Tuple2(
@@ -7165,14 +7364,33 @@ var author$project$Main$update = F2(
 							}),
 						elm$core$Platform$Cmd$none);
 				}
-			default:
+			case 'NoOp':
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+			case 'SetFlash':
+				var flashMessage = msg.a;
+				var _n8 = A3(author$project$Flash$setFlash, author$project$Main$RemoveFlash, author$project$Main$flashTimeout, flashMessage);
+				var message = _n8.a;
+				var cmd = _n8.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{flash: message}),
+					cmd);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{flash: author$project$Flash$none}),
+					elm$core$Platform$Cmd$none);
 		}
 	});
 var author$project$Main$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
-var author$project$Main$ThankYouMsg = {$: 'ThankYouMsg'};
+var author$project$Flash$getMessage = function (_n0) {
+	var message = _n0.a;
+	return message;
+};
 var author$project$Main$BirthYearMsg = {$: 'BirthYearMsg'};
 var author$project$Main$CityMsg = {$: 'CityMsg'};
 var author$project$Main$CountryMsg = {$: 'CountryMsg'};
@@ -7188,104 +7406,6 @@ var author$project$Main$PetitionFormMsg = {$: 'PetitionFormMsg'};
 var author$project$Main$PhoneMsg = {$: 'PhoneMsg'};
 var author$project$Main$ResetMsg = {$: 'ResetMsg'};
 var author$project$Main$SubmitMsg = {$: 'SubmitMsg'};
-var author$project$Main$m = F2(
-	function (locale, msg) {
-		if (locale === 'ru') {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Заполните форму';
-				case 'ShowFullTextMsg':
-					return 'Читать полностью';
-				case 'FirstNameMsg':
-					return 'Имя*';
-				case 'LastNameMsg':
-					return 'Фамилия*';
-				case 'CountryMsg':
-					return 'Страна*';
-				case 'CityMsg':
-					return 'Город*';
-				case 'OrganizationMsg':
-					return 'Организация';
-				case 'EmailPhoneMsg':
-					return 'Эл. почта/Телефон*';
-				case 'PhoneMsg':
-					return 'Телефон';
-				case 'BirthYearMsg':
-					return 'Год рождения';
-				case 'GenderMsg':
-					return 'Пол*';
-				case 'MaleMsg':
-					return 'Мужской';
-				case 'FemaleMsg':
-					return 'Женский';
-				case 'KeepMeUpdateMsg':
-					return 'Информировать меня о петиции и других событиях';
-				case 'SubmitMsg':
-					return 'Отправить';
-				case 'ResetMsg':
-					return 'Очистить';
-				case 'ThankYouMsg':
-					return 'Благодарим Вас! Ваш голос учтен!';
-				case 'FillRequiredFieldsMsg':
-					return 'Заполните обязательные поля.';
-				case 'WasSignedMsg':
-					return 'Подписало:';
-				case 'PeopleMsg':
-					return ' человек';
-				case 'SignPetitionMsg':
-					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
-				default:
-					return 'Закрыть';
-			}
-		} else {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Fill the form';
-				case 'ShowFullTextMsg':
-					return 'Read full text';
-				case 'FirstNameMsg':
-					return 'First Name*';
-				case 'LastNameMsg':
-					return 'Last Name*';
-				case 'CountryMsg':
-					return 'Country*';
-				case 'CityMsg':
-					return 'City*';
-				case 'OrganizationMsg':
-					return 'Organization';
-				case 'EmailPhoneMsg':
-					return 'Email/Phone*';
-				case 'PhoneMsg':
-					return 'Phone*';
-				case 'BirthYearMsg':
-					return 'BirthYear';
-				case 'GenderMsg':
-					return 'Gender*';
-				case 'MaleMsg':
-					return 'Male';
-				case 'FemaleMsg':
-					return 'Female';
-				case 'KeepMeUpdateMsg':
-					return 'Keep me updated via-email on this petition and related issues. ';
-				case 'SubmitMsg':
-					return 'Submit';
-				case 'ResetMsg':
-					return 'Reset';
-				case 'ThankYouMsg':
-					return 'Thank you! Your vote was taken into account!';
-				case 'FillRequiredFieldsMsg':
-					return 'Please, fill all required fields';
-				case 'WasSignedMsg':
-					return 'Signed by:';
-				case 'PeopleMsg':
-					return ' people';
-				case 'SignPetitionMsg':
-					return 'SIGN THE PETITION: ';
-				default:
-					return 'Close';
-			}
-		}
-	});
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -7662,12 +7782,21 @@ var etaque$elm_form$Form$getStringAt = F2(
 			A2(etaque$elm_form$Form$getFieldAt, name, model));
 	});
 var etaque$elm_form$Form$getFieldAsString = etaque$elm_form$Form$getField(etaque$elm_form$Form$getStringAt);
-var author$project$Main$formView = F2(
-	function (locale, form) {
+var author$project$Main$formView = F3(
+	function (locale, flash, form) {
 		var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
 		var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
 		var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
 		var mm = author$project$Main$m(locale);
+		var title = A2(
+			elm$core$Maybe$withDefault,
+			mm(author$project$Main$PetitionFormMsg),
+			A2(
+				elm$core$Maybe$map,
+				function (x) {
+					return x;
+				},
+				author$project$Flash$getMessage(flash)));
 		var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
 		var genderOptions = _List_fromArray(
 			[
@@ -7716,8 +7845,7 @@ var author$project$Main$formView = F2(
 					_List_Nil,
 					_List_fromArray(
 						[
-							elm$html$Html$text(
-							mm(author$project$Main$PetitionFormMsg))
+							elm$html$Html$text(title)
 						])),
 					A2(
 					author$project$View$Form$textGroup,
@@ -7934,7 +8062,6 @@ var author$project$Main$viewPetition = F5(
 					_List_Nil)
 				]));
 	});
-var elm$html$Html$br = _VirtualDom_node('br');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
 var author$project$Main$view = function (_n0) {
@@ -7945,6 +8072,7 @@ var author$project$Main$view = function (_n0) {
 	var signersCount = _n0.signersCount;
 	var formStatus = _n0.formStatus;
 	var form = _n0.form;
+	var flash = _n0.flash;
 	var mm = author$project$Main$m(locale);
 	switch (petitionStatus.$) {
 		case 'PetitionFailure':
@@ -7984,7 +8112,7 @@ var author$project$Main$view = function (_n0) {
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
-											A2(author$project$Main$formView, locale, form))
+											A3(author$project$Main$formView, locale, flash, form))
 										]));
 							case 'None':
 								return A2(
@@ -7995,7 +8123,7 @@ var author$project$Main$view = function (_n0) {
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
-											A2(author$project$Main$formView, locale, form))
+											A3(author$project$Main$formView, locale, flash, form))
 										]));
 							case 'Sending':
 								return elm$html$Html$text('Sending form...');
@@ -8005,18 +8133,10 @@ var author$project$Main$view = function (_n0) {
 									_List_Nil,
 									_List_fromArray(
 										[
-											A2(elm$html$Html$br, _List_Nil, _List_Nil),
 											A2(
-											elm$html$Html$p,
-											_List_fromArray(
-												[
-													elm$html$Html$Attributes$class('alert alert-success')
-												]),
-											_List_fromArray(
-												[
-													elm$html$Html$text(
-													mm(author$project$Main$ThankYouMsg))
-												]))
+											elm$html$Html$map,
+											author$project$Main$FormMsg,
+											A3(author$project$Main$formView, locale, flash, form))
 										]));
 							case 'FormFailure':
 								var err = formStatus.a;
@@ -8031,7 +8151,7 @@ var author$project$Main$view = function (_n0) {
 											A2(
 											elm$html$Html$map,
 											author$project$Main$FormMsg,
-											A2(author$project$Main$formView, locale, form))
+											A3(author$project$Main$formView, locale, flash, form))
 										]));
 						}
 					}()
@@ -8056,12 +8176,6 @@ var elm$core$Basics$never = function (_n0) {
 		continue never;
 	}
 };
-var elm$core$Task$perform = F2(
-	function (toMessage, task) {
-		return elm$core$Task$command(
-			elm$core$Task$Perform(
-				A2(elm$core$Task$map, toMessage, task)));
-	});
 var elm$core$String$length = _String_length;
 var elm$core$String$slice = _String_slice;
 var elm$core$String$dropLeft = F2(
