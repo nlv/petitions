@@ -202,8 +202,11 @@ viewPetition url code locale petition cnt =
     div
       [id "petition-info"]
       -- [ h [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
-      [ h1 [] [text (petition.petitionName) ]
-      , img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
+      [ div
+          [ class "title1" ]
+          [ h1 [ class "title" ] [text (petition.petitionName) ]
+          , img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
+          ]
       , div 
         [ id "petition-info-signed"]
         [ div [ id "petition-info-signed-div1"] [text (mm WasSignedMsg)] 

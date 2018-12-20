@@ -7992,19 +7992,31 @@ var author$project$Main$viewPetition = F5(
 			_List_fromArray(
 				[
 					A2(
-					elm$html$Html$h1,
-					_List_Nil,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$text(petition.petitionName)
-						])),
-					A2(
-					elm$html$Html$img,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$src(url + (author$project$Main$petitionsImagesPath + (petition.petitionCode + '.png')))
+							elm$html$Html$Attributes$class('title1')
 						]),
-					_List_Nil),
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$h1,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('title')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(petition.petitionName)
+								])),
+							A2(
+							elm$html$Html$img,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$src(url + (author$project$Main$petitionsImagesPath + (petition.petitionCode + '.png')))
+								]),
+							_List_Nil)
+						])),
 					A2(
 					elm$html$Html$div,
 					_List_fromArray(
