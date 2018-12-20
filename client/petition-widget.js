@@ -7995,7 +7995,7 @@ var author$project$Main$viewPetition = F5(
 					_List_Nil,
 					_List_fromArray(
 						[
-							elm$html$Html$text('Подпишите петицию в защиту Украинской Православной Церкви')
+							elm$html$Html$text(petition.petitionName)
 						])),
 					A2(
 					elm$html$Html$img,

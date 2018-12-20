@@ -200,7 +200,7 @@ viewPetition url code locale petition cnt =
     div
       [id "petition-info"]
       -- [ h [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
-      [ h1 [] [text "Подпишите петицию в защиту Украинской Православной Церкви" ]
+      [ h1 [] [text (petition.petitionName) ]
       , img [src (url ++ "/static/petition.png")] []
       , div 
         [ id "petition-info-signed"]
