@@ -31,6 +31,8 @@ initFormValues =
 
 flashTimeout = 5000
 
+petitionsImagesPath = "/static/images/petitions/"
+
 type PetitionStatus
   = PetitionFailure Http.Error
   | Loading
@@ -201,7 +203,7 @@ viewPetition url code locale petition cnt =
       [id "petition-info"]
       -- [ h [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
       [ h1 [] [text (petition.petitionName) ]
-      , img [src (url ++ "/static/petition.png")] []
+      , img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
       , div 
         [ id "petition-info-signed"]
         [ div [ id "petition-info-signed-div1"] [text (mm WasSignedMsg)] 

@@ -7950,6 +7950,7 @@ var author$project$Main$toString = function (err) {
 };
 var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
 var author$project$Main$WasSignedMsg = {$: 'WasSignedMsg'};
+var author$project$Main$petitionsImagesPath = '/static/images/petitions/';
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$img = _VirtualDom_node('img');
 var elm$html$Html$p = _VirtualDom_node('p');
@@ -8001,7 +8002,7 @@ var author$project$Main$viewPetition = F5(
 					elm$html$Html$img,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$src(url + '/static/petition.png')
+							elm$html$Html$Attributes$src(url + (author$project$Main$petitionsImagesPath + (petition.petitionCode + '.png')))
 						]),
 					_List_Nil),
 					A2(
