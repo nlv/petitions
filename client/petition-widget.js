@@ -6455,6 +6455,7 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			code: code,
+			descriptionExpanded: false,
 			flash: author$project$Flash$none,
 			form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
 			formStatus: author$project$Main$None,
@@ -7274,6 +7275,7 @@ var author$project$Main$update = F2(
 		var code = model.code;
 		var locale = model.locale;
 		var form = model.form;
+		var descriptionExpanded = model.descriptionExpanded;
 		var mm = author$project$Main$m(locale);
 		switch (msg.$) {
 			case 'GotPetition':
@@ -7372,6 +7374,24 @@ var author$project$Main$update = F2(
 				}
 			case 'NoOp':
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+			case 'ToggleDescription':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{descriptionExpanded: !descriptionExpanded}),
+					elm$core$Platform$Cmd$none);
+			case 'ExpandDescription':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{descriptionExpanded: true}),
+					elm$core$Platform$Cmd$none);
+			case 'CollapseDescription':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{descriptionExpanded: false}),
+					elm$core$Platform$Cmd$none);
 			case 'SetFlash':
 				var flashMessage = msg.a;
 				var _n8 = A3(author$project$Flash$setFlash, author$project$Main$RemoveFlash, author$project$Main$flashTimeout, flashMessage);
@@ -7390,6 +7410,7 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 		}
 	});
+var author$project$Main$CollapseDescription = {$: 'CollapseDescription'};
 var author$project$Main$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
@@ -7949,11 +7970,11 @@ var author$project$Main$toString = function (err) {
 	}
 };
 var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
+var author$project$Main$ToggleDescription = {$: 'ToggleDescription'};
 var author$project$Main$WasSignedMsg = {$: 'WasSignedMsg'};
 var author$project$Main$petitionsImagesPath = '/static/images/petitions/';
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$img = _VirtualDom_node('img');
-var elm$html$Html$p = _VirtualDom_node('p');
 var elm$html$Html$Attributes$href = function (url) {
 	return A2(
 		elm$html$Html$Attributes$stringProperty,
@@ -7976,8 +7997,8 @@ var elm_explorations$markdown$Markdown$defaultOptions = {
 };
 var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Main$viewPetition = F5(
-	function (url, code, locale, petition, cnt) {
+var author$project$Main$viewPetition = F6(
+	function (url, code, locale, petition, descriptionExpanded, cnt) {
 		var mm = author$project$Main$m(locale);
 		var cntQ = A2(
 			elm$core$Maybe$withDefault,
@@ -8039,13 +8060,16 @@ var author$project$Main$viewPetition = F5(
 					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$id('petition-info-description')
+							elm$html$Html$Attributes$id('petition-info-description'),
+							elm$html$Html$Attributes$class(
+							descriptionExpanded ? 'expanded' : 'collapsed'),
+							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
 						]),
 					_List_fromArray(
 						[
 							A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
 							A2(
-							elm$html$Html$p,
+							elm$html$Html$div,
 							_List_fromArray(
 								[
 									elm$html$Html$Attributes$class('read-more')
@@ -8071,9 +8095,14 @@ var author$project$Main$viewPetition = F5(
 					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$id('petition-info-separator')
+							elm$html$Html$Attributes$id('petition-info-desription-toggle'),
+							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
 						]),
-					_List_Nil)
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							descriptionExpanded ? '\u25b2' : '\u25bc')
+						]))
 				]));
 	});
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
@@ -8083,6 +8112,7 @@ var author$project$Main$view = function (_n0) {
 	var code = _n0.code;
 	var locale = _n0.locale;
 	var petitionStatus = _n0.petitionStatus;
+	var descriptionExpanded = _n0.descriptionExpanded;
 	var signersCount = _n0.signersCount;
 	var formStatus = _n0.formStatus;
 	var form = _n0.form;
@@ -8114,13 +8144,16 @@ var author$project$Main$view = function (_n0) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						A5(author$project$Main$viewPetition, url, code, locale, petition, signersCount),
+						A6(author$project$Main$viewPetition, url, code, locale, petition, descriptionExpanded, signersCount),
 						function () {
 						switch (formStatus.$) {
 							case 'Ready':
 								return A2(
 									elm$html$Html$div,
-									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
+										]),
 									_List_fromArray(
 										[
 											A2(
@@ -8131,7 +8164,10 @@ var author$project$Main$view = function (_n0) {
 							case 'None':
 								return A2(
 									elm$html$Html$div,
-									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
+										]),
 									_List_fromArray(
 										[
 											A2(
@@ -8144,7 +8180,10 @@ var author$project$Main$view = function (_n0) {
 							case 'Sent':
 								return A2(
 									elm$html$Html$div,
-									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
+										]),
 									_List_fromArray(
 										[
 											A2(
@@ -8159,7 +8198,10 @@ var author$project$Main$view = function (_n0) {
 							default:
 								return A2(
 									elm$html$Html$div,
-									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
+										]),
 									_List_fromArray(
 										[
 											A2(

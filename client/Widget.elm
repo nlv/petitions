@@ -48,14 +48,15 @@ type FormStatus
 
 type alias Model = 
   {
-     url            : String
-    ,code           : String
-    ,locale         : String
-    ,petitionStatus : PetitionStatus
-    ,formStatus     : FormStatus
-    ,signersCount   : Maybe Int
-    ,form           : Form () SignerForm 
-    ,flash          : Flash.State
+     url                 : String
+    ,code                : String
+    ,locale              : String
+    ,petitionStatus      : PetitionStatus
+    ,formStatus          : FormStatus
+    ,signersCount        : Maybe Int
+    ,form                : Form () SignerForm 
+    ,flash               : Flash.State
+    ,descriptionExpanded : Bool
   }
 
 init : {url: String, code: String, locale: String} -> (Model, Cmd Msg)
@@ -69,6 +70,7 @@ init {url, code, locale} =
     , form = Form.initial initFormValues validate 
     , signersCount = Nothing
     , flash = Flash.none
+    , descriptionExpanded = False
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
@@ -91,11 +93,14 @@ type Msg
   | SentForm (Result Http.Error Int)
   | NoOp
   | FormMsg Form.Msg
+  | ToggleDescription
+  | ExpandDescription
+  | CollapseDescription
   | SetFlash String
   | RemoveFlash 
 
 update : Msg -> Model -> (Model, Cmd Msg)
-update msg ({ url, code, locale, form } as model) =
+update msg ({ url, code, locale, form, descriptionExpanded } as model) =
   let mm = m locale
   in
   case msg of
@@ -136,6 +141,12 @@ update msg ({ url, code, locale, form } as model) =
     NoOp ->
         (model, Cmd.none)
 
+    ToggleDescription -> ({model | descriptionExpanded = not descriptionExpanded}, Cmd.none)
+
+    ExpandDescription -> ({model | descriptionExpanded = True}, Cmd.none)
+
+    CollapseDescription -> ({model | descriptionExpanded = False}, Cmd.none)
+
     SetFlash flashMessage ->
       let
         ( message, cmd) = 
@@ -150,7 +161,7 @@ update msg ({ url, code, locale, form } as model) =
 -- VIEW
 
 view : Model -> Html Msg
-view {url, code, locale, petitionStatus, signersCount, formStatus, form, flash} =
+view {url, code, locale, petitionStatus, descriptionExpanded, signersCount, formStatus, form, flash} =
   let mm = m locale
   in
   case petitionStatus of
@@ -163,18 +174,18 @@ view {url, code, locale, petitionStatus, signersCount, formStatus, form, flash} 
     Loaded petition ->
       div
         []
-        [ viewPetition url code locale petition signersCount
+        [ viewPetition url code locale petition descriptionExpanded  signersCount
         , case formStatus of
             Ready -> 
-                div [] [ Html.map FormMsg (formView locale flash form) ]
+                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
             None -> 
-                div [] [ Html.map FormMsg (formView locale flash form) ]
+                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
             Sending -> text "Sending form..."
             Sent -> 
-                div [] [ Html.map FormMsg (formView locale flash form) ]
+                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
             FormFailure err -> text ("Error of sending form: " ++ (toString err))
             Opss -> 
-                div [] [ Html.map FormMsg (formView locale flash form) ]
+                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
                 -- Html.map 
                 --           FormMsg 
                 --           (
@@ -194,14 +205,13 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-viewPetition : String -> String -> String -> Petition -> (Maybe Int) -> Html Msg
-viewPetition url code locale petition cnt = 
+viewPetition : String -> String -> String -> Petition -> Bool -> (Maybe Int) -> Html Msg
+viewPetition url code locale petition descriptionExpanded cnt = 
     let mm = m locale
         cntQ = withDefault "?" (map fromInt cnt)
     in
     div
       [id "petition-info"]
-      -- [ h [] [text ((mm SignPetitionMsg) ++ petition.petitionName) ]
       [ h1 [] [text (petition.petitionName) ]
       , img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
       , div 
@@ -210,9 +220,13 @@ viewPetition url code locale petition cnt =
         , div [ id "petition-info-signed-div2" ] [ text cntQ ] 
         ]
       , div 
-        [ id "petition-info-description" ]
+        [ id "petition-info-description" 
+        , class (if descriptionExpanded then "expanded" else "collapsed")
+        -- , onClick ExpandDescription
+        , onClick ToggleDescription
+        ]
         [ toHtml [] petition.petitionDescription 
-        , p
+        , div
           [ class "read-more"]
           [ a
               [ target "_blank"
@@ -222,7 +236,13 @@ viewPetition url code locale petition cnt =
               [ text (mm ShowFullTextMsg)] 
           ]
         ]
-      , div [ id "petition-info-separator" ] []
+      , div 
+          [ id "petition-info-desription-toggle" 
+          , onClick ToggleDescription
+          ]
+          [ text (if descriptionExpanded then "\u{25B2}" else "\u{25BC}") ]
+          -- ]
+      -- , div [ id "petition-info-separator" ] []
 
       ]
 
