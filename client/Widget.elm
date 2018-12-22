@@ -304,27 +304,31 @@ formView locale flash form =
     in
       div
         [ id "petition-form" ]
-        -- [ h1 [] [ text (mm PetitionFormMsg) ]
-        [ h1 [class titleClass] [ text title ]
-        , textGroup (mm FirstNameMsg) (Form.getFieldAsString "first_name" form)
-        , textGroup (mm LastNameMsg) (Form.getFieldAsString "last_name" form)
-        , textGroup (mm CountryMsg) (Form.getFieldAsString "country" form)
-        , textGroup (mm CityMsg) (Form.getFieldAsString "city" form)
-        , textGroup (mm OrganizationMsg) (Form.getFieldAsString "organization" form)
-        , textGroup (mm EmailPhoneMsg) (Form.getFieldAsString "email" form)
-        , textGroupHidden (mm PhoneMsg) (Form.getFieldAsString "phone" form)
-        , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
-        , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
-        , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
-        , formActions
-            [ button
-                [ onClick Form.Submit
+        [ div 
+            [ id "petition-form-title" ] 
+            [ h1 [class titleClass] [ text title ] ]
+        , div
+            [ id "petition-form-content"]
+            [ textGroup (mm FirstNameMsg) (Form.getFieldAsString "first_name" form)
+            , textGroup (mm LastNameMsg) (Form.getFieldAsString "last_name" form)
+            , textGroup (mm CountryMsg) (Form.getFieldAsString "country" form)
+            , textGroup (mm CityMsg) (Form.getFieldAsString "city" form)
+            , textGroup (mm OrganizationMsg) (Form.getFieldAsString "organization" form)
+            , textGroup (mm EmailPhoneMsg) (Form.getFieldAsString "email" form)
+            , textGroupHidden (mm PhoneMsg) (Form.getFieldAsString "phone" form)
+            , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
+            , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
+            , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
+            , formActions
+                [ button
+                    [ onClick Form.Submit
+                    ]
+                    [ text (mm SubmitMsg) ]
+                , button
+                    [ onClick (Form.Reset initFormValues)
+                    ]
+                    [ text (mm ResetMsg) ]
                 ]
-                [ text (mm SubmitMsg) ]
-            , button
-                [ onClick (Form.Reset initFormValues)
-                ]
-                [ text (mm ResetMsg) ]
             ]
         ]
         -- [ class "form-horizontal"
@@ -378,7 +382,7 @@ m locale msg =
         SubmitMsg -> "Отправить"
         ResetMsg -> "Очистить"
         ThankYouMsg -> "Благодарим Вас! Ваш голос учтен!"
-        FillRequiredFieldsMsg -> "Заполните обязательные поля."
+        FillRequiredFieldsMsg -> "Заполните обязательные поля"
         WasSignedMsg -> "Подписало:"
         PeopleMsg -> " человек"
         SignPetitionMsg -> "ПОДПИШИТЕ ПЕТИЦИЮ: "

@@ -79,7 +79,7 @@ getHtmlPetitionByCode :: Text -> Int -> Text -> Maybe Text -> Handler H.Html
 getHtmlPetitionByCode url port code locale = do
   let locale' = maybe ("default"::Text) id locale
   let url' = url `append` ":" `append` (pack $ show port)
-  pure $ H.docTypeHtml $ do
+  pure $ H.docTypeHtml H.! A.lang (H.textValue $ maybe "en" id locale) $ do
     H.head $ do
       H.meta H.! A.charset "UTF-8"
       H.title "Petition"

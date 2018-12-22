@@ -6646,7 +6646,7 @@ var author$project$Main$m = F2(
 				case 'ThankYouMsg':
 					return 'Благодарим Вас! Ваш голос учтен!';
 				case 'FillRequiredFieldsMsg':
-					return 'Заполните обязательные поля.';
+					return 'Заполните обязательные поля';
 				case 'WasSignedMsg':
 					return 'Подписало:';
 				case 'PeopleMsg':
@@ -7872,81 +7872,99 @@ var author$project$Main$formView = F3(
 			_List_fromArray(
 				[
 					A2(
-					elm$html$Html$h1,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$class(titleClass)
+							elm$html$Html$Attributes$id('petition-form-title')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text(title)
+							A2(
+							elm$html$Html$h1,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class(titleClass)
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(title)
+								]))
 						])),
 					A2(
-					author$project$View$Form$textGroup,
-					mm(author$project$Main$FirstNameMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
-					A2(
-					author$project$View$Form$textGroup,
-					mm(author$project$Main$LastNameMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
-					A2(
-					author$project$View$Form$textGroup,
-					mm(author$project$Main$CountryMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
-					A2(
-					author$project$View$Form$textGroup,
-					mm(author$project$Main$CityMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
-					A2(
-					author$project$View$Form$textGroup,
-					mm(author$project$Main$OrganizationMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
-					A2(
-					author$project$View$Form$textGroup,
-					mm(author$project$Main$EmailPhoneMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
-					A2(
-					author$project$View$Form$textGroupHidden,
-					mm(author$project$Main$PhoneMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
-					A2(
-					author$project$View$Form$textGroupHidden,
-					mm(author$project$Main$BirthYearMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
-					A3(
-					author$project$View$Form$selectGroup,
-					genderOptions,
-					mm(author$project$Main$GenderMsg),
-					A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
-					A2(
-					author$project$View$Form$checkboxGroup,
-					mm(author$project$Main$KeepMeUpdateMsg),
-					A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
-					author$project$View$Form$formActions(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$id('petition-form-content')
+						]),
 					_List_fromArray(
 						[
 							A2(
-							elm$html$Html$button,
-							_List_fromArray(
-								[
-									elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit)
-								]),
-							_List_fromArray(
-								[
-									elm$html$Html$text(
-									mm(author$project$Main$SubmitMsg))
-								])),
+							author$project$View$Form$textGroup,
+							mm(author$project$Main$FirstNameMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
 							A2(
-							elm$html$Html$button,
+							author$project$View$Form$textGroup,
+							mm(author$project$Main$LastNameMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
+							A2(
+							author$project$View$Form$textGroup,
+							mm(author$project$Main$CountryMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
+							A2(
+							author$project$View$Form$textGroup,
+							mm(author$project$Main$CityMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
+							A2(
+							author$project$View$Form$textGroup,
+							mm(author$project$Main$OrganizationMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
+							A2(
+							author$project$View$Form$textGroup,
+							mm(author$project$Main$EmailPhoneMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
+							A2(
+							author$project$View$Form$textGroupHidden,
+							mm(author$project$Main$PhoneMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
+							A2(
+							author$project$View$Form$textGroupHidden,
+							mm(author$project$Main$BirthYearMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
+							A3(
+							author$project$View$Form$selectGroup,
+							genderOptions,
+							mm(author$project$Main$GenderMsg),
+							A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
+							A2(
+							author$project$View$Form$checkboxGroup,
+							mm(author$project$Main$KeepMeUpdateMsg),
+							A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
+							author$project$View$Form$formActions(
 							_List_fromArray(
 								[
-									elm$html$Html$Events$onClick(
-									etaque$elm_form$Form$Reset(author$project$Main$initFormValues))
-								]),
-							_List_fromArray(
-								[
-									elm$html$Html$text(
-									mm(author$project$Main$ResetMsg))
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit)
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											mm(author$project$Main$SubmitMsg))
+										])),
+									A2(
+									elm$html$Html$button,
+									_List_fromArray(
+										[
+											elm$html$Html$Events$onClick(
+											etaque$elm_form$Form$Reset(author$project$Main$initFormValues))
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text(
+											mm(author$project$Main$ResetMsg))
+										]))
 								]))
 						]))
 				]));

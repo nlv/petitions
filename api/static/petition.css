@@ -9,115 +9,30 @@
 }
 
 html {
-    /* font-size: 12px; */
-    font-size: 4vw;
-    font-family: "Proxima Nova - Semibold";
-}
-
-@media (max-width: 160px) {
-    html {
-        font-size: 9px;
-    }
+    font-size: 12px;
+    font-family: "Proxima Nova";
 }
 
 body {
-    /* font-size: 12px; */
-    /* font-size: 6vw; */
-    padding: 10px; 
-    width: 100%;
-}
-
-.hidden {
-    display: none;
-}
-
-#petition-form .select-div {
-    position: relative;
-}
-
-#petition-form select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    width: 100%;
-    /* height: 1.2rem; */
-
     padding: 5px 0;
-    margin-top: 0.8rem;
-
-    border: none;
-    border-bottom: 2px solid lightgray;
-
-    background-color :inherit;
-
-}
-
-#petition-form .select-div:after {
-    content: "";
-    border-style: solid;
-    border-width: 5px 5px 0 5px;
-    border-color: #333 transparent transparent transparent;
-    pointer-events: none;
-
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    /* right: 2rem; */
-    z-index: 1;
-    margin-top: -2px;
-}
-
-/* Убираем стандартные стрелочки в IE */
-.select-div select::-ms-expand {
-    display: none;
-}
-
-.select-div select:focus {
-/* select:focus { */
-    outline: none !important;
-    border-color: #2cb0d8 !important;
-}
-
-.select-div select:hover {
-    cursor: pointer;
-}
-
-#petition-form input:focus {
-    border-color: #2cb0d8;
-}
-
-#petition-form .checkbox {
-    display: flex;
-
     width: 100%;
-    border-bottom: lightgray solid 2px;
-    background-color: inherit;
-    padding: 5px 0;
-    margin-top: 0.8rem;
 }
 
-#petition-form input[type=checkbox] {
-    width: 10px;
-}
-
-#petition-form .checkbox-label {
-    padding-left: 10px;
-    text-align: center;
-    font-size: 13.333px;
-}
 
 #petition-info h1 {
+    font-family: "Proxima Nova - Semibold";
     width: 100%;
     color: #181818;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 400;
-    line-height: 1.8rem;
+    line-height: 1.2em;
     word-wrap: break-word;
     text-align: center;
-    /* padding: 0 15px; */
-    padding: 0 0;
-    margin-bottom: 1.6rem;
+    padding: 0 5px;
+    /* padding: 0 0; */
+    margin-bottom: 5px;
 }
+
 
 #petition-info img {
     width: 100%;
@@ -133,16 +48,21 @@ body {
     background-color: #3a6e00;
     font-size: 1.2rem;
     font-weight: 400;
-    padding: 0.6rem 0;
+    padding: 0.6em 0;
 }
 
 #petition-info p {
     color: #181818;
-    font-family: "Proxima Nova";
+    /* font-family: "Proxima Nova"; */
     font-weight: 400;
     font-size: 1.1rem;
     line-height: 1.4rem;
     margin: 1.2rem 0;
+    hyphens: auto;
+    text-align: justify;
+
+    padding-left: 10px; 
+    padding-right: 10px; 
 }
 
 #petition-info p.read-more {
@@ -173,13 +93,19 @@ body {
     border-bottom: solid 0.2px lightgray;
 }
 
+#petition-form-content {
+    padding-left: 10px; 
+    padding-right: 10px; 
+}
+
 #petition-form h1 {
+    font-family: "Proxima Nova - Semibold";
     width: 100%;
     color: #181818;
     font-weight: 400;
     line-height: 1.2rem;
     text-align: center;
-    padding: 10px;
+    padding: 10px 5px; 
 }
 
 #petition-form input {
@@ -246,3 +172,115 @@ body {
     font-size: 1.4rem;
 }
 
+
+.hidden {
+    display: none;
+}
+
+#petition-form .select-div {
+    position: relative;
+}
+
+#petition-form select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width: 100%;
+    /* height: 1.2rem; */
+
+    padding: 5px 0;
+    margin-top: 0.8rem;
+
+    border: none;
+    border-bottom: 2px solid lightgray;
+
+    background-color :inherit;
+
+}
+
+#petition-form .select-div:after {
+    content: "";
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #333 transparent transparent transparent;
+    pointer-events: none;
+
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    /* right: 2rem; */
+    z-index: 1;
+    margin-top: -2px;
+}
+
+/* Убираем стандартные стрелочки в IE */
+.select-div select::-ms-expand {
+    display: none;
+}
+
+.select-div select:focus {
+/* select:focus { */
+    outline: none !important;
+    border-color: #2cb0d8 !important;
+}
+
+.select-div select:hover {
+    cursor: pointer;
+}
+
+#petition-form input:focus {
+    border-color: #2cb0d8;
+}
+
+#petition-form .checkbox {
+    display: flex;
+
+    width: 100%;
+    border-bottom: lightgray solid 2px;
+    background-color: inherit;
+    padding: 10px 0;
+    /* margin-top: 0.8rem; */
+}
+
+#petition-form input[type=checkbox] {
+    width: 10px;
+}
+
+#petition-form .checkbox-label {
+    padding-left: 5px;
+    text-align: center;
+    font-size: 13.333px;
+    font-family: "Proxima Nova - Semibold";
+}
+
+@media (max-width: 160px) {
+    #petition-info h1 {
+        font-size: 1.1rem;
+        line-height: 1.2em;
+    }
+
+    #petition-form .checkbox {
+        flex-direction: column;
+    }
+
+    #petition-form .checkbox-label {
+        padding-left: 0;
+        padding-top: 5px;
+    }
+
+    #petition-form .checkbox input[type="checkbox"] {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 200px) {
+    #petition-form .controls {
+        flex-direction: column;
+        align-items: center;
+        margin: 5px 0;
+    }
+    #petition-form .controls button {
+        margin: 5px 0;
+    }
+}
