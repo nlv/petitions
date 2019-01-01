@@ -5913,6 +5913,7 @@ var author$project$Generated$Api$getPetitionByCode = F3(
 				withCredentials: false
 			});
 	});
+var author$project$Main$DescriptionW = {$: 'DescriptionW'};
 var author$project$Main$GotPetition = function (a) {
 	return {$: 'GotPetition', a: a};
 };
@@ -6455,7 +6456,7 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			code: code,
-			descriptionExpanded: false,
+			currentWindow: author$project$Main$DescriptionW,
 			flash: author$project$Flash$none,
 			form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
 			formStatus: author$project$Main$None,
@@ -6588,6 +6589,7 @@ var author$project$Main$FillRequiredFieldsMsg = {$: 'FillRequiredFieldsMsg'};
 var author$project$Main$FormFailure = function (a) {
 	return {$: 'FormFailure', a: a};
 };
+var author$project$Main$FormW = {$: 'FormW'};
 var author$project$Main$Loaded = function (a) {
 	return {$: 'Loaded', a: a};
 };
@@ -6653,8 +6655,12 @@ var author$project$Main$m = F2(
 					return ' человек';
 				case 'SignPetitionMsg':
 					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
-				default:
+				case 'CloseMsg':
 					return 'Закрыть';
+				case 'FillFormFooterMsg':
+					return 'Подписать петицию';
+				default:
+					return 'Текст петиции';
 			}
 		} else {
 			switch (msg.$) {
@@ -6700,8 +6706,12 @@ var author$project$Main$m = F2(
 					return ' people';
 				case 'SignPetitionMsg':
 					return 'SIGN THE PETITION: ';
-				default:
+				case 'CloseMsg':
 					return 'Close';
+				case 'FillFormFooterMsg':
+					return 'Sign petition';
+				default:
+					return 'Text of petition';
 			}
 		}
 	});
@@ -7275,7 +7285,7 @@ var author$project$Main$update = F2(
 		var code = model.code;
 		var locale = model.locale;
 		var form = model.form;
-		var descriptionExpanded = model.descriptionExpanded;
+		var currentWindow = model.currentWindow;
 		var mm = author$project$Main$m(locale);
 		switch (msg.$) {
 			case 'GotPetition':
@@ -7374,24 +7384,6 @@ var author$project$Main$update = F2(
 				}
 			case 'NoOp':
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-			case 'ToggleDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: !descriptionExpanded}),
-					elm$core$Platform$Cmd$none);
-			case 'ExpandDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: true}),
-					elm$core$Platform$Cmd$none);
-			case 'CollapseDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: false}),
-					elm$core$Platform$Cmd$none);
 			case 'SetFlash':
 				var flashMessage = msg.a;
 				var _n8 = A3(author$project$Flash$setFlash, author$project$Main$RemoveFlash, author$project$Main$flashTimeout, flashMessage);
@@ -7402,18 +7394,28 @@ var author$project$Main$update = F2(
 						model,
 						{flash: message}),
 					cmd);
-			default:
+			case 'RemoveFlash':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{flash: author$project$Flash$none}),
 					elm$core$Platform$Cmd$none);
+			default:
+				var w = _Utils_eq(currentWindow, author$project$Main$DescriptionW) ? author$project$Main$FormW : author$project$Main$DescriptionW;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{currentWindow: w}),
+					elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$CollapseDescription = {$: 'CollapseDescription'};
+var author$project$Main$FillFormFooterMsg = {$: 'FillFormFooterMsg'};
 var author$project$Main$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
+var author$project$Main$NextWindow = {$: 'NextWindow'};
+var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
+var author$project$Main$ShowPetitionFooterMsg = {$: 'ShowPetitionFooterMsg'};
 var author$project$Flash$getMessage = function (_n0) {
 	var message = _n0.a;
 	return message;
@@ -7987,25 +7989,15 @@ var author$project$Main$toString = function (err) {
 			return 'Bad response format: ' + str;
 	}
 };
-var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
-var author$project$Main$ToggleDescription = {$: 'ToggleDescription'};
 var author$project$Main$WasSignedMsg = {$: 'WasSignedMsg'};
 var author$project$Main$petitionsImagesPath = '/static/images/petitions/';
-var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$img = _VirtualDom_node('img');
-var elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
 var elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var elm$html$Html$Attributes$target = elm$html$Html$Attributes$stringProperty('target');
 var elm_explorations$markdown$Markdown$defaultOptions = {
 	defaultHighlighting: elm$core$Maybe$Nothing,
 	githubFlavored: elm$core$Maybe$Just(
@@ -8015,8 +8007,8 @@ var elm_explorations$markdown$Markdown$defaultOptions = {
 };
 var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Main$viewPetition = F6(
-	function (url, code, locale, petition, descriptionExpanded, cnt) {
+var author$project$Main$viewPetition = F5(
+	function (url, code, locale, petition, cnt) {
 		var mm = author$project$Main$m(locale);
 		var cntQ = A2(
 			elm$core$Maybe$withDefault,
@@ -8030,13 +8022,6 @@ var author$project$Main$viewPetition = F6(
 				]),
 			_List_fromArray(
 				[
-					A2(
-					elm$html$Html$h1,
-					_List_Nil,
-					_List_fromArray(
-						[
-							elm$html$Html$text(petition.petitionName)
-						])),
 					A2(
 					elm$html$Html$img,
 					_List_fromArray(
@@ -8078,63 +8063,34 @@ var author$project$Main$viewPetition = F6(
 					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$id('petition-info-description'),
-							elm$html$Html$Attributes$class(
-							descriptionExpanded ? 'expanded' : 'collapsed'),
-							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
+							elm$html$Html$Attributes$id('petition-info-description')
 						]),
 					_List_fromArray(
 						[
-							A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
-							A2(
-							elm$html$Html$div,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$class('read-more')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$html$Html$a,
-									_List_fromArray(
-										[
-											elm$html$Html$Attributes$target('_blank'),
-											elm$html$Html$Attributes$class('btn btn-primary'),
-											elm$html$Html$Attributes$href(url + ('/petitionText.html/' + (code + ('?locale=' + locale))))
-										]),
-									_List_fromArray(
-										[
-											elm$html$Html$text(
-											mm(author$project$Main$ShowFullTextMsg))
-										]))
-								]))
-						])),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-info-desription-toggle'),
-							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(
-							descriptionExpanded ? '\u25b2' : '\u25bc')
+							A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription)
 						]))
 				]));
 	});
+var elm$html$Html$a = _VirtualDom_node('a');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
+var elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var elm$html$Html$Attributes$target = elm$html$Html$Attributes$stringProperty('target');
 var author$project$Main$view = function (_n0) {
 	var url = _n0.url;
 	var code = _n0.code;
 	var locale = _n0.locale;
 	var petitionStatus = _n0.petitionStatus;
-	var descriptionExpanded = _n0.descriptionExpanded;
 	var signersCount = _n0.signersCount;
 	var formStatus = _n0.formStatus;
 	var form = _n0.form;
 	var flash = _n0.flash;
+	var currentWindow = _n0.currentWindow;
 	var mm = author$project$Main$m(locale);
 	switch (petitionStatus.$) {
 		case 'PetitionFailure':
@@ -8157,78 +8113,115 @@ var author$project$Main$view = function (_n0) {
 					]));
 		default:
 			var petition = petitionStatus.a;
+			var _n2 = function () {
+				if (currentWindow.$ === 'DescriptionW') {
+					return _Utils_Tuple2(
+						A5(author$project$Main$viewPetition, url, code, locale, petition, signersCount),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('read-more')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$a,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$target('_blank'),
+												elm$html$Html$Attributes$class('btn btn-primary'),
+												elm$html$Html$Attributes$href(url + ('/petitionText.html/' + (code + ('?locale=' + locale))))
+											]),
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												mm(author$project$Main$ShowFullTextMsg))
+											]))
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('next-window'),
+										elm$html$Html$Events$onClick(author$project$Main$NextWindow)
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text(
+										mm(author$project$Main$FillFormFooterMsg))
+									]))
+							]));
+				} else {
+					return _Utils_Tuple2(
+						function () {
+							switch (formStatus.$) {
+								case 'Sending':
+									return elm$html$Html$text('Sending form...');
+								case 'FormFailure':
+									var err = formStatus.a;
+									return elm$html$Html$text(
+										'Error of sending form: ' + author$project$Main$toString(err));
+								default:
+									return A2(
+										elm$html$Html$map,
+										author$project$Main$FormMsg,
+										A3(author$project$Main$formView, locale, flash, form));
+							}
+						}(),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('next-window'),
+										elm$html$Html$Events$onClick(author$project$Main$NextWindow)
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text(
+										mm(author$project$Main$ShowPetitionFooterMsg))
+									]))
+							]));
+				}
+			}();
+			var mainContent = _n2.a;
+			var footerContent = _n2.b;
 			return A2(
 				elm$html$Html$div,
-				_List_Nil,
 				_List_fromArray(
 					[
-						A6(author$project$Main$viewPetition, url, code, locale, petition, descriptionExpanded, signersCount),
-						function () {
-						switch (formStatus.$) {
-							case 'Ready':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'None':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'Sending':
-								return elm$html$Html$text('Sending form...');
-							case 'Sent':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'FormFailure':
-								var err = formStatus.a;
-								return elm$html$Html$text(
-									'Error of sending form: ' + author$project$Main$toString(err));
-							default:
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-						}
-					}()
+						elm$html$Html$Attributes$id('petition-content')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$id('petition-content-header')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$h1,
+								_List_Nil,
+								_List_fromArray(
+									[
+										elm$html$Html$text(petition.petitionName)
+									]))
+							])),
+						mainContent,
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$id('petition-content-footer')
+							]),
+						footerContent)
 					]));
 	}
 };

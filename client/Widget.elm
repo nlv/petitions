@@ -1,7 +1,7 @@
 import Browser
 import Time exposing (now)
 import Task exposing (perform)
-import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span, img)
+import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span, img, ul, li, i)
 import Html.Attributes exposing (class, style, type_, attribute, id, tabindex, href, target, src)
 import Html.Events exposing (onClick)
 import Generated.Api exposing (Petition, SignerForm, getPetitionByCode, postPetitionByCodeSigner)
@@ -46,17 +46,20 @@ type FormStatus
   | None
   | Opss
 
+type CurrentWindow
+  = DescriptionW
+  | FormW
+
 type alias Model = 
-  {
-     url                 : String
-    ,code                : String
-    ,locale              : String
-    ,petitionStatus      : PetitionStatus
-    ,formStatus          : FormStatus
-    ,signersCount        : Maybe Int
-    ,form                : Form () SignerForm 
-    ,flash               : Flash.State
-    ,descriptionExpanded : Bool
+  { url                 : String
+  , code                : String
+  , locale              : String
+  , petitionStatus      : PetitionStatus
+  , formStatus          : FormStatus
+  , signersCount        : Maybe Int
+  , form                : Form () SignerForm 
+  , flash               : Flash.State
+  , currentWindow       : CurrentWindow
   }
 
 init : {url: String, code: String, locale: String} -> (Model, Cmd Msg)
@@ -70,7 +73,7 @@ init {url, code, locale} =
     , form = Form.initial initFormValues validate 
     , signersCount = Nothing
     , flash = Flash.none
-    , descriptionExpanded = False
+    , currentWindow = DescriptionW
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
@@ -93,14 +96,15 @@ type Msg
   | SentForm (Result Http.Error Int)
   | NoOp
   | FormMsg Form.Msg
-  | ToggleDescription
-  | ExpandDescription
-  | CollapseDescription
+  -- | ToggleDescription
+  -- | ExpandDescription
+  -- | CollapseDescription
   | SetFlash String
   | RemoveFlash 
+  | NextWindow
 
 update : Msg -> Model -> (Model, Cmd Msg)
-update msg ({ url, code, locale, form, descriptionExpanded } as model) =
+update msg ({ url, code, locale, form, currentWindow } as model) =
   let mm = m locale
   in
   case msg of
@@ -141,12 +145,6 @@ update msg ({ url, code, locale, form, descriptionExpanded } as model) =
     NoOp ->
         (model, Cmd.none)
 
-    ToggleDescription -> ({model | descriptionExpanded = not descriptionExpanded}, Cmd.none)
-
-    ExpandDescription -> ({model | descriptionExpanded = True}, Cmd.none)
-
-    CollapseDescription -> ({model | descriptionExpanded = False}, Cmd.none)
-
     SetFlash flashMessage ->
       let
         ( message, cmd) = 
@@ -157,12 +155,27 @@ update msg ({ url, code, locale, form, descriptionExpanded } as model) =
     RemoveFlash ->
       ({ model | flash = Flash.none }, Cmd.none)        
 
+    NextWindow -> 
+      let w = if currentWindow == DescriptionW then FormW else DescriptionW
+      in 
+        ({model | currentWindow = w}, Cmd.none)
 
 -- VIEW
 
 view : Model -> Html Msg
-view {url, code, locale, petitionStatus, descriptionExpanded, signersCount, formStatus, form, flash} =
+view 
+    { url
+    , code
+    , locale
+    , petitionStatus
+    , signersCount
+    , formStatus
+    , form
+    , flash
+    , currentWindow
+    } =
   let mm = m locale
+      -- statusClass i = if (i == indexWindow ) then " active " else ""
   in
   case petitionStatus of
     PetitionFailure err ->
@@ -172,20 +185,50 @@ view {url, code, locale, petitionStatus, descriptionExpanded, signersCount, form
       div []
         [ text "Loading petition" ]
     Loaded petition ->
+      let
+        (mainContent, footerContent) =
+          case currentWindow of
+            DescriptionW -> 
+              ( viewPetition url code locale petition signersCount 
+              , [ 
+                  div
+                  [ class "read-more"]
+                  [ a
+                      [ target "_blank"
+                      , class "btn btn-primary"
+                      , href (url ++ "/petitionText.html/" ++ code ++ "?locale=" ++ locale)
+                      ]
+                      [ text (mm ShowFullTextMsg)] 
+                  ]
+                , div 
+                    [ class "next-window"
+                    , onClick NextWindow 
+                    ]
+                    [ text (mm FillFormFooterMsg) ]
+                ]
+              )
+            FormW ->
+              ( case formStatus of
+                  Sending -> text "Sending form..."
+                  FormFailure err -> text ("Error of sending form: " ++ (toString err))
+                  -- _ -> div [] [ Html.map FormMsg (formView locale flash form) ]
+                  _ -> Html.map FormMsg (formView locale flash form) 
+              , [ div 
+                    [ class "next-window"
+                    , onClick NextWindow 
+                    ]
+                    [ text (mm ShowPetitionFooterMsg) ]
+                ]
+              )
+      in
       div
-        []
-        [ viewPetition url code locale petition descriptionExpanded  signersCount
-        , case formStatus of
-            Ready -> 
-                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
-            None -> 
-                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
-            Sending -> text "Sending form..."
-            Sent -> 
-                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
-            FormFailure err -> text ("Error of sending form: " ++ (toString err))
-            Opss -> 
-                div [ onClick CollapseDescription ] [ Html.map FormMsg (formView locale flash form) ]
+        [ id "petition-content" ]
+        [ div 
+            [ id "petition-content-header" ]
+            [ h1 [] [ text (petition.petitionName) ] ]
+        , mainContent
+        , div [ id "petition-content-footer" ] footerContent
+        ]
                 -- Html.map 
                 --           FormMsg 
                 --           (
@@ -195,7 +238,6 @@ view {url, code, locale, petitionStatus, descriptionExpanded, signersCount, form
                 --             ,formView locale form
                 --             ]
                 --           )
-        ]
 
 getFormErrorsString : Form () SignerForm -> List (Html Form.Msg)
 getFormErrorsString form =
@@ -205,15 +247,14 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-viewPetition : String -> String -> String -> Petition -> Bool -> (Maybe Int) -> Html Msg
-viewPetition url code locale petition descriptionExpanded cnt = 
+viewPetition : String -> String -> String -> Petition -> (Maybe Int) -> Html Msg
+viewPetition url code locale petition cnt = 
     let mm = m locale
         cntQ = withDefault "?" (map fromInt cnt)
     in
     div
       [id "petition-info"]
-      [ h1 [] [text (petition.petitionName) ]
-      , img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
+      [ img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
       , div 
         [ id "petition-info-signed"]
         [ div [ id "petition-info-signed-div1"] [text (mm WasSignedMsg)] 
@@ -221,28 +262,9 @@ viewPetition url code locale petition descriptionExpanded cnt =
         ]
       , div 
         [ id "petition-info-description" 
-        , class (if descriptionExpanded then "expanded" else "collapsed")
-        -- , onClick ExpandDescription
-        , onClick ToggleDescription
         ]
         [ toHtml [] petition.petitionDescription 
-        , div
-          [ class "read-more"]
-          [ a
-              [ target "_blank"
-              , class "btn btn-primary"
-              , href (url ++ "/petitionText.html/" ++ code ++ "?locale=" ++ locale)
-              ]
-              [ text (mm ShowFullTextMsg)] 
-          ]
         ]
-      , div 
-          [ id "petition-info-desription-toggle" 
-          , onClick ToggleDescription
-          ]
-          [ text (if descriptionExpanded then "\u{25B2}" else "\u{25BC}") ]
-          -- ]
-      -- , div [ id "petition-info-separator" ] []
 
       ]
 
@@ -359,6 +381,8 @@ type TextMessage
   | PeopleMsg
   | SignPetitionMsg
   | CloseMsg
+  | FillFormFooterMsg
+  | ShowPetitionFooterMsg
 
 m : String -> TextMessage -> String
 m locale msg =
@@ -387,6 +411,8 @@ m locale msg =
         PeopleMsg -> " человек"
         SignPetitionMsg -> "ПОДПИШИТЕ ПЕТИЦИЮ: "
         CloseMsg -> "Закрыть"
+        FillFormFooterMsg -> "Подписать петицию"
+        ShowPetitionFooterMsg -> "Текст петиции"
     _ -> 
       case msg of 
         PetitionFormMsg -> "Fill the form"
@@ -411,3 +437,5 @@ m locale msg =
         PeopleMsg -> " people"
         SignPetitionMsg -> "SIGN THE PETITION: "
         CloseMsg -> "Close"
+        FillFormFooterMsg -> "Sign petition"
+        ShowPetitionFooterMsg -> "Text of petition"
