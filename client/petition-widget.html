@@ -1,3 +1,13 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Main</title>
+</head>
+
+<body>
+<div id="elm-f0111bc4e658d0f98db96260c16f7e49"></div>
+<script>
 (function(scope){
 'use strict';
 
@@ -2513,52 +2523,6 @@ function _Platform_mergeExportsDebug(moduleName, obj, exports)
 
 
 
-function _Time_now(millisToPosix)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(millisToPosix(Date.now())));
-	});
-}
-
-var _Time_setInterval = F2(function(interval, task)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
-		return function() { clearInterval(id); };
-	});
-});
-
-function _Time_here()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(
-			A2(elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
-		));
-	});
-}
-
-
-function _Time_getZoneName()
-{
-	return _Scheduler_binding(function(callback)
-	{
-		try
-		{
-			var name = elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
-		}
-		catch (e)
-		{
-			var name = elm$time$Time$Offset(new Date().getTimezoneOffset());
-		}
-		callback(_Scheduler_succeed(name));
-	});
-}
-
-
-
 
 // HELPERS
 
@@ -4118,105 +4082,6 @@ function _VirtualDom_dekey(keyedNode)
 
 
 
-// VIRTUAL-DOM WIDGETS
-
-
-var _Markdown_toHtml = F3(function(options, factList, rawMarkdown)
-{
-	return _VirtualDom_custom(
-		factList,
-		{
-			a: options,
-			b: rawMarkdown
-		},
-		_Markdown_render,
-		_Markdown_diff
-	);
-});
-
-
-
-// WIDGET IMPLEMENTATION
-
-
-function _Markdown_render(model)
-{
-	return A2(_Markdown_replace, model, _VirtualDom_doc.createElement('div'));
-}
-
-
-function _Markdown_diff(x, y)
-{
-	return x.b === y.b && x.a === y.a
-		? false
-		: _Markdown_replace(y);
-}
-
-
-var _Markdown_replace = F2(function(model, div)
-{
-	div.innerHTML = _Markdown_marked(model.b, _Markdown_formatOptions(model.a));
-	return div;
-});
-
-
-
-// ACTUAL MARKDOWN PARSER
-
-
-var _Markdown_marked = function() {
-	// catch the `marked` object regardless of the outer environment.
-	// (ex. a CommonJS module compatible environment.)
-	// note that this depends on marked's implementation of environment detection.
-	var module = {};
-	var exports = module.exports = {};
-
-	/**
-	 * marked - a markdown parser
-	 * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
-	 * https://github.com/chjj/marked
-	 * commit cd2f6f5b7091154c5526e79b5f3bfb4d15995a51
-	 */
-	(function(){var block={newline:/^\n+/,code:/^( {4}[^\n]+\n*)+/,fences:noop,hr:/^( *[-*_]){3,} *(?:\n+|$)/,heading:/^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,nptable:noop,lheading:/^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,blockquote:/^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,list:/^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,html:/^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,def:/^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,table:noop,paragraph:/^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,text:/^[^\n]+/};block.bullet=/(?:[*+-]|\d+\.)/;block.item=/^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;block.item=replace(block.item,"gm")(/bull/g,block.bullet)();block.list=replace(block.list)(/bull/g,block.bullet)("hr","\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))")("def","\\n+(?="+block.def.source+")")();block.blockquote=replace(block.blockquote)("def",block.def)();block._tag="(?!(?:"+"a|em|strong|small|s|cite|q|dfn|abbr|data|time|code"+"|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo"+"|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b";block.html=replace(block.html)("comment",/<!--[\s\S]*?-->/)("closed",/<(tag)[\s\S]+?<\/\1>/)("closing",/<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)(/tag/g,block._tag)();block.paragraph=replace(block.paragraph)("hr",block.hr)("heading",block.heading)("lheading",block.lheading)("blockquote",block.blockquote)("tag","<"+block._tag)("def",block.def)();block.normal=merge({},block);block.gfm=merge({},block.normal,{fences:/^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/,paragraph:/^/,heading:/^ *(#{1,6}) +([^\n]+?) *#* *(?:\n+|$)/});block.gfm.paragraph=replace(block.paragraph)("(?!","(?!"+block.gfm.fences.source.replace("\\1","\\2")+"|"+block.list.source.replace("\\1","\\3")+"|")();block.tables=merge({},block.gfm,{nptable:/^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*/,table:/^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/});function Lexer(options){this.tokens=[];this.tokens.links={};this.options=options||marked.defaults;this.rules=block.normal;if(this.options.gfm){if(this.options.tables){this.rules=block.tables}else{this.rules=block.gfm}}}Lexer.rules=block;Lexer.lex=function(src,options){var lexer=new Lexer(options);return lexer.lex(src)};Lexer.prototype.lex=function(src){src=src.replace(/\r\n|\r/g,"\n").replace(/\t/g,"    ").replace(/\u00a0/g," ").replace(/\u2424/g,"\n");return this.token(src,true)};Lexer.prototype.token=function(src,top,bq){var src=src.replace(/^ +$/gm,""),next,loose,cap,bull,b,item,space,i,l;while(src){if(cap=this.rules.newline.exec(src)){src=src.substring(cap[0].length);if(cap[0].length>1){this.tokens.push({type:"space"})}}if(cap=this.rules.code.exec(src)){src=src.substring(cap[0].length);cap=cap[0].replace(/^ {4}/gm,"");this.tokens.push({type:"code",text:!this.options.pedantic?cap.replace(/\n+$/,""):cap});continue}if(cap=this.rules.fences.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"code",lang:cap[2],text:cap[3]||""});continue}if(cap=this.rules.heading.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"heading",depth:cap[1].length,text:cap[2]});continue}if(top&&(cap=this.rules.nptable.exec(src))){src=src.substring(cap[0].length);item={type:"table",header:cap[1].replace(/^ *| *\| *$/g,"").split(/ *\| */),align:cap[2].replace(/^ *|\| *$/g,"").split(/ *\| */),cells:cap[3].replace(/\n$/,"").split("\n")};for(i=0;i<item.align.length;i++){if(/^ *-+: *$/.test(item.align[i])){item.align[i]="right"}else if(/^ *:-+: *$/.test(item.align[i])){item.align[i]="center"}else if(/^ *:-+ *$/.test(item.align[i])){item.align[i]="left"}else{item.align[i]=null}}for(i=0;i<item.cells.length;i++){item.cells[i]=item.cells[i].split(/ *\| */)}this.tokens.push(item);continue}if(cap=this.rules.lheading.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"heading",depth:cap[2]==="="?1:2,text:cap[1]});continue}if(cap=this.rules.hr.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"hr"});continue}if(cap=this.rules.blockquote.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"blockquote_start"});cap=cap[0].replace(/^ *> ?/gm,"");this.token(cap,top,true);this.tokens.push({type:"blockquote_end"});continue}if(cap=this.rules.list.exec(src)){src=src.substring(cap[0].length);bull=cap[2];this.tokens.push({type:"list_start",ordered:bull.length>1});cap=cap[0].match(this.rules.item);next=false;l=cap.length;i=0;for(;i<l;i++){item=cap[i];space=item.length;item=item.replace(/^ *([*+-]|\d+\.) +/,"");if(~item.indexOf("\n ")){space-=item.length;item=!this.options.pedantic?item.replace(new RegExp("^ {1,"+space+"}","gm"),""):item.replace(/^ {1,4}/gm,"")}if(this.options.smartLists&&i!==l-1){b=block.bullet.exec(cap[i+1])[0];if(bull!==b&&!(bull.length>1&&b.length>1)){src=cap.slice(i+1).join("\n")+src;i=l-1}}loose=next||/\n\n(?!\s*$)/.test(item);if(i!==l-1){next=item.charAt(item.length-1)==="\n";if(!loose)loose=next}this.tokens.push({type:loose?"loose_item_start":"list_item_start"});this.token(item,false,bq);this.tokens.push({type:"list_item_end"})}this.tokens.push({type:"list_end"});continue}if(cap=this.rules.html.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:this.options.sanitize?"paragraph":"html",pre:!this.options.sanitizer&&(cap[1]==="pre"||cap[1]==="script"||cap[1]==="style"),text:cap[0]});continue}if(!bq&&top&&(cap=this.rules.def.exec(src))){src=src.substring(cap[0].length);this.tokens.links[cap[1].toLowerCase()]={href:cap[2],title:cap[3]};continue}if(top&&(cap=this.rules.table.exec(src))){src=src.substring(cap[0].length);item={type:"table",header:cap[1].replace(/^ *| *\| *$/g,"").split(/ *\| */),align:cap[2].replace(/^ *|\| *$/g,"").split(/ *\| */),cells:cap[3].replace(/(?: *\| *)?\n$/,"").split("\n")};for(i=0;i<item.align.length;i++){if(/^ *-+: *$/.test(item.align[i])){item.align[i]="right"}else if(/^ *:-+: *$/.test(item.align[i])){item.align[i]="center"}else if(/^ *:-+ *$/.test(item.align[i])){item.align[i]="left"}else{item.align[i]=null}}for(i=0;i<item.cells.length;i++){item.cells[i]=item.cells[i].replace(/^ *\| *| *\| *$/g,"").split(/ *\| */)}this.tokens.push(item);continue}if(top&&(cap=this.rules.paragraph.exec(src))){src=src.substring(cap[0].length);this.tokens.push({type:"paragraph",text:cap[1].charAt(cap[1].length-1)==="\n"?cap[1].slice(0,-1):cap[1]});continue}if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"text",text:cap[0]});continue}if(src){throw new Error("Infinite loop on byte: "+src.charCodeAt(0))}}return this.tokens};var inline={escape:/^\\([\\`*{}\[\]()#+\-.!_>])/,autolink:/^<([^ >]+(@|:\/)[^ >]+)>/,url:noop,tag:/^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,link:/^!?\[(inside)\]\(href\)/,reflink:/^!?\[(inside)\]\s*\[([^\]]*)\]/,nolink:/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,strong:/^_\_([\s\S]+?)_\_(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,em:/^\b_((?:[^_]|_\_)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,code:/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,br:/^ {2,}\n(?!\s*$)/,del:noop,text:/^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/};inline._inside=/(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;inline._href=/\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;inline.link=replace(inline.link)("inside",inline._inside)("href",inline._href)();inline.reflink=replace(inline.reflink)("inside",inline._inside)();inline.normal=merge({},inline);inline.pedantic=merge({},inline.normal,{strong:/^_\_(?=\S)([\s\S]*?\S)_\_(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,em:/^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/});inline.gfm=merge({},inline.normal,{escape:replace(inline.escape)("])","~|])")(),url:/^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,del:/^~~(?=\S)([\s\S]*?\S)~~/,text:replace(inline.text)("]|","~]|")("|","|https?://|")()});inline.breaks=merge({},inline.gfm,{br:replace(inline.br)("{2,}","*")(),text:replace(inline.gfm.text)("{2,}","*")()});function InlineLexer(links,options){this.options=options||marked.defaults;this.links=links;this.rules=inline.normal;this.renderer=this.options.renderer||new Renderer;this.renderer.options=this.options;if(!this.links){throw new Error("Tokens array requires a `links` property.")}if(this.options.gfm){if(this.options.breaks){this.rules=inline.breaks}else{this.rules=inline.gfm}}else if(this.options.pedantic){this.rules=inline.pedantic}}InlineLexer.rules=inline;InlineLexer.output=function(src,links,options){var inline=new InlineLexer(links,options);return inline.output(src)};InlineLexer.prototype.output=function(src){var out="",link,text,href,cap;while(src){if(cap=this.rules.escape.exec(src)){src=src.substring(cap[0].length);out+=cap[1];continue}if(cap=this.rules.autolink.exec(src)){src=src.substring(cap[0].length);if(cap[2]==="@"){text=cap[1].charAt(6)===":"?this.mangle(cap[1].substring(7)):this.mangle(cap[1]);href=this.mangle("mailto:")+text}else{text=escape(cap[1]);href=text}out+=this.renderer.link(href,null,text);continue}if(!this.inLink&&(cap=this.rules.url.exec(src))){src=src.substring(cap[0].length);text=escape(cap[1]);href=text;out+=this.renderer.link(href,null,text);continue}if(cap=this.rules.tag.exec(src)){if(!this.inLink&&/^<a /i.test(cap[0])){this.inLink=true}else if(this.inLink&&/^<\/a>/i.test(cap[0])){this.inLink=false}src=src.substring(cap[0].length);out+=this.options.sanitize?this.options.sanitizer?this.options.sanitizer(cap[0]):escape(cap[0]):cap[0];continue}if(cap=this.rules.link.exec(src)){src=src.substring(cap[0].length);this.inLink=true;out+=this.outputLink(cap,{href:cap[2],title:cap[3]});this.inLink=false;continue}if((cap=this.rules.reflink.exec(src))||(cap=this.rules.nolink.exec(src))){src=src.substring(cap[0].length);link=(cap[2]||cap[1]).replace(/\s+/g," ");link=this.links[link.toLowerCase()];if(!link||!link.href){out+=cap[0].charAt(0);src=cap[0].substring(1)+src;continue}this.inLink=true;out+=this.outputLink(cap,link);this.inLink=false;continue}if(cap=this.rules.strong.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.strong(this.output(cap[2]||cap[1]));continue}if(cap=this.rules.em.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.em(this.output(cap[2]||cap[1]));continue}if(cap=this.rules.code.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.codespan(escape(cap[2],true));continue}if(cap=this.rules.br.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.br();continue}if(cap=this.rules.del.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.del(this.output(cap[1]));continue}if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.text(escape(this.smartypants(cap[0])));continue}if(src){throw new Error("Infinite loop on byte: "+src.charCodeAt(0))}}return out};InlineLexer.prototype.outputLink=function(cap,link){var href=escape(link.href),title=link.title?escape(link.title):null;return cap[0].charAt(0)!=="!"?this.renderer.link(href,title,this.output(cap[1])):this.renderer.image(href,title,escape(cap[1]))};InlineLexer.prototype.smartypants=function(text){if(!this.options.smartypants)return text;return text.replace(/---/g,"—").replace(/--/g,"–").replace(/(^|[-\u2014\/(\[{"\s])'/g,"$1‘").replace(/'/g,"’").replace(/(^|[-\u2014\/(\[{\u2018\s])"/g,"$1“").replace(/"/g,"”").replace(/\.{3}/g,"…")};InlineLexer.prototype.mangle=function(text){if(!this.options.mangle)return text;var out="",l=text.length,i=0,ch;for(;i<l;i++){ch=text.charCodeAt(i);if(Math.random()>.5){ch="x"+ch.toString(16)}out+="&#"+ch+";"}return out};function Renderer(options){this.options=options||{}}Renderer.prototype.code=function(code,lang,escaped){if(this.options.highlight){var out=this.options.highlight(code,lang);if(out!=null&&out!==code){escaped=true;code=out}}if(!lang){return"<pre><code>"+(escaped?code:escape(code,true))+"\n</code></pre>"}return'<pre><code class="'+this.options.langPrefix+escape(lang,true)+'">'+(escaped?code:escape(code,true))+"\n</code></pre>\n"};Renderer.prototype.blockquote=function(quote){return"<blockquote>\n"+quote+"</blockquote>\n"};Renderer.prototype.html=function(html){return html};Renderer.prototype.heading=function(text,level,raw){return"<h"+level+' id="'+this.options.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+text+"</h"+level+">\n"};Renderer.prototype.hr=function(){return this.options.xhtml?"<hr/>\n":"<hr>\n"};Renderer.prototype.list=function(body,ordered){var type=ordered?"ol":"ul";return"<"+type+">\n"+body+"</"+type+">\n"};Renderer.prototype.listitem=function(text){return"<li>"+text+"</li>\n"};Renderer.prototype.paragraph=function(text){return"<p>"+text+"</p>\n"};Renderer.prototype.table=function(header,body){return"<table>\n"+"<thead>\n"+header+"</thead>\n"+"<tbody>\n"+body+"</tbody>\n"+"</table>\n"};Renderer.prototype.tablerow=function(content){return"<tr>\n"+content+"</tr>\n"};Renderer.prototype.tablecell=function(content,flags){var type=flags.header?"th":"td";var tag=flags.align?"<"+type+' style="text-align:'+flags.align+'">':"<"+type+">";return tag+content+"</"+type+">\n"};Renderer.prototype.strong=function(text){return"<strong>"+text+"</strong>"};Renderer.prototype.em=function(text){return"<em>"+text+"</em>"};Renderer.prototype.codespan=function(text){return"<code>"+text+"</code>"};Renderer.prototype.br=function(){return this.options.xhtml?"<br/>":"<br>"};Renderer.prototype.del=function(text){return"<del>"+text+"</del>"};Renderer.prototype.link=function(href,title,text){if(this.options.sanitize){try{var prot=decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase()}catch(e){return""}if(prot.indexOf("javascript:")===0||prot.indexOf("vbscript:")===0||prot.indexOf("data:")===0){return""}}var out='<a href="'+href+'"';if(title){out+=' title="'+title+'"'}out+=">"+text+"</a>";return out};Renderer.prototype.image=function(href,title,text){var out='<img src="'+href+'" alt="'+text+'"';if(title){out+=' title="'+title+'"'}out+=this.options.xhtml?"/>":">";return out};Renderer.prototype.text=function(text){return text};function Parser(options){this.tokens=[];this.token=null;this.options=options||marked.defaults;this.options.renderer=this.options.renderer||new Renderer;this.renderer=this.options.renderer;this.renderer.options=this.options}Parser.parse=function(src,options,renderer){var parser=new Parser(options,renderer);return parser.parse(src)};Parser.prototype.parse=function(src){this.inline=new InlineLexer(src.links,this.options,this.renderer);this.tokens=src.reverse();var out="";while(this.next()){out+=this.tok()}return out};Parser.prototype.next=function(){return this.token=this.tokens.pop()};Parser.prototype.peek=function(){return this.tokens[this.tokens.length-1]||0};Parser.prototype.parseText=function(){var body=this.token.text;while(this.peek().type==="text"){body+="\n"+this.next().text}return this.inline.output(body)};Parser.prototype.tok=function(){switch(this.token.type){case"space":{return""}case"hr":{return this.renderer.hr()}case"heading":{return this.renderer.heading(this.inline.output(this.token.text),this.token.depth,this.token.text)}case"code":{return this.renderer.code(this.token.text,this.token.lang,this.token.escaped)}case"table":{var header="",body="",i,row,cell,flags,j;cell="";for(i=0;i<this.token.header.length;i++){flags={header:true,align:this.token.align[i]};cell+=this.renderer.tablecell(this.inline.output(this.token.header[i]),{header:true,align:this.token.align[i]})}header+=this.renderer.tablerow(cell);for(i=0;i<this.token.cells.length;i++){row=this.token.cells[i];cell="";for(j=0;j<row.length;j++){cell+=this.renderer.tablecell(this.inline.output(row[j]),{header:false,align:this.token.align[j]})}body+=this.renderer.tablerow(cell)}return this.renderer.table(header,body)}case"blockquote_start":{var body="";while(this.next().type!=="blockquote_end"){body+=this.tok()}return this.renderer.blockquote(body)}case"list_start":{var body="",ordered=this.token.ordered;while(this.next().type!=="list_end"){body+=this.tok()}return this.renderer.list(body,ordered)}case"list_item_start":{var body="";while(this.next().type!=="list_item_end"){body+=this.token.type==="text"?this.parseText():this.tok()}return this.renderer.listitem(body)}case"loose_item_start":{var body="";while(this.next().type!=="list_item_end"){body+=this.tok()}return this.renderer.listitem(body)}case"html":{var html=!this.token.pre&&!this.options.pedantic?this.inline.output(this.token.text):this.token.text;return this.renderer.html(html)}case"paragraph":{return this.renderer.paragraph(this.inline.output(this.token.text))}case"text":{return this.renderer.paragraph(this.parseText())}}};function escape(html,encode){return html.replace(!encode?/&(?!#?\w+;)/g:/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}function unescape(html){return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/g,function(_,n){n=n.toLowerCase();if(n==="colon")return":";if(n.charAt(0)==="#"){return n.charAt(1)==="x"?String.fromCharCode(parseInt(n.substring(2),16)):String.fromCharCode(+n.substring(1))}return""})}function replace(regex,opt){regex=regex.source;opt=opt||"";return function self(name,val){if(!name)return new RegExp(regex,opt);val=val.source||val;val=val.replace(/(^|[^\[])\^/g,"$1");regex=regex.replace(name,val);return self}}function noop(){}noop.exec=noop;function merge(obj){var i=1,target,key;for(;i<arguments.length;i++){target=arguments[i];for(key in target){if(Object.prototype.hasOwnProperty.call(target,key)){obj[key]=target[key]}}}return obj}function marked(src,opt,callback){if(callback||typeof opt==="function"){if(!callback){callback=opt;opt=null}opt=merge({},marked.defaults,opt||{});var highlight=opt.highlight,tokens,pending,i=0;try{tokens=Lexer.lex(src,opt)}catch(e){return callback(e)}pending=tokens.length;var done=function(err){if(err){opt.highlight=highlight;return callback(err)}var out;try{out=Parser.parse(tokens,opt)}catch(e){err=e}opt.highlight=highlight;return err?callback(err):callback(null,out)};if(!highlight||highlight.length<3){return done()}delete opt.highlight;if(!pending)return done();for(;i<tokens.length;i++){(function(token){if(token.type!=="code"){return--pending||done()}return highlight(token.text,token.lang,function(err,code){if(err)return done(err);if(code==null||code===token.text){return--pending||done()}token.text=code;token.escaped=true;--pending||done()})})(tokens[i])}return}try{if(opt)opt=merge({},marked.defaults,opt);return Parser.parse(Lexer.lex(src,opt),opt)}catch(e){e.message+="\nPlease report this to https://github.com/chjj/marked.";if((opt||marked.defaults).silent){return"<p>An error occured:</p><pre>"+escape(e.message+"",true)+"</pre>"}throw e}}marked.options=marked.setOptions=function(opt){merge(marked.defaults,opt);return marked};marked.defaults={gfm:true,tables:true,breaks:false,pedantic:false,sanitize:false,sanitizer:null,mangle:true,smartLists:false,silent:false,highlight:null,langPrefix:"lang-",smartypants:false,headerPrefix:"",renderer:new Renderer,xhtml:false};marked.Parser=Parser;marked.parser=Parser.parse;marked.Renderer=Renderer;marked.Lexer=Lexer;marked.lexer=Lexer.lex;marked.InlineLexer=InlineLexer;marked.inlineLexer=InlineLexer.output;marked.parse=marked;if(typeof module!=="undefined"&&typeof exports==="object"){module.exports=marked}else if(typeof define==="function"&&define.amd){define(function(){return marked})}else{this.marked=marked}}).call(function(){return this||(typeof window!=="undefined"?window:global)}());
-
-	return module.exports;
-}();
-
-
-// FORMAT OPTIONS FOR MARKED IMPLEMENTATION
-
-function _Markdown_formatOptions(options)
-{
-	function toHighlight(code, lang)
-	{
-		if (!lang && elm$core$Maybe$isJust(options.defaultHighlighting))
-		{
-			lang = options.defaultHighlighting.a;
-		}
-
-		if (typeof hljs !== 'undefined' && lang && hljs.listLanguages().indexOf(lang) >= 0)
-		{
-			return hljs.highlight(lang, code, true).value;
-		}
-
-		return code;
-	}
-
-	var gfm = options.githubFlavored.a;
-
-	return {
-		highlight: toHighlight,
-		gfm: gfm,
-		tables: gfm && gfm.tables,
-		breaks: gfm && gfm.breaks,
-		sanitize: options.sanitize,
-		smartypants: options.smartypants
-	};
-}
-
-
-
-
 // ELEMENT
 
 
@@ -4654,14 +4519,6 @@ function _Browser_load(url)
 		}
 	}));
 }
-var author$project$Flash$State = function (a) {
-	return {$: 'State', a: a};
-};
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var author$project$Flash$none = author$project$Flash$State(elm$core$Maybe$Nothing);
 var elm$core$Basics$apR = F2(
 	function (x, f) {
 		return f(x);
@@ -4917,6 +4774,7 @@ var elm$core$Array$initialize = F2(
 var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5146,9 +5004,9 @@ var NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2(elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var author$project$Generated$Api$Petition = F6(
-	function (petitionId, petitionCode, petitionName, petitionDescription, petitionContent, petitionLocale) {
-		return {petitionCode: petitionCode, petitionContent: petitionContent, petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
+var author$project$Generated$Api$Petition = F5(
+	function (petitionId, petitionCode, petitionName, petitionDescription, petitionLocale) {
+		return {petitionCode: petitionCode, petitionDescription: petitionDescription, petitionId: petitionId, petitionLocale: petitionLocale, petitionName: petitionName};
 	});
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$string = _Json_decodeString;
@@ -5159,25 +5017,21 @@ var author$project$Generated$Api$decodePetition = A3(
 	elm$json$Json$Decode$string,
 	A3(
 		NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'_petitionContent',
+		'_petitionDescription',
 		elm$json$Json$Decode$string,
 		A3(
 			NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'_petitionDescription',
+			'_petitionName',
 			elm$json$Json$Decode$string,
 			A3(
 				NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-				'_petitionName',
+				'_petitionCode',
 				elm$json$Json$Decode$string,
 				A3(
 					NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-					'_petitionCode',
-					elm$json$Json$Decode$string,
-					A3(
-						NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-						'_petitionId',
-						elm$json$Json$Decode$int,
-						elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition)))))));
+					'_petitionId',
+					elm$json$Json$Decode$int,
+					elm$json$Json$Decode$succeed(author$project$Generated$Api$Petition))))));
 var elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(
@@ -5188,6 +5042,9 @@ var elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
+var elm$core$Basics$identity = function (x) {
+	return x;
+};
 var elm$core$Basics$not = _Basics_not;
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
@@ -5861,7 +5718,6 @@ var elm$http$Http$Internal$Request = function (a) {
 	return {$: 'Request', a: a};
 };
 var elm$http$Http$request = elm$http$Http$Internal$Request;
-var elm$json$Json$Decode$index = _Json_decodeIndex;
 var elm$url$Url$percentEncode = _Url_percentEncode;
 var author$project$Generated$Api$getPetitionByCode = F3(
 	function (url, capture_code, query_locale) {
@@ -5887,15 +5743,7 @@ var author$project$Generated$Api$getPetitionByCode = F3(
 		return elm$http$Http$request(
 			{
 				body: elm$http$Http$emptyBody,
-				expect: elm$http$Http$expectJson(
-					A3(
-						elm$json$Json$Decode$map2,
-						F2(
-							function (a, b) {
-								return _Utils_Tuple2(a, b);
-							}),
-						A2(elm$json$Json$Decode$index, 0, author$project$Generated$Api$decodePetition),
-						A2(elm$json$Json$Decode$index, 1, elm$json$Json$Decode$int))),
+				expect: elm$http$Http$expectJson(author$project$Generated$Api$decodePetition),
 				headers: _List_Nil,
 				method: 'GET',
 				timeout: elm$core$Maybe$Nothing,
@@ -5918,26 +5766,6 @@ var author$project$Main$GotPetition = function (a) {
 };
 var author$project$Main$Loading = {$: 'Loading'};
 var author$project$Main$None = {$: 'None'};
-var etaque$elm_form$Form$Field$Bool = function (a) {
-	return {$: 'Bool', a: a};
-};
-var etaque$elm_form$Form$Tree$Value = function (a) {
-	return {$: 'Value', a: a};
-};
-var etaque$elm_form$Form$Field$bool = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$Bool, etaque$elm_form$Form$Tree$Value);
-var etaque$elm_form$Form$Field$String = function (a) {
-	return {$: 'String', a: a};
-};
-var etaque$elm_form$Form$Field$string = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Tree$Value);
-var author$project$Main$initFormValues = _List_fromArray(
-	[
-		_Utils_Tuple2(
-		'gender',
-		etaque$elm_form$Form$Field$string('M')),
-		_Utils_Tuple2(
-		'notifies_enabled',
-		etaque$elm_form$Form$Field$bool(true))
-	]);
 var author$project$Main$prepareLocale = function (locale) {
 	if (locale === 'default') {
 		return elm$core$Maybe$Nothing;
@@ -6082,25 +5910,6 @@ var etaque$elm_form$Form$Validate$andMap = F3(
 						])));
 		}
 	});
-var elm$core$Result$andThen = F2(
-	function (callback, result) {
-		if (result.$ === 'Ok') {
-			var value = result.a;
-			return callback(value);
-		} else {
-			var msg = result.a;
-			return elm$core$Result$Err(msg);
-		}
-	});
-var etaque$elm_form$Form$Validate$andThen = F3(
-	function (callback, validation, validationField) {
-		return A2(
-			elm$core$Result$andThen,
-			function (next) {
-				return A2(callback, next, validationField);
-			},
-			validation(validationField));
-	});
 var etaque$elm_form$Form$Field$asBool = function (field) {
 	if ((field.$ === 'Value') && (field.a.$ === 'Bool')) {
 		var b = field.a.a;
@@ -6118,23 +5927,6 @@ var etaque$elm_form$Form$Validate$bool = function (v) {
 		return elm$core$Result$Ok(false);
 	}
 };
-var elm$core$Result$withDefault = F2(
-	function (def, result) {
-		if (result.$ === 'Ok') {
-			var a = result.a;
-			return a;
-		} else {
-			return def;
-		}
-	});
-var etaque$elm_form$Form$Validate$defaultValue = F3(
-	function (a, validation, validationField) {
-		return elm$core$Result$Ok(
-			A2(
-				elm$core$Result$withDefault,
-				a,
-				validation(validationField)));
-	});
 var elm$core$Result$mapError = F2(
 	function (f, result) {
 		if (result.$ === 'Ok') {
@@ -6147,6 +5939,9 @@ var elm$core$Result$mapError = F2(
 		}
 	});
 var etaque$elm_form$Form$Field$EmptyField = {$: 'EmptyField'};
+var etaque$elm_form$Form$Tree$Value = function (a) {
+	return {$: 'Value', a: a};
+};
 var etaque$elm_form$Form$Tree$getAtName = F2(
 	function (name, value) {
 		if (value.$ === 'Group') {
@@ -6212,11 +6007,6 @@ var etaque$elm_form$Form$Validate$int = function (v) {
 			etaque$elm_form$Form$Field$asString(v)));
 };
 var etaque$elm_form$Form$Error$Empty = {$: 'Empty'};
-var etaque$elm_form$Form$Validate$nonEmpty = F2(
-	function (s, validationField) {
-		return elm$core$String$isEmpty(s) ? elm$core$Result$Err(
-			etaque$elm_form$Form$Error$value(etaque$elm_form$Form$Error$Empty)) : elm$core$Result$Ok(s);
-	});
 var etaque$elm_form$Form$Error$InvalidString = {$: 'InvalidString'};
 var etaque$elm_form$Form$Validate$string = function (v) {
 	var _n0 = etaque$elm_form$Form$Field$asString(v);
@@ -6238,58 +6028,31 @@ var author$project$Main$validate = A2(
 	A2(etaque$elm_form$Form$Validate$field, 'notifies_enabled', etaque$elm_form$Form$Validate$bool),
 	A2(
 		etaque$elm_form$Form$Validate$andMap,
-		A2(
-			etaque$elm_form$Form$Validate$defaultValue,
-			'M',
-			A2(etaque$elm_form$Form$Validate$field, 'gender', etaque$elm_form$Form$Validate$string)),
+		A2(etaque$elm_form$Form$Validate$field, 'gender', etaque$elm_form$Form$Validate$string),
 		A2(
 			etaque$elm_form$Form$Validate$andMap,
-			A2(
-				etaque$elm_form$Form$Validate$field,
-				'birth_year',
-				A2(etaque$elm_form$Form$Validate$defaultValue, 1990, etaque$elm_form$Form$Validate$int)),
+			A2(etaque$elm_form$Form$Validate$field, 'birth_year', etaque$elm_form$Form$Validate$int),
 			A2(
 				etaque$elm_form$Form$Validate$andMap,
-				A2(
-					etaque$elm_form$Form$Validate$field,
-					'phone',
-					A2(etaque$elm_form$Form$Validate$defaultValue, '', etaque$elm_form$Form$Validate$string)),
+				A2(etaque$elm_form$Form$Validate$field, 'phone', etaque$elm_form$Form$Validate$string),
 				A2(
 					etaque$elm_form$Form$Validate$andMap,
-					A2(
-						etaque$elm_form$Form$Validate$field,
-						'email',
-						A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
+					A2(etaque$elm_form$Form$Validate$field, 'email', etaque$elm_form$Form$Validate$string),
 					A2(
 						etaque$elm_form$Form$Validate$andMap,
-						A2(
-							etaque$elm_form$Form$Validate$defaultValue,
-							'',
-							A2(etaque$elm_form$Form$Validate$field, 'organization', etaque$elm_form$Form$Validate$string)),
+						A2(etaque$elm_form$Form$Validate$field, 'organization', etaque$elm_form$Form$Validate$string),
 						A2(
 							etaque$elm_form$Form$Validate$andMap,
-							A2(
-								etaque$elm_form$Form$Validate$field,
-								'city',
-								A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
+							A2(etaque$elm_form$Form$Validate$field, 'city', etaque$elm_form$Form$Validate$string),
 							A2(
 								etaque$elm_form$Form$Validate$andMap,
-								A2(
-									etaque$elm_form$Form$Validate$field,
-									'country',
-									A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
+								A2(etaque$elm_form$Form$Validate$field, 'country', etaque$elm_form$Form$Validate$string),
 								A2(
 									etaque$elm_form$Form$Validate$andMap,
-									A2(
-										etaque$elm_form$Form$Validate$field,
-										'last_name',
-										A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
+									A2(etaque$elm_form$Form$Validate$field, 'last_name', etaque$elm_form$Form$Validate$string),
 									A2(
 										etaque$elm_form$Form$Validate$andMap,
-										A2(
-											etaque$elm_form$Form$Validate$field,
-											'first_name',
-											A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
+										A2(etaque$elm_form$Form$Validate$field, 'first_name', etaque$elm_form$Form$Validate$string),
 										etaque$elm_form$Form$Validate$succeed(author$project$Generated$Api$SignerForm)))))))))));
 var elm$core$Task$Perform = function (a) {
 	return {$: 'Perform', a: a};
@@ -6455,13 +6218,10 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			code: code,
-			descriptionExpanded: true,
-			flash: author$project$Flash$none,
-			form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
+			form: A2(etaque$elm_form$Form$initial, _List_Nil, author$project$Main$validate),
 			formStatus: author$project$Main$None,
 			locale: locale,
 			petitionStatus: author$project$Main$Loading,
-			signersCount: elm$core$Maybe$Nothing,
 			url: url
 		},
 		A2(
@@ -6478,27 +6238,6 @@ var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$none;
 };
-var elm$core$Basics$always = F2(
-	function (a, _n0) {
-		return a;
-	});
-var elm$core$Process$sleep = _Process_sleep;
-var elm$core$Task$perform = F2(
-	function (toMessage, task) {
-		return elm$core$Task$command(
-			elm$core$Task$Perform(
-				A2(elm$core$Task$map, toMessage, task)));
-	});
-var author$project$Flash$setFlash = F3(
-	function (msg, timeout, flashMessage) {
-		return _Utils_Tuple2(
-			author$project$Flash$State(
-				elm$core$Maybe$Just(flashMessage)),
-			A2(
-				elm$core$Task$perform,
-				elm$core$Basics$always(msg),
-				elm$core$Process$sleep(timeout)));
-	});
 var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
@@ -6567,7 +6306,10 @@ var author$project$Generated$Api$postPetitionByCodeSigner = F3(
 			{
 				body: elm$http$Http$jsonBody(
 					author$project$Generated$Api$encodeSignerForm(body)),
-				expect: elm$http$Http$expectJson(elm$json$Json$Decode$int),
+				expect: elm$http$Http$expectStringResponse(
+					function (_n0) {
+						return elm$core$Result$Ok(_Utils_Tuple0);
+					}),
 				headers: _List_Nil,
 				method: 'POST',
 				timeout: elm$core$Maybe$Nothing,
@@ -6584,145 +6326,22 @@ var author$project$Generated$Api$postPetitionByCodeSigner = F3(
 				withCredentials: false
 			});
 	});
-var author$project$Main$FillRequiredFieldsMsg = {$: 'FillRequiredFieldsMsg'};
 var author$project$Main$FormFailure = function (a) {
 	return {$: 'FormFailure', a: a};
 };
 var author$project$Main$Loaded = function (a) {
 	return {$: 'Loaded', a: a};
 };
-var author$project$Main$Opss = {$: 'Opss'};
 var author$project$Main$PetitionFailure = function (a) {
 	return {$: 'PetitionFailure', a: a};
 };
 var author$project$Main$Ready = {$: 'Ready'};
-var author$project$Main$RemoveFlash = {$: 'RemoveFlash'};
 var author$project$Main$Sending = {$: 'Sending'};
-var author$project$Main$Sent = {$: 'Sent'};
 var author$project$Main$SentForm = function (a) {
 	return {$: 'SentForm', a: a};
 };
-var author$project$Main$SetFlash = function (a) {
-	return {$: 'SetFlash', a: a};
-};
-var author$project$Main$ThankYouMsg = {$: 'ThankYouMsg'};
-var author$project$Main$flashTimeout = 5000;
-var author$project$Main$m = F2(
-	function (locale, msg) {
-		if (locale === 'ru') {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Заполните форму';
-				case 'ShowFullTextMsg':
-					return 'Читать полностью';
-				case 'FirstNameMsg':
-					return 'Имя*';
-				case 'LastNameMsg':
-					return 'Фамилия*';
-				case 'CountryMsg':
-					return 'Страна*';
-				case 'CityMsg':
-					return 'Город*';
-				case 'OrganizationMsg':
-					return 'Организация';
-				case 'EmailPhoneMsg':
-					return 'Эл. почта/Телефон*';
-				case 'PhoneMsg':
-					return 'Телефон';
-				case 'BirthYearMsg':
-					return 'Год рождения';
-				case 'GenderMsg':
-					return 'Пол*';
-				case 'MaleMsg':
-					return 'Мужской';
-				case 'FemaleMsg':
-					return 'Женский';
-				case 'KeepMeUpdateMsg':
-					return 'Информировать меня о петиции и других событиях';
-				case 'SubmitMsg':
-					return 'Отправить';
-				case 'ResetMsg':
-					return 'Очистить';
-				case 'ThankYouMsg':
-					return 'Благодарим Вас! Ваш голос учтен!';
-				case 'FillRequiredFieldsMsg':
-					return 'Заполните обязательные поля';
-				case 'WasSignedMsg':
-					return 'Подписало:';
-				case 'PeopleMsg':
-					return ' человек';
-				case 'SignPetitionMsg':
-					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
-				default:
-					return 'Закрыть';
-			}
-		} else {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Fill the form';
-				case 'ShowFullTextMsg':
-					return 'Read full text';
-				case 'FirstNameMsg':
-					return 'First Name*';
-				case 'LastNameMsg':
-					return 'Last Name*';
-				case 'CountryMsg':
-					return 'Country*';
-				case 'CityMsg':
-					return 'City*';
-				case 'OrganizationMsg':
-					return 'Organization';
-				case 'EmailPhoneMsg':
-					return 'Email/Phone*';
-				case 'PhoneMsg':
-					return 'Phone*';
-				case 'BirthYearMsg':
-					return 'BirthYear';
-				case 'GenderMsg':
-					return 'Gender*';
-				case 'MaleMsg':
-					return 'Male';
-				case 'FemaleMsg':
-					return 'Female';
-				case 'KeepMeUpdateMsg':
-					return 'Keep me updated via-email on this petition and related issues. ';
-				case 'SubmitMsg':
-					return 'Submit';
-				case 'ResetMsg':
-					return 'Reset';
-				case 'ThankYouMsg':
-					return 'Thank you! Your vote was taken into account!';
-				case 'FillRequiredFieldsMsg':
-					return 'Please, fill all required fields';
-				case 'WasSignedMsg':
-					return 'Signed by:';
-				case 'PeopleMsg':
-					return ' people';
-				case 'SignPetitionMsg':
-					return 'SIGN THE PETITION: ';
-				default:
-					return 'Close';
-			}
-		}
-	});
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
-var elm$time$Time$Name = function (a) {
-	return {$: 'Name', a: a};
-};
-var elm$time$Time$Offset = function (a) {
-	return {$: 'Offset', a: a};
-};
-var elm$time$Time$Zone = F2(
-	function (a, b) {
-		return {$: 'Zone', a: a, b: b};
-	});
-var elm$time$Time$customZone = elm$time$Time$Zone;
-var elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var elm$time$Time$millisToPosix = elm$time$Time$Posix;
-var elm$time$Time$now = _Time_now(elm$time$Time$millisToPosix);
 var etaque$elm_form$Form$getOutput = function (_n0) {
 	var model = _n0.a;
 	return model.output;
@@ -7275,22 +6894,18 @@ var author$project$Main$update = F2(
 		var code = model.code;
 		var locale = model.locale;
 		var form = model.form;
-		var descriptionExpanded = model.descriptionExpanded;
-		var mm = author$project$Main$m(locale);
+		var signer0 = {signerFormBirthYear: 22, signerFormCity: 'f', signerFormCountry: 'c', signerFormEmail: 'e', signerFormFirstName: 'a', signerFormGender: 'M', signerFormLastName: 'b', signerFormNotifiesEnabled: false, signerFormOrganization: 'd', signerFormPhone: 'f'};
 		switch (msg.$) {
 			case 'GotPetition':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
-					var _n2 = result.a;
-					var petition = _n2.a;
-					var cnt = _n2.b;
+					var petition = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
 								formStatus: author$project$Main$Ready,
-								petitionStatus: author$project$Main$Loaded(petition),
-								signersCount: elm$core$Maybe$Just(cnt)
+								petitionStatus: author$project$Main$Loaded(petition)
 							}),
 						elm$core$Platform$Cmd$none);
 				} else {
@@ -7299,20 +6914,19 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								petitionStatus: author$project$Main$PetitionFailure(err),
-								signersCount: elm$core$Maybe$Nothing
+								petitionStatus: author$project$Main$PetitionFailure(err)
 							}),
 						elm$core$Platform$Cmd$none);
 				}
 			case 'FormMsg':
 				var formMsg = msg.a;
-				var _n3 = _Utils_Tuple2(
+				var _n2 = _Utils_Tuple2(
 					formMsg,
 					etaque$elm_form$Form$getOutput(form));
-				if (_n3.a.$ === 'Submit') {
-					if (_n3.b.$ === 'Just') {
-						var _n4 = _n3.a;
-						var signer = _n3.b.a;
+				if (_n2.a.$ === 'Submit') {
+					if (_n2.b.$ === 'Just') {
+						var _n3 = _n2.a;
+						var signer = _n2.b.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -7322,18 +6936,16 @@ var author$project$Main$update = F2(
 								author$project$Main$SentForm,
 								A3(author$project$Generated$Api$postPetitionByCodeSigner, url, code, signer)));
 					} else {
-						var _n5 = _n3.a;
-						var _n6 = _n3.b;
+						var _n4 = _n2.a;
+						var _n5 = _n2.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{formStatus: author$project$Main$Opss}),
+								{formStatus: author$project$Main$Sending}),
 							A2(
-								elm$core$Task$perform,
-								elm$core$Basics$always(
-									author$project$Main$SetFlash(
-										mm(author$project$Main$FillRequiredFieldsMsg))),
-								elm$time$Time$now));
+								elm$http$Http$send,
+								author$project$Main$SentForm,
+								A3(author$project$Generated$Api$postPetitionByCodeSigner, url, code, signer0)));
 					}
 				} else {
 					return _Utils_Tuple2(
@@ -7347,21 +6959,11 @@ var author$project$Main$update = F2(
 			case 'SentForm':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
-					var cnt = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{
-								form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
-								formStatus: author$project$Main$Sent,
-								signersCount: elm$core$Maybe$Just(cnt)
-							}),
-						A2(
-							elm$core$Task$perform,
-							elm$core$Basics$always(
-								author$project$Main$SetFlash(
-									mm(author$project$Main$ThankYouMsg))),
-							elm$time$Time$now));
+							{formStatus: author$project$Main$Ready}),
+						elm$core$Platform$Cmd$none);
 				} else {
 					var err = result.a;
 					return _Utils_Tuple2(
@@ -7372,67 +6974,14 @@ var author$project$Main$update = F2(
 							}),
 						elm$core$Platform$Cmd$none);
 				}
-			case 'NoOp':
-				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-			case 'ToggleDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: !descriptionExpanded}),
-					elm$core$Platform$Cmd$none);
-			case 'ExpandDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: true}),
-					elm$core$Platform$Cmd$none);
-			case 'CollapseDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: false}),
-					elm$core$Platform$Cmd$none);
-			case 'SetFlash':
-				var flashMessage = msg.a;
-				var _n8 = A3(author$project$Flash$setFlash, author$project$Main$RemoveFlash, author$project$Main$flashTimeout, flashMessage);
-				var message = _n8.a;
-				var cmd = _n8.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{flash: message}),
-					cmd);
 			default:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{flash: author$project$Flash$none}),
-					elm$core$Platform$Cmd$none);
+				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$CollapseDescription = {$: 'CollapseDescription'};
 var author$project$Main$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
-var author$project$Flash$getMessage = function (_n0) {
-	var message = _n0.a;
-	return message;
-};
-var author$project$Main$BirthYearMsg = {$: 'BirthYearMsg'};
-var author$project$Main$CityMsg = {$: 'CityMsg'};
-var author$project$Main$CountryMsg = {$: 'CountryMsg'};
-var author$project$Main$EmailPhoneMsg = {$: 'EmailPhoneMsg'};
-var author$project$Main$FemaleMsg = {$: 'FemaleMsg'};
-var author$project$Main$FirstNameMsg = {$: 'FirstNameMsg'};
-var author$project$Main$GenderMsg = {$: 'GenderMsg'};
-var author$project$Main$KeepMeUpdateMsg = {$: 'KeepMeUpdateMsg'};
-var author$project$Main$LastNameMsg = {$: 'LastNameMsg'};
-var author$project$Main$MaleMsg = {$: 'MaleMsg'};
-var author$project$Main$OrganizationMsg = {$: 'OrganizationMsg'};
-var author$project$Main$PetitionFormMsg = {$: 'PetitionFormMsg'};
-var author$project$Main$PhoneMsg = {$: 'PhoneMsg'};
-var author$project$Main$ResetMsg = {$: 'ResetMsg'};
-var author$project$Main$SubmitMsg = {$: 'SubmitMsg'};
+var elm$core$Debug$toString = _Debug_toString;
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -7446,6 +6995,8 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
+var elm$html$Html$br = _VirtualDom_node('br');
+var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$label = _VirtualDom_node('label');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -7458,16 +7009,6 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
-var elm$html$Html$input = _VirtualDom_node('input');
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
-var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
-var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -7479,281 +7020,11 @@ var elm$html$Html$Events$on = F2(
 			event,
 			elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
-var elm$html$Html$Events$onBlur = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'blur',
-		elm$json$Json$Decode$succeed(msg));
-};
-var elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
-	});
-var elm$json$Json$Decode$bool = _Json_decodeBool;
-var elm$html$Html$Events$targetChecked = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'checked']),
-	elm$json$Json$Decode$bool);
-var elm$html$Html$Events$onCheck = function (tagger) {
-	return A2(
-		elm$html$Html$Events$on,
-		'change',
-		A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetChecked));
-};
-var elm$html$Html$Events$onFocus = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'focus',
-		elm$json$Json$Decode$succeed(msg));
-};
-var etaque$elm_form$Form$Blur = function (a) {
-	return {$: 'Blur', a: a};
-};
-var etaque$elm_form$Form$Checkbox = {$: 'Checkbox'};
-var etaque$elm_form$Form$Focus = function (a) {
-	return {$: 'Focus', a: a};
-};
-var etaque$elm_form$Form$Input = F3(
-	function (a, b, c) {
-		return {$: 'Input', a: a, b: b, c: c};
-	});
-var etaque$elm_form$Form$Input$checkboxInput = F2(
-	function (state, attrs) {
-		var formAttrs = _List_fromArray(
-			[
-				elm$html$Html$Attributes$type_('checkbox'),
-				elm$html$Html$Attributes$checked(
-				A2(elm$core$Maybe$withDefault, false, state.value)),
-				elm$html$Html$Events$onCheck(
-				A2(
-					elm$core$Basics$composeR,
-					etaque$elm_form$Form$Field$Bool,
-					A2(etaque$elm_form$Form$Input, state.path, etaque$elm_form$Form$Checkbox))),
-				elm$html$Html$Events$onFocus(
-				etaque$elm_form$Form$Focus(state.path)),
-				elm$html$Html$Events$onBlur(
-				etaque$elm_form$Form$Blur(state.path))
-			]);
-		return A2(
-			elm$html$Html$input,
-			_Utils_ap(formAttrs, attrs),
-			_List_Nil);
-	});
-var author$project$View$Form$checkboxGroup = F2(
-	function (labelQ, state) {
-		return A2(
-			elm$html$Html$label,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$class('checkbox')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('checkbox-ch')
-						]),
-					_List_fromArray(
-						[
-							A2(etaque$elm_form$Form$Input$checkboxInput, state, _List_Nil)
-						])),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('checkbox-label')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(labelQ)
-						]))
-				]));
-	});
-var author$project$View$Form$formActions = function (content) {
-	return A2(
-		elm$html$Html$div,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('controls')
-			]),
-		content);
-};
-var author$project$View$Form$errorClass = function (maybeError) {
-	return A2(
-		elm$core$Maybe$withDefault,
-		'',
-		A2(
-			elm$core$Maybe$map,
-			function (_n0) {
-				return 'has-error';
-			},
-			maybeError));
-};
-var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
-var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
-var elm$html$Html$option = _VirtualDom_node('option');
-var elm$html$Html$select = _VirtualDom_node('select');
-var elm$html$Html$Attributes$selected = elm$html$Html$Attributes$boolProperty('selected');
-var elm$html$Html$Events$targetValue = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	elm$json$Json$Decode$string);
-var etaque$elm_form$Form$Select = {$: 'Select'};
-var etaque$elm_form$Form$Input$selectInput = F3(
-	function (options, state, attrs) {
-		var formAttrs = _List_fromArray(
-			[
-				A2(
-				elm$html$Html$Events$on,
-				'change',
-				A2(
-					elm$json$Json$Decode$map,
-					A2(
-						elm$core$Basics$composeR,
-						etaque$elm_form$Form$Field$String,
-						A2(etaque$elm_form$Form$Input, state.path, etaque$elm_form$Form$Select)),
-					elm$html$Html$Events$targetValue)),
-				elm$html$Html$Events$onFocus(
-				etaque$elm_form$Form$Focus(state.path)),
-				elm$html$Html$Events$onBlur(
-				etaque$elm_form$Form$Blur(state.path))
-			]);
-		var buildOption = function (_n0) {
-			var k = _n0.a;
-			var v = _n0.b;
-			return A2(
-				elm$html$Html$option,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$value(k),
-						elm$html$Html$Attributes$selected(
-						_Utils_eq(
-							state.value,
-							elm$core$Maybe$Just(k)))
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(v)
-					]));
-		};
-		return A2(
-			elm$html$Html$select,
-			_Utils_ap(formAttrs, attrs),
-			A2(elm$core$List$map, buildOption, options));
-	});
-var author$project$View$Form$selectGroup = F3(
-	function (options, labelQ, state) {
-		return A2(
-			elm$html$Html$div,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$class('select-div')
-				]),
-			_List_fromArray(
-				[
-					A3(
-					etaque$elm_form$Form$Input$selectInput,
-					options,
-					state,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$placeholder(labelQ),
-							elm$html$Html$Attributes$value(
-							A2(elm$core$Maybe$withDefault, '', state.value)),
-							elm$html$Html$Attributes$class(
-							author$project$View$Form$errorClass(state.liveError))
-						]))
-				]));
-	});
-var etaque$elm_form$Form$Text = {$: 'Text'};
-var elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			elm$json$Json$Decode$map,
-			elm$html$Html$Events$alwaysStop,
-			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
-};
-var etaque$elm_form$Form$Input$baseInput = F5(
-	function (t, toFieldValue, inputType, state, attrs) {
-		var formAttrs = _List_fromArray(
-			[
-				elm$html$Html$Attributes$type_(t),
-				elm$html$Html$Attributes$value(
-				A2(elm$core$Maybe$withDefault, '', state.value)),
-				elm$html$Html$Events$onInput(
-				A2(
-					elm$core$Basics$composeR,
-					toFieldValue,
-					A2(etaque$elm_form$Form$Input, state.path, inputType))),
-				elm$html$Html$Events$onFocus(
-				etaque$elm_form$Form$Focus(state.path)),
-				elm$html$Html$Events$onBlur(
-				etaque$elm_form$Form$Blur(state.path))
-			]);
-		return A2(
-			elm$html$Html$input,
-			_Utils_ap(formAttrs, attrs),
-			_List_Nil);
-	});
-var etaque$elm_form$Form$Input$textInput = A3(etaque$elm_form$Form$Input$baseInput, 'text', etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Text);
-var author$project$View$Form$textGroup = F2(
-	function (labelQ, state) {
-		return A2(
-			etaque$elm_form$Form$Input$textInput,
-			state,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$placeholder(labelQ),
-					elm$html$Html$Attributes$value(
-					A2(elm$core$Maybe$withDefault, '', state.value)),
-					elm$html$Html$Attributes$class(
-					author$project$View$Form$errorClass(state.error))
-				]));
-	});
-var author$project$View$Form$textGroupHidden = F2(
-	function (labelQ, state) {
-		return A2(
-			etaque$elm_form$Form$Input$textInput,
-			state,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$placeholder(labelQ),
-					elm$html$Html$Attributes$value(
-					A2(elm$core$Maybe$withDefault, '', state.value)),
-					elm$html$Html$Attributes$class('hidden')
-				]));
-	});
-var elm$core$Debug$toString = _Debug_toString;
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$html$Html$h1 = _VirtualDom_node('h1');
-var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		elm$html$Html$Events$on,
 		'click',
 		elm$json$Json$Decode$succeed(msg));
-};
-var etaque$elm_form$Form$Reset = function (a) {
-	return {$: 'Reset', a: a};
 };
 var etaque$elm_form$Form$Submit = {$: 'Submit'};
 var etaque$elm_form$Form$getBoolAt = F2(
@@ -7818,333 +7089,311 @@ var etaque$elm_form$Form$getStringAt = F2(
 			A2(etaque$elm_form$Form$getFieldAt, name, model));
 	});
 var etaque$elm_form$Form$getFieldAsString = etaque$elm_form$Form$getField(etaque$elm_form$Form$getStringAt);
-var author$project$Main$formView = F3(
-	function (locale, flash, form) {
-		var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
-		var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
-		var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
-		var mm = author$project$Main$m(locale);
-		var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
-		var genderOptions = _List_fromArray(
-			[
-				_Utils_Tuple2(
-				'M',
-				mm(author$project$Main$MaleMsg)),
-				_Utils_Tuple2(
-				'F',
-				mm(author$project$Main$FemaleMsg))
-			]);
-		var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
-		var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
-		var errorFor = function (field) {
-			var _n1 = field.liveError;
-			if (_n1.$ === 'Just') {
-				var error = _n1.a;
-				return A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$class('error')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(
-							elm$core$Debug$toString(error))
-						]));
-			} else {
-				return elm$html$Html$text('');
-			}
-		};
-		var email = A2(etaque$elm_form$Form$getFieldAsString, 'email', form);
-		var country = A2(etaque$elm_form$Form$getFieldAsString, 'country', form);
-		var city = A2(etaque$elm_form$Form$getFieldAsString, 'city', form);
-		var birthYear = A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form);
-		var _n0 = A2(
-			elm$core$Maybe$withDefault,
-			_Utils_Tuple2(
-				mm(author$project$Main$PetitionFormMsg),
-				''),
-			A2(
-				elm$core$Maybe$map,
-				function (x) {
-					return _Utils_Tuple2(x, 'alert');
-				},
-				author$project$Flash$getMessage(flash)));
-		var title = _n0.a;
-		var titleClass = _n0.b;
+var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
 		return A2(
-			elm$html$Html$div,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$id('petition-form')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-form-title')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							elm$html$Html$h1,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$class(titleClass)
-								]),
-							_List_fromArray(
-								[
-									elm$html$Html$text(title)
-								]))
-						])),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-form-content')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							author$project$View$Form$textGroup,
-							mm(author$project$Main$FirstNameMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
-							A2(
-							author$project$View$Form$textGroup,
-							mm(author$project$Main$LastNameMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
-							A2(
-							author$project$View$Form$textGroup,
-							mm(author$project$Main$CountryMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
-							A2(
-							author$project$View$Form$textGroup,
-							mm(author$project$Main$CityMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
-							A2(
-							author$project$View$Form$textGroup,
-							mm(author$project$Main$OrganizationMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
-							A2(
-							author$project$View$Form$textGroup,
-							mm(author$project$Main$EmailPhoneMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
-							A2(
-							author$project$View$Form$textGroupHidden,
-							mm(author$project$Main$PhoneMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
-							A2(
-							author$project$View$Form$textGroupHidden,
-							mm(author$project$Main$BirthYearMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
-							A3(
-							author$project$View$Form$selectGroup,
-							genderOptions,
-							mm(author$project$Main$GenderMsg),
-							A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
-							A2(
-							author$project$View$Form$checkboxGroup,
-							mm(author$project$Main$KeepMeUpdateMsg),
-							A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
-							author$project$View$Form$formActions(
-							_List_fromArray(
-								[
-									A2(
-									elm$html$Html$button,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit)
-										]),
-									_List_fromArray(
-										[
-											elm$html$Html$text(
-											mm(author$project$Main$SubmitMsg))
-										])),
-									A2(
-									elm$html$Html$button,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(
-											etaque$elm_form$Form$Reset(author$project$Main$initFormValues))
-										]),
-									_List_fromArray(
-										[
-											elm$html$Html$text(
-											mm(author$project$Main$ResetMsg))
-										]))
-								]))
-						]))
-				]));
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
 	});
+var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
+var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$html$Html$Events$onBlur = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'blur',
+		elm$json$Json$Decode$succeed(msg));
+};
+var elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
+	});
+var elm$json$Json$Decode$bool = _Json_decodeBool;
+var elm$html$Html$Events$targetChecked = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'checked']),
+	elm$json$Json$Decode$bool);
+var elm$html$Html$Events$onCheck = function (tagger) {
+	return A2(
+		elm$html$Html$Events$on,
+		'change',
+		A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetChecked));
+};
+var elm$html$Html$Events$onFocus = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'focus',
+		elm$json$Json$Decode$succeed(msg));
+};
+var etaque$elm_form$Form$Blur = function (a) {
+	return {$: 'Blur', a: a};
+};
+var etaque$elm_form$Form$Checkbox = {$: 'Checkbox'};
+var etaque$elm_form$Form$Focus = function (a) {
+	return {$: 'Focus', a: a};
+};
+var etaque$elm_form$Form$Input = F3(
+	function (a, b, c) {
+		return {$: 'Input', a: a, b: b, c: c};
+	});
+var etaque$elm_form$Form$Field$Bool = function (a) {
+	return {$: 'Bool', a: a};
+};
+var etaque$elm_form$Form$Input$checkboxInput = F2(
+	function (state, attrs) {
+		var formAttrs = _List_fromArray(
+			[
+				elm$html$Html$Attributes$type_('checkbox'),
+				elm$html$Html$Attributes$checked(
+				A2(elm$core$Maybe$withDefault, false, state.value)),
+				elm$html$Html$Events$onCheck(
+				A2(
+					elm$core$Basics$composeR,
+					etaque$elm_form$Form$Field$Bool,
+					A2(etaque$elm_form$Form$Input, state.path, etaque$elm_form$Form$Checkbox))),
+				elm$html$Html$Events$onFocus(
+				etaque$elm_form$Form$Focus(state.path)),
+				elm$html$Html$Events$onBlur(
+				etaque$elm_form$Form$Blur(state.path))
+			]);
+		return A2(
+			elm$html$Html$input,
+			_Utils_ap(formAttrs, attrs),
+			_List_Nil);
+	});
+var etaque$elm_form$Form$Text = {$: 'Text'};
+var etaque$elm_form$Form$Field$String = function (a) {
+	return {$: 'String', a: a};
+};
+var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
+var elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var elm$html$Html$Events$targetValue = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	elm$json$Json$Decode$string);
+var elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			elm$json$Json$Decode$map,
+			elm$html$Html$Events$alwaysStop,
+			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
+};
+var etaque$elm_form$Form$Input$baseInput = F5(
+	function (t, toFieldValue, inputType, state, attrs) {
+		var formAttrs = _List_fromArray(
+			[
+				elm$html$Html$Attributes$type_(t),
+				elm$html$Html$Attributes$value(
+				A2(elm$core$Maybe$withDefault, '', state.value)),
+				elm$html$Html$Events$onInput(
+				A2(
+					elm$core$Basics$composeR,
+					toFieldValue,
+					A2(etaque$elm_form$Form$Input, state.path, inputType))),
+				elm$html$Html$Events$onFocus(
+				etaque$elm_form$Form$Focus(state.path)),
+				elm$html$Html$Events$onBlur(
+				etaque$elm_form$Form$Blur(state.path))
+			]);
+		return A2(
+			elm$html$Html$input,
+			_Utils_ap(formAttrs, attrs),
+			_List_Nil);
+	});
+var etaque$elm_form$Form$Input$textInput = A3(etaque$elm_form$Form$Input$baseInput, 'text', etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Text);
+var author$project$Main$formView = function (form) {
+	var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
+	var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
+	var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
+	var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
+	var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
+	var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
+	var errorFor = function (field) {
+		var _n0 = field.liveError;
+		if (_n0.$ === 'Just') {
+			var error = _n0.a;
+			return A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('error')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text(
+						elm$core$Debug$toString(error))
+					]));
+		} else {
+			return elm$html$Html$text('');
+		}
+	};
+	var email = A2(etaque$elm_form$Form$getFieldAsString, 'email', form);
+	var country = A2(etaque$elm_form$Form$getFieldAsString, 'country', form);
+	var city = A2(etaque$elm_form$Form$getFieldAsString, 'city', form);
+	var birthYear = A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form);
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Frist Name')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, firstName, _List_Nil),
+				errorFor(firstName),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Last Name')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, lastName, _List_Nil),
+				errorFor(lastName),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Country')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, country, _List_Nil),
+				errorFor(country),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('City')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, city, _List_Nil),
+				errorFor(city),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Organization')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, organization, _List_Nil),
+				errorFor(organization),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('email')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, email, _List_Nil),
+				errorFor(email),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('phone')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, phone, _List_Nil),
+				errorFor(phone),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Birth Year')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, birthYear, _List_Nil),
+				errorFor(birthYear),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Gender')
+					])),
+				A2(etaque$elm_form$Form$Input$textInput, gender, _List_Nil),
+				errorFor(gender),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('Notifies Enabled')
+					])),
+				A2(etaque$elm_form$Form$Input$checkboxInput, notifiesEnabled, _List_Nil),
+				errorFor(notifiesEnabled),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				A2(
+				elm$html$Html$button,
+				_List_fromArray(
+					[
+						elm$html$Html$Events$onClick(etaque$elm_form$Form$Submit)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('Submit')
+					]))
+			]));
+};
 var author$project$Main$toString = function (err) {
 	switch (err.$) {
 		case 'BadUrl':
 			var url = err.a;
-			return 'Bad url: ' + url;
+			return 'Плохой url: ' + url;
 		case 'Timeout':
-			return 'Timeout';
+			return 'Вышло время';
 		case 'NetworkError':
-			return 'Network error';
+			return 'Ошибка сети';
 		case 'BadStatus':
 			var response = err.a;
-			return 'Bad response status: ' + response.status.message;
+			return 'Плохой статус: ' + response.status.message;
 		default:
 			var str = err.a;
 			var response = err.b;
-			return 'Bad response format: ' + str;
+			return 'Битый формат ответа: ' + str;
 	}
 };
-var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
-var author$project$Main$ToggleDescription = {$: 'ToggleDescription'};
-var author$project$Main$WasSignedMsg = {$: 'WasSignedMsg'};
-var author$project$Main$petitionsImagesPath = '/static/images/petitions/';
-var elm$html$Html$a = _VirtualDom_node('a');
-var elm$html$Html$img = _VirtualDom_node('img');
-var elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
-var elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
-var elm$html$Html$Attributes$target = elm$html$Html$Attributes$stringProperty('target');
-var elm_explorations$markdown$Markdown$defaultOptions = {
-	defaultHighlighting: elm$core$Maybe$Nothing,
-	githubFlavored: elm$core$Maybe$Just(
-		{breaks: false, tables: false}),
-	sanitize: true,
-	smartypants: false
-};
-var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
-var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Main$viewPetition = F6(
-	function (url, code, locale, petition, descriptionExpanded, cnt) {
-		var mm = author$project$Main$m(locale);
-		var cntQ = A2(
-			elm$core$Maybe$withDefault,
-			'?',
-			A2(elm$core$Maybe$map, elm$core$String$fromInt, cnt));
-		return A2(
-			elm$html$Html$div,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$id('petition-info')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					elm$html$Html$h1,
-					_List_Nil,
-					_List_fromArray(
-						[
-							elm$html$Html$text(petition.petitionName)
-						])),
-					A2(
-					elm$html$Html$img,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$src(url + (author$project$Main$petitionsImagesPath + (petition.petitionCode + '.png')))
-						]),
-					_List_Nil),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-info-signed')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							elm$html$Html$div,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$id('petition-info-signed-div1')
-								]),
-							_List_fromArray(
-								[
-									elm$html$Html$text(
-									mm(author$project$Main$WasSignedMsg))
-								])),
-							A2(
-							elm$html$Html$div,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$id('petition-info-signed-div2')
-								]),
-							_List_fromArray(
-								[
-									elm$html$Html$text(cntQ)
-								]))
-						])),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-info-description'),
-							elm$html$Html$Attributes$class(
-							descriptionExpanded ? 'expanded' : 'collapsed'),
-							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
-						]),
-					_List_fromArray(
-						[
-							A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
-							A2(
-							elm$html$Html$div,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$class('read-more')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$html$Html$a,
-									_List_fromArray(
-										[
-											elm$html$Html$Attributes$target('_blank'),
-											elm$html$Html$Attributes$class('btn btn-primary'),
-											elm$html$Html$Attributes$href(url + ('/petitionText.html/' + (code + ('?locale=' + locale))))
-										]),
-									_List_fromArray(
-										[
-											elm$html$Html$text(
-											mm(author$project$Main$ShowFullTextMsg))
-										]))
-								]))
-						])),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-info-desription-toggle'),
-							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(
-							descriptionExpanded ? '\u25b2' : '\u25bc')
-						]))
-				]));
-	});
+var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
+var elm$html$Html$p = _VirtualDom_node('p');
 var author$project$Main$view = function (_n0) {
 	var url = _n0.url;
 	var code = _n0.code;
 	var locale = _n0.locale;
 	var petitionStatus = _n0.petitionStatus;
-	var descriptionExpanded = _n0.descriptionExpanded;
-	var signersCount = _n0.signersCount;
 	var formStatus = _n0.formStatus;
 	var form = _n0.form;
-	var flash = _n0.flash;
-	var mm = author$project$Main$m(locale);
 	switch (petitionStatus.$) {
 		case 'PetitionFailure':
 			var err = petitionStatus.a;
@@ -8154,7 +7403,7 @@ var author$project$Main$view = function (_n0) {
 				_List_fromArray(
 					[
 						elm$html$Html$text(
-						'Error of petition getting: ' + author$project$Main$toString(err))
+						'Ошибка получения петиции: ' + author$project$Main$toString(err))
 					]));
 		case 'Loading':
 			return A2(
@@ -8162,7 +7411,7 @@ var author$project$Main$view = function (_n0) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text('Loading petition')
+						elm$html$Html$text('Загрузка петиции')
 					]));
 		default:
 			var petition = petitionStatus.a;
@@ -8171,73 +7420,24 @@ var author$project$Main$view = function (_n0) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						A6(author$project$Main$viewPetition, url, code, locale, petition, descriptionExpanded, signersCount),
-						function () {
-						switch (formStatus.$) {
-							case 'Ready':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'None':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'Sending':
-								return elm$html$Html$text('Sending form...');
-							case 'Sent':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'FormFailure':
-								var err = formStatus.a;
-								return elm$html$Html$text(
-									'Error of sending form: ' + author$project$Main$toString(err));
-							default:
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-						}
-					}()
+						A2(
+						elm$html$Html$h1,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(petition.petitionName)
+							])),
+						A2(
+						elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(petition.petitionDescription)
+							])),
+						A2(
+						elm$html$Html$map,
+						author$project$Main$FormMsg,
+						author$project$Main$formView(form))
 					]));
 	}
 };
@@ -8259,6 +7459,12 @@ var elm$core$Basics$never = function (_n0) {
 		continue never;
 	}
 };
+var elm$core$Task$perform = F2(
+	function (toMessage, task) {
+		return elm$core$Task$command(
+			elm$core$Task$Perform(
+				A2(elm$core$Task$map, toMessage, task)));
+	});
 var elm$core$String$length = _String_length;
 var elm$core$String$slice = _String_slice;
 var elm$core$String$dropLeft = F2(
@@ -8405,3 +7611,12 @@ _Platform_export({'Main':{'init':author$project$Main$main(
 				A2(elm$json$Json$Decode$field, 'locale', elm$json$Json$Decode$string));
 		},
 		A2(elm$json$Json$Decode$field, 'url', elm$json$Json$Decode$string)))(0)}});}(this));
+
+var app = Elm.Main.init({ node: document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49") });
+if (document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49"))
+{
+  document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49").innerText = 'This is a headless program, meaning there is nothing to show here.\n\nI started the program anyway though, and you can access it as `app` in the developer console.';
+}
+</script>
+</body>
+</html>

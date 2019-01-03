@@ -70,7 +70,7 @@ init {url, code, locale} =
     , form = Form.initial initFormValues validate 
     , signersCount = Nothing
     , flash = Flash.none
-    , descriptionExpanded = False
+    , descriptionExpanded = True
     }
   , Http.send GotPetition (getPetitionByCode url code (prepareLocale locale))
   )
