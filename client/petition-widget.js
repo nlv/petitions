@@ -6235,7 +6235,10 @@ var etaque$elm_form$Form$Validate$succeed = F2(
 	});
 var author$project$Main$validate = A2(
 	etaque$elm_form$Form$Validate$andMap,
-	A2(etaque$elm_form$Form$Validate$field, 'notifies_enabled', etaque$elm_form$Form$Validate$bool),
+	A2(
+		etaque$elm_form$Form$Validate$defaultValue,
+		true,
+		A2(etaque$elm_form$Form$Validate$field, 'notifies_enabled', etaque$elm_form$Form$Validate$bool)),
 	A2(
 		etaque$elm_form$Form$Validate$andMap,
 		A2(
@@ -7947,7 +7950,7 @@ var author$project$Main$formView = F3(
 							A2(
 							author$project$View$Form$checkboxGroup,
 							mm(author$project$Main$KeepMeUpdateMsg),
-							A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
+							A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form)),
 							author$project$View$Form$formActions(
 							_List_fromArray(
 								[

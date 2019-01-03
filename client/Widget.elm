@@ -318,7 +318,7 @@ formView locale flash form =
             , textGroupHidden (mm PhoneMsg) (Form.getFieldAsString "phone" form)
             , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
             , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
-            , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
+            , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifies_enabled" form)        
             , formActions
                 [ button
                     [ onClick Form.Submit
