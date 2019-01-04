@@ -11,6 +11,9 @@
 html {
     font-size: 14px;
     font-family: "Proxima Nova";
+    max-width: 600px;
+    margin: auto;
+    /* text-align: center; */
 }
 
 body {
@@ -244,11 +247,6 @@ body {
 
 #petition-form .checkbox-ch {
     width: 10%;
-    /* max-height: 1.2em; */
-}
-
-#petition-form input[type=checkbox] {
-    /* width: 10%; */
     /* max-height: 1.2em; */
 }
 
