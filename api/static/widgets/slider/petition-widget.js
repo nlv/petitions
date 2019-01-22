@@ -5912,6 +5912,7 @@ var author$project$Generated$Api$getPetitionByCode = F3(
 var author$project$Main$CommonMsg = function (a) {
 	return {$: 'CommonMsg', a: a};
 };
+var author$project$Main$DescriptionW = {$: 'DescriptionW'};
 var author$project$Widget$Common$GotPetition = function (a) {
 	return {$: 'GotPetition', a: a};
 };
@@ -6472,7 +6473,7 @@ var author$project$Main$init = function (params) {
 	return _Utils_Tuple2(
 		{
 			common: author$project$Widget$Common$initModel(params),
-			descriptionExpanded: true
+			currentWindow: author$project$Main$DescriptionW
 		},
 		A2(
 			elm$http$Http$send,
@@ -6488,6 +6489,7 @@ var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$none;
 };
+var author$project$Main$FormW = {$: 'FormW'};
 var author$project$Widget$Common$m = F2(
 	function (locale, msg) {
 		if (locale === 'ru') {
@@ -7418,41 +7420,58 @@ var author$project$Widget$Common$update = F2(
 var elm$core$Platform$Cmd$map = _Platform_map;
 var author$project$Main$update = F2(
 	function (msg, model) {
+		var common = model.common;
+		var currentWindow = model.currentWindow;
 		var mm = author$project$Widget$Common$m(model.common.locale);
-		switch (msg.$) {
-			case 'CommonMsg':
-				var msgC = msg.a;
-				var _n1 = A2(author$project$Widget$Common$update, msgC, model.common);
-				var newCommon = _n1.a;
-				var cmd = _n1.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{common: newCommon}),
-					A2(elm$core$Platform$Cmd$map, author$project$Main$CommonMsg, cmd));
-			case 'ToggleDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: !model.descriptionExpanded}),
-					elm$core$Platform$Cmd$none);
-			case 'ExpandDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: true}),
-					elm$core$Platform$Cmd$none);
-			default:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: false}),
-					elm$core$Platform$Cmd$none);
+		if (msg.$ === 'CommonMsg') {
+			var msgC = msg.a;
+			var _n1 = A2(author$project$Widget$Common$update, msgC, model.common);
+			var newCommon = _n1.a;
+			var cmd = _n1.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{common: newCommon}),
+				A2(elm$core$Platform$Cmd$map, author$project$Main$CommonMsg, cmd));
+		} else {
+			var w = _Utils_eq(currentWindow, author$project$Main$DescriptionW) ? author$project$Main$FormW : author$project$Main$DescriptionW;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{currentWindow: w}),
+				elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$CollapseDescription = {$: 'CollapseDescription'};
-var author$project$Main$ToggleDescription = {$: 'ToggleDescription'};
-var author$project$Widget$Common$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
+var author$project$Main$CommonTextMessage = function (a) {
+	return {$: 'CommonTextMessage', a: a};
+};
+var author$project$Main$FillFormFooterMsg = {$: 'FillFormFooterMsg'};
+var author$project$Main$NextWindow = {$: 'NextWindow'};
+var author$project$Main$ShowPetitionFooterMsg = {$: 'ShowPetitionFooterMsg'};
+var author$project$Main$m = F2(
+	function (locale, msg) {
+		if (locale === 'ru') {
+			switch (msg.$) {
+				case 'CommonTextMessage':
+					var msgC = msg.a;
+					return A2(author$project$Widget$Common$m, locale, msgC);
+				case 'FillFormFooterMsg':
+					return 'Подписать петицию';
+				default:
+					return 'Текст петиции';
+			}
+		} else {
+			switch (msg.$) {
+				case 'CommonTextMessage':
+					var msgC = msg.a;
+					return A2(author$project$Widget$Common$m, locale, msgC);
+				case 'FillFormFooterMsg':
+					return 'Sign petition';
+				default:
+					return 'Text of petition';
+			}
+		}
+	});
 var author$project$Widget$Common$WasSignedMsg = {$: 'WasSignedMsg'};
 var author$project$Widget$Common$petitionsImagesPath = '/static/images/petitions/';
 var elm$json$Json$Decode$map = _Json_map1;
@@ -7468,9 +7487,7 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
-var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$div = _VirtualDom_node('div');
-var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$img = _VirtualDom_node('img');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
@@ -7481,37 +7498,12 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			elm$json$Json$Encode$string(string));
 	});
-var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
-var elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		elm$html$Html$Attributes$stringProperty,
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
-var elm$html$Html$Attributes$target = elm$html$Html$Attributes$stringProperty('target');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
 };
 var elm_explorations$markdown$Markdown$defaultOptions = {
 	defaultHighlighting: elm$core$Maybe$Nothing,
@@ -7522,9 +7514,13 @@ var elm_explorations$markdown$Markdown$defaultOptions = {
 };
 var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
-var author$project$Main$viewPetition = F6(
-	function (url, code, locale, petition, descriptionExpanded, cnt) {
-		var mm = author$project$Widget$Common$m(locale);
+var author$project$Main$viewPetition = F5(
+	function (url, code, locale, petition, cnt) {
+		var mmC = A2(
+			elm$core$Basics$composeL,
+			author$project$Main$m(locale),
+			author$project$Main$CommonTextMessage);
+		var mm = author$project$Main$m(locale);
 		var cntQ = A2(
 			elm$core$Maybe$withDefault,
 			'?',
@@ -7537,13 +7533,6 @@ var author$project$Main$viewPetition = F6(
 				]),
 			_List_fromArray(
 				[
-					A2(
-					elm$html$Html$h1,
-					_List_Nil,
-					_List_fromArray(
-						[
-							elm$html$Html$text(petition.petitionName)
-						])),
 					A2(
 					elm$html$Html$img,
 					_List_fromArray(
@@ -7568,7 +7557,7 @@ var author$project$Main$viewPetition = F6(
 							_List_fromArray(
 								[
 									elm$html$Html$text(
-									mm(author$project$Widget$Common$WasSignedMsg))
+									mmC(author$project$Widget$Common$WasSignedMsg))
 								])),
 							A2(
 							elm$html$Html$div,
@@ -7585,54 +7574,18 @@ var author$project$Main$viewPetition = F6(
 					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$id('petition-info-description'),
-							elm$html$Html$Attributes$class(
-							descriptionExpanded ? 'expanded' : 'collapsed'),
-							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
+							elm$html$Html$Attributes$id('petition-info-description')
 						]),
 					_List_fromArray(
 						[
-							A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription),
-							A2(
-							elm$html$Html$div,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$class('read-more')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									elm$html$Html$a,
-									_List_fromArray(
-										[
-											elm$html$Html$Attributes$target('_blank'),
-											elm$html$Html$Attributes$class('btn btn-primary'),
-											elm$html$Html$Attributes$href(url + ('/petitionText.html/' + (code + ('?locale=' + locale))))
-										]),
-									_List_fromArray(
-										[
-											elm$html$Html$text(
-											mm(author$project$Widget$Common$ShowFullTextMsg))
-										]))
-								]))
-						])),
-					A2(
-					elm$html$Html$div,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$id('petition-info-desription-toggle'),
-							elm$html$Html$Events$onClick(author$project$Main$ToggleDescription)
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(
-							descriptionExpanded ? '\u25b2' : '\u25bc')
+							A2(elm_explorations$markdown$Markdown$toHtml, _List_Nil, petition.petitionDescription)
 						]))
 				]));
 	});
 var author$project$Widget$Common$FormMsg = function (a) {
 	return {$: 'FormMsg', a: a};
 };
+var author$project$Widget$Common$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
 var author$project$Widget$Common$errorToString = function (err) {
 	switch (err.$) {
 		case 'BadUrl':
@@ -7656,6 +7609,7 @@ var author$project$Flash$getMessage = function (_n0) {
 	return message;
 };
 var elm$html$Html$label = _VirtualDom_node('label');
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7666,6 +7620,17 @@ var elm$html$Html$Attributes$boolProperty = F2(
 	});
 var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
 var elm$html$Html$Events$onBlur = function (msg) {
 	return A2(
 		elm$html$Html$Events$on,
@@ -7946,6 +7911,13 @@ var author$project$Widget$Common$ResetMsg = {$: 'ResetMsg'};
 var author$project$Widget$Common$SubmitMsg = {$: 'SubmitMsg'};
 var elm$core$Debug$toString = _Debug_toString;
 var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$h1 = _VirtualDom_node('h1');
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var etaque$elm_form$Form$Reset = function (a) {
 	return {$: 'Reset', a: a};
 };
@@ -8172,12 +8144,24 @@ var author$project$Widget$Common$formView = F3(
 						]))
 				]));
 	});
+var elm$html$Html$a = _VirtualDom_node('a');
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
+var elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var elm$html$Html$Attributes$target = elm$html$Html$Attributes$stringProperty('target');
 var author$project$Main$view = function (_n0) {
 	var common = _n0.common;
-	var descriptionExpanded = _n0.descriptionExpanded;
-	var mm = author$project$Widget$Common$m(common.locale);
+	var currentWindow = _n0.currentWindow;
+	var mmC = A2(
+		elm$core$Basics$composeL,
+		author$project$Main$m(common.locale),
+		author$project$Main$CommonTextMessage);
+	var mm = author$project$Main$m(common.locale);
 	var _n1 = common.petitionStatus;
 	switch (_n1.$) {
 		case 'PetitionFailure':
@@ -8200,37 +8184,116 @@ var author$project$Main$view = function (_n0) {
 					]));
 		default:
 			var pModel = _n1.a;
+			var _n2 = function () {
+				if (currentWindow.$ === 'DescriptionW') {
+					return _Utils_Tuple2(
+						A5(author$project$Main$viewPetition, common.url, common.code, common.locale, pModel.petition, pModel.signersCount),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('read-more')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$a,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$target('_blank'),
+												elm$html$Html$Attributes$class('btn btn-primary'),
+												elm$html$Html$Attributes$href(common.url + ('/petitionText.html/' + (common.code + ('?locale=' + common.locale))))
+											]),
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												mmC(author$project$Widget$Common$ShowFullTextMsg))
+											]))
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('next-window'),
+										elm$html$Html$Events$onClick(author$project$Main$NextWindow)
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text(
+										mm(author$project$Main$FillFormFooterMsg))
+									]))
+							]));
+				} else {
+					return _Utils_Tuple2(
+						function () {
+							var _n4 = common.formStatus;
+							switch (_n4.$) {
+								case 'Sending':
+									return elm$html$Html$text('Sending form...');
+								case 'FormFailure':
+									var err = _n4.a;
+									return elm$html$Html$text(
+										'Error of sending form: ' + author$project$Widget$Common$errorToString(err));
+								default:
+									return A2(
+										elm$html$Html$map,
+										A2(elm$core$Basics$composeL, author$project$Main$CommonMsg, author$project$Widget$Common$FormMsg),
+										A3(author$project$Widget$Common$formView, common.locale, common.flash, common.formData));
+							}
+						}(),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('next-window'),
+										elm$html$Html$Events$onClick(author$project$Main$NextWindow)
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text(
+										mm(author$project$Main$ShowPetitionFooterMsg))
+									]))
+							]));
+				}
+			}();
+			var mainContent = _n2.a;
+			var footerContent = _n2.b;
 			return A2(
 				elm$html$Html$div,
-				_List_Nil,
 				_List_fromArray(
 					[
-						A6(author$project$Main$viewPetition, common.url, common.code, common.locale, pModel.petition, descriptionExpanded, pModel.signersCount),
-						function () {
-						var _n2 = common.formStatus;
-						switch (_n2.$) {
-							case 'Sending':
-								return elm$html$Html$text('Sending form...');
-							case 'FormFailure':
-								var err = _n2.a;
-								return elm$html$Html$text(
-									'Error of sending form: ' + author$project$Widget$Common$errorToString(err));
-							default:
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											A2(elm$core$Basics$composeL, author$project$Main$CommonMsg, author$project$Widget$Common$FormMsg),
-											A3(author$project$Widget$Common$formView, common.locale, common.flash, common.formData))
-										]));
-						}
-					}()
+						elm$html$Html$Attributes$id('petition-content')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$id('petition-content-header')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$h1,
+								_List_Nil,
+								_List_fromArray(
+									[
+										elm$html$Html$text(pModel.petition.petitionName)
+									]))
+							])),
+						mainContent,
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$id('petition-content-footer')
+							]),
+						footerContent)
 					]));
 	}
 };

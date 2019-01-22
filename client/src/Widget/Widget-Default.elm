@@ -1,6 +1,4 @@
 import Browser
--- import Time exposing (now)
--- import Task exposing (perform)
 import Html exposing (Html, button, div, text, h1, h2, h3, h5, a, p, label, br, legend, span, img)
 import Html.Attributes exposing (class, style, type_, attribute, id, tabindex, href, target, src)
 import Html.Events exposing (onClick)
@@ -18,7 +16,6 @@ import Markdown exposing (..)
 import String exposing (toInt, fromInt)
 import Maybe exposing (map, withDefault)
 import Platform.Cmd as Cmd
--- import Html.Events exposing (onClick)
 
 import Widget.Common as Common
 
@@ -27,11 +24,6 @@ main =
 
 
 -- MODEL
-
--- initFormValues =
---   [("gender", Field.string "M"), ("notifies_enabled", Field.bool True)]
-
-petitionsImagesPath = "/static/images/petitions/"
 
 type alias Model = 
   {
@@ -80,6 +72,7 @@ view { common, descriptionExpanded} =
   let mm = Common.m common.locale
   in
   case common.petitionStatus of
+    -- FIXME: Повторы в default, slider...
     Common.PetitionFailure err ->
       div []
         [ text ("Error of petition getting: " ++ (Common.errorToString err))]
@@ -94,7 +87,7 @@ view { common, descriptionExpanded} =
             Common.Sending -> text "Sending form..."
             Common.FormFailure err -> text ("Error of sending form: " ++ (Common.errorToString err))
             _ -> 
-                div [ onClick CollapseDescription ] [ Html.map (CommonMsg << Common.FormMsg) (formView common.locale common.flash common.formData) ]
+                div [ onClick CollapseDescription ] [ Html.map (CommonMsg << Common.FormMsg) (Common.formView common.locale common.flash common.formData) ]
         ]
 
 subscriptions : Model -> Sub Msg
@@ -109,7 +102,7 @@ viewPetition url code locale petition descriptionExpanded cnt =
     div
       [id "petition-info"]
       [ h1 [] [text (petition.petitionName) ]
-      , img [src (url ++ petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
+      , img [src (url ++ Common.petitionsImagesPath ++ petition.petitionCode ++ ".png")] []
       , div 
         [ id "petition-info-signed"]
         [ div [ id "petition-info-signed-div1"] [text (mm Common.WasSignedMsg)] 
@@ -141,68 +134,3 @@ viewPetition url code locale petition descriptionExpanded cnt =
       -- , div [ id "petition-info-separator" ] []
 
       ]
-
-formView : String -> Flash.State -> Form () SignerForm -> Html Form.Msg
-formView locale flash form =
-    let
-        mm = Common.m locale
-        errorFor field =
-            case field.liveError of
-                Just error ->
-                    -- replace toString with your own translations
-                    div [ class "error" ] [ text (Debug.toString error) ]
-
-                Nothing ->
-                    text ""
-
-        -- fields states
-        firstName = Form.getFieldAsString "first_name" form
-        lastName = Form.getFieldAsString "last_name" form
-        country = Form.getFieldAsString "country" form
-        city = Form.getFieldAsString "city" form
-        organization = Form.getFieldAsString "organization" form
-        email = Form.getFieldAsString "email" form
-        phone = Form.getFieldAsString "phone" form
-        birthYear = Form.getFieldAsString "birth_year" form
-        gender = Form.getFieldAsString "gender" form
-        notifiesEnabled = Form.getFieldAsBool "notifies_enabled" form
-        genderOptions = [("M", (mm Common.MaleMsg)), ("F", (mm Common.FemaleMsg))]
-
-        (title, titleClass) = 
-          Maybe.map (\x -> (x, "alert")) (Flash.getMessage flash) |> Maybe.withDefault (mm Common.PetitionFormMsg, "")
-            
-    in
-      div
-        [ id "petition-form" ]
-        [ div 
-            [ id "petition-form-title" ] 
-            [ h1 [class titleClass] [ text title ] ]
-        , div
-            [ id "petition-form-content"]
-            [ textGroup (mm Common.FirstNameMsg) (Form.getFieldAsString "first_name" form)
-            , textGroup (mm Common.LastNameMsg) (Form.getFieldAsString "last_name" form)
-            , textGroup (mm Common.CountryMsg) (Form.getFieldAsString "country" form)
-            , textGroup (mm Common.CityMsg) (Form.getFieldAsString "city" form)
-            , textGroup (mm Common.OrganizationMsg) (Form.getFieldAsString "organization" form)
-            , textGroup (mm Common.EmailPhoneMsg) (Form.getFieldAsString "email" form)
-            , textGroupHidden (mm Common.PhoneMsg) (Form.getFieldAsString "phone" form)
-            , textGroupHidden (mm Common.BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
-            , selectGroup genderOptions (mm Common.GenderMsg) (Form.getFieldAsString "gender" form)        
-            , checkboxGroup (mm Common.KeepMeUpdateMsg) (Form.getFieldAsBool "notifies_enabled" form)        
-            , formActions
-                [ button
-                    [ onClick Form.Submit
-                    ]
-                    [ text (mm Common.SubmitMsg) ]
-                , button
-                    [ onClick (Form.Reset Common.initFormValues)
-                    ]
-                    [ text (mm Common.ResetMsg) ]
-                ]
-            ]
-        ]
-        -- [ class "form-horizontal"
-        -- ]
-        -- [ legend [] [ text (mm PetitionFormMsg) ]    
-        -- -- , div [] (getFormErrorsString form)
-

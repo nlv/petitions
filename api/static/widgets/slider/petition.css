@@ -1,0 +1,335 @@
+@font-face {
+    font-family: 'Proxima Nova - Semibold';
+    src: url('fonts/ProximaNova-Semibold.woff');
+}
+
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('fonts/ProximaNova-Regular.woff');
+}
+
+html {
+    font-size: 12px;
+    font-family: "Proxima Nova";
+    height: 100%;
+}
+
+body {
+    padding: 5px 0 0;
+    width: 100%;
+    height: 100%;
+}
+
+#petition-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#petition-content-header {
+    flex: 0 0 auto;
+}
+
+#petition-content-footer {
+    flex: 0 0 auto;
+    text-align: center;
+
+    font-family: "Proxima Nova - Semibold";
+    width: 100%;
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1.2em;
+}
+
+#petition-content-footer .read-more {
+    color: #181818;
+    margin-bottom: 10px;
+    border-top: solid 1px;
+    padding: 10px 0 0;
+}
+
+#petition-content-footer .read-more a,
+#petition-content-footer .read-more a:visited
+ {
+    color: #3a6e00;
+    text-decoration: none;
+}
+
+.next-window {
+    padding: 10px 0;
+    background-color: green;
+    color: white;
+    cursor: pointer;
+}
+
+#petition-info, #petition-form {
+    flex: 1 0 auto;
+}
+
+#petition-info {
+    height: 0;
+    overflow: auto;
+}
+
+#petition-content-footer {
+    padding: 10px 0 0;
+}
+
+
+#petition-content h1 {
+    font-family: "Proxima Nova - Semibold";
+    width: 100%;
+    color: #181818;
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1.2em;
+    word-wrap: break-word;
+    text-align: center;
+    padding: 0 5px;
+    /* padding: 0 0; */
+    margin-bottom: 5px;
+}
+
+
+#petition-info img {
+    width: 100%;
+}
+
+/* Style for "bg-red" */
+#petition-info-signed {
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-around;
+    align-items: center;
+
+    background-color: #3a6e00;
+    font-size: 1.2rem;
+    font-weight: 400;
+    padding: 0.6em 0;
+}
+
+#petition-info p {
+    color: #181818;
+    /* font-family: "Proxima Nova"; */
+    font-weight: 400;
+    font-size: 1.1rem;
+    line-height: 1.4rem;
+    margin: 1.2rem 0;
+    hyphens: auto;
+    text-align: justify;
+
+    padding-left: 10px; 
+    padding-right: 10px; 
+}
+
+
+
+#petition-info-signed-div1 {
+    color: #fefefe;
+}
+
+#petition-info-signed-div2 {
+    background-color: #dddddd;    
+    width: 40%;
+    padding: 0.4rem 0;
+    text-align: center;
+}
+
+
+#petition-info-separator {
+    height: 6px;
+    border-top: solid 0.2px lightgray;
+    border-bottom: solid 0.2px lightgray;
+}
+
+#petition-form-content {
+    padding-left: 10px; 
+    padding-right: 10px; 
+}
+
+#petition-form h1 {
+    font-family: "Proxima Nova - Semibold";
+    width: 100%;
+    color: #181818;
+    font-weight: 400;
+    line-height: 1.2rem;
+    text-align: center;
+    padding: 10px 5px; 
+}
+
+#petition-form input {
+    width: 100%;
+    border: none;
+    border-bottom: lightgray solid 2px;
+    background-color: inherit;
+    padding: 5px 0;
+    margin-top: 0.8rem;
+}
+
+#petition-form input:first-child {
+    margin-top: 0rem;
+}
+
+#petition-form button {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    border-radius: 4px;
+    color: #555555;
+    display:block;
+    width:100px;
+    margin: 20px 5px;
+    text-align:center;
+    padding: 4px 6px;
+    text-decoration:none;
+}
+
+#petition-form button:hover, #petition-form button:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+    outline: 0 none;
+}
+
+#petition-form .controls {
+    display: flex;
+    justify-content: center;
+}
+
+.alert {
+    background-color: lightskyblue;
+}
+
+/* .has-error {
+    border-color: red !important;
+} */
+
+#petition-info-description.collapsed {
+    height: 100%;
+    overflow: hidden;
+}
+
+#petition-info-desription-toggle {
+    margin: 5px 0;
+    width: 100%;
+    height: 1.8rem;
+    border-color: lightgray;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1.4rem;
+}
+
+
+.hidden {
+    display: none;
+}
+
+#petition-form .select-div {
+    position: relative;
+}
+
+#petition-form select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    width: 100%;
+    /* height: 1.2rem; */
+
+    padding: 5px 0;
+    margin-top: 0.8rem;
+
+    border: none;
+    border-bottom: 2px solid lightgray;
+
+    background-color :inherit;
+
+}
+
+#petition-form .select-div:after {
+    content: "";
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #333 transparent transparent transparent;
+    pointer-events: none;
+
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    /* right: 2rem; */
+    z-index: 1;
+    margin-top: -2px;
+}
+
+/* Убираем стандартные стрелочки в IE */
+.select-div select::-ms-expand {
+    display: none;
+}
+
+.select-div select:focus {
+/* select:focus { */
+    outline: none !important;
+    border-color: #2cb0d8 !important;
+}
+
+.select-div select:hover {
+    cursor: pointer;
+}
+
+#petition-form input:focus {
+    border-color: #2cb0d8;
+}
+
+#petition-form .checkbox {
+    display: flex;
+
+    width: 100%;
+    border-bottom: lightgray solid 2px;
+    background-color: inherit;
+    padding: 10px 0;
+    /* margin-top: 0.8rem; */
+}
+
+#petition-form input[type=checkbox] {
+    width: 10px;
+}
+
+#petition-form .checkbox-label {
+    padding-left: 5px;
+    text-align: center;
+    font-size: 13.333px;
+    font-family: "Proxima Nova - Semibold";
+}
+
+@media (max-width: 160px) {
+    #petition-content h1 {
+        font-size: 1.1rem;
+        line-height: 1.2em;
+    }
+
+    #petition-form .checkbox {
+        flex-direction: column;
+    }
+
+    #petition-form .checkbox-label {
+        padding-left: 0;
+        padding-top: 5px;
+    }
+
+    #petition-form .checkbox input[type="checkbox"] {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 200px) {
+    #petition-form .controls {
+        flex-direction: column;
+        align-items: center;
+        margin: 5px 0;
+    }
+    #petition-form .controls button {
+        margin: 5px 0;
+    }
+}

@@ -21,6 +21,7 @@ import String exposing (toInt, fromInt)
 import Maybe exposing (map, withDefault)
 -- import Html.Events exposing (onClick)
 
+petitionsImagesPath = "/static/images/petitions/"
 
 initFormValues = [("gender", Field.string "M"), ("notifies_enabled", Field.bool True)]
 
@@ -31,8 +32,6 @@ type FormStatus
   | Sending
   | Sent
   | Ready
-  -- | None
-  -- | Opss
 
 type alias PetitionModel =
   { 
@@ -169,6 +168,66 @@ validate =
         |> andMap (field "gender" string |> defaultValue "M")
         |> andMap (field "notifies_enabled" bool)
 
+formView : String -> Flash.State -> Form () SignerForm -> Html Form.Msg
+formView locale flash form =
+    let
+        mm = m locale
+        errorFor field =
+            case field.liveError of
+                Just error ->
+                    -- replace toString with your own translations
+                    div [ class "error" ] [ text (Debug.toString error) ]
+
+                Nothing ->
+                    text ""
+
+        -- fields states
+        firstName = Form.getFieldAsString "first_name" form
+        lastName = Form.getFieldAsString "last_name" form
+        country = Form.getFieldAsString "country" form
+        city = Form.getFieldAsString "city" form
+        organization = Form.getFieldAsString "organization" form
+        email = Form.getFieldAsString "email" form
+        phone = Form.getFieldAsString "phone" form
+        birthYear = Form.getFieldAsString "birth_year" form
+        gender = Form.getFieldAsString "gender" form
+        notifiesEnabled = Form.getFieldAsBool "notifies_enabled" form
+        genderOptions = [("M", (mm MaleMsg)), ("F", (mm FemaleMsg))]
+
+        (title, titleClass) = 
+          Maybe.map (\x -> (x, "alert")) (Flash.getMessage flash) |> Maybe.withDefault (mm PetitionFormMsg, "")
+            
+    in
+      div
+        [ id "petition-form" ]
+        [ div 
+            [ id "petition-form-title" ] 
+            [ h1 [class titleClass] [ text title ] ]
+        , div
+            [ id "petition-form-content"]
+            [ textGroup (mm FirstNameMsg) (Form.getFieldAsString "first_name" form)
+            , textGroup (mm LastNameMsg) (Form.getFieldAsString "last_name" form)
+            , textGroup (mm CountryMsg) (Form.getFieldAsString "country" form)
+            , textGroup (mm CityMsg) (Form.getFieldAsString "city" form)
+            , textGroup (mm OrganizationMsg) (Form.getFieldAsString "organization" form)
+            , textGroup (mm EmailPhoneMsg) (Form.getFieldAsString "email" form)
+            , textGroupHidden (mm PhoneMsg) (Form.getFieldAsString "phone" form)
+            , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
+            , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
+            , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
+            , formActions
+                [ button
+                    [ onClick Form.Submit
+                    ]
+                    [ text (mm SubmitMsg) ]
+                , button
+                    [ onClick (Form.Reset initFormValues)
+                    ]
+                    [ text (mm ResetMsg) ]
+                ]
+            ]
+        ]
+
 type TextMessage 
   = PetitionFormMsg
   | ShowFullTextMsg
@@ -244,3 +303,4 @@ m locale msg =
         PeopleMsg -> " people"
         SignPetitionMsg -> "SIGN THE PETITION: "
         CloseMsg -> "Close"
+
