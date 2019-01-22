@@ -168,7 +168,14 @@ getSignersCount :: Pg.Connection -> Int -> IO Int
 getSignersCount conn pid = do
   res <- (Pg.query 
             conn 
-            "SELECT COUNT(*) cnt FROM signers WHERE petition_id = ?" 
+            "SELECT ROUND(SUM(v.cnt))::int AS cnt \
+            \ FROM \                    
+            \ ( \
+            \ SELECT COUNT(*) AS cnt, petition_id FROM signers GROUP BY petition_id \
+            \ UNION \
+            \ SELECT SUM(cnt) AS cnt, petition_id FROM signers_aggrs GROUP BY petition_id \
+            \ ) AS v \
+            \ WHERE v.petition_id = ?" 
             (Pg.Only pid)) :: IO [Pg.Only Int]
   case res of
      (Pg.Only x) : _ -> pure x

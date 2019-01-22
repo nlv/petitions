@@ -26,7 +26,11 @@ module Data (
   Signer'(..),
   SignerField,
   SignerFieldMod,
-  SignerForm(..)
+  SignerForm(..),
+
+  SignerAgg,
+  SignerAgg'(..),
+  SignerAggField,
   )  where
 
 import GHC.Generics
@@ -176,3 +180,19 @@ data SignerForm = SignerForm {
 
 instance ToJSON   SignerForm
 instance FromJSON SignerForm
+
+-- ** SignerAgg
+
+data SignerAgg' a b c d = SignerAgg { 
+    _signerAggId          :: a,
+    _signerAggPetitionId  :: b,
+    _signerAggCnt         :: c,
+    _signerAggDescription :: d 
+} deriving Generic
+type SignerAgg = SignerAgg' Int Int Int Text
+
+type SignerAggField = SignerAgg' 
+                      (Field SqlInt4) 
+                      (Field SqlInt4) 
+                      (Field SqlInt4) 
+                      (Field SqlText) 

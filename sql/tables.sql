@@ -41,3 +41,11 @@ CREATE TABLE signers (
     ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
     ,CHECK (email IS NOT NULL OR phone IS NOT NULL)
 );
+
+CREATE TABLE signers_aggrs (
+     id               SERIAL                PRIMARY KEY
+    ,petition_id      INTEGER      NOT NULL REFERENCES petitions (id)
+    ,cnt              INTEGER      NOT NULL
+    ,description      TEXT         NOT NULL
+    ,insdate     TIMESTAMP    NOT NULL DEFAULT NOW()
+);
