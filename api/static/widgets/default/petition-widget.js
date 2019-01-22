@@ -4654,14 +4654,6 @@ function _Browser_load(url)
 		}
 	}));
 }
-var author$project$Flash$State = function (a) {
-	return {$: 'State', a: a};
-};
-var elm$core$Basics$identity = function (x) {
-	return x;
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var author$project$Flash$none = author$project$Flash$State(elm$core$Maybe$Nothing);
 var elm$core$Basics$apR = F2(
 	function (x, f) {
 		return f(x);
@@ -4917,6 +4909,7 @@ var elm$core$Array$initialize = F2(
 var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5188,6 +5181,9 @@ var elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
+var elm$core$Basics$identity = function (x) {
+	return x;
+};
 var elm$core$Basics$not = _Basics_not;
 var elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
@@ -5913,11 +5909,18 @@ var author$project$Generated$Api$getPetitionByCode = F3(
 				withCredentials: false
 			});
 	});
-var author$project$Main$GotPetition = function (a) {
+var author$project$Main$CommonMsg = function (a) {
+	return {$: 'CommonMsg', a: a};
+};
+var author$project$Widget$Common$GotPetition = function (a) {
 	return {$: 'GotPetition', a: a};
 };
-var author$project$Main$Loading = {$: 'Loading'};
-var author$project$Main$None = {$: 'None'};
+var author$project$Flash$State = function (a) {
+	return {$: 'State', a: a};
+};
+var author$project$Flash$none = author$project$Flash$State(elm$core$Maybe$Nothing);
+var author$project$Widget$Common$Loading = {$: 'Loading'};
+var author$project$Widget$Common$Ready = {$: 'Ready'};
 var etaque$elm_form$Form$Field$Bool = function (a) {
 	return {$: 'Bool', a: a};
 };
@@ -5929,7 +5932,7 @@ var etaque$elm_form$Form$Field$String = function (a) {
 	return {$: 'String', a: a};
 };
 var etaque$elm_form$Form$Field$string = A2(elm$core$Basics$composeR, etaque$elm_form$Form$Field$String, etaque$elm_form$Form$Tree$Value);
-var author$project$Main$initFormValues = _List_fromArray(
+var author$project$Widget$Common$initFormValues = _List_fromArray(
 	[
 		_Utils_Tuple2(
 		'gender',
@@ -5938,14 +5941,6 @@ var author$project$Main$initFormValues = _List_fromArray(
 		'notifies_enabled',
 		etaque$elm_form$Form$Field$bool(true))
 	]);
-var author$project$Main$prepareLocale = function (locale) {
-	if (locale === 'default') {
-		return elm$core$Maybe$Nothing;
-	} else {
-		var l = locale;
-		return elm$core$Maybe$Just(l);
-	}
-};
 var author$project$Generated$Api$SignerForm = function (signerFormFirstName) {
 	return function (signerFormLastName) {
 		return function (signerFormCountry) {
@@ -6233,12 +6228,9 @@ var etaque$elm_form$Form$Validate$succeed = F2(
 	function (a, validationField) {
 		return elm$core$Result$Ok(a);
 	});
-var author$project$Main$validate = A2(
+var author$project$Widget$Common$validate = A2(
 	etaque$elm_form$Form$Validate$andMap,
-	A2(
-		etaque$elm_form$Form$Validate$defaultValue,
-		true,
-		A2(etaque$elm_form$Form$Validate$field, 'notifies_enabled', etaque$elm_form$Form$Validate$bool)),
+	A2(etaque$elm_form$Form$Validate$field, 'notifies_enabled', etaque$elm_form$Form$Validate$bool),
 	A2(
 		etaque$elm_form$Form$Validate$andMap,
 		A2(
@@ -6294,6 +6286,68 @@ var author$project$Main$validate = A2(
 											'first_name',
 											A2(etaque$elm_form$Form$Validate$andThen, etaque$elm_form$Form$Validate$nonEmpty, etaque$elm_form$Form$Validate$string)),
 										etaque$elm_form$Form$Validate$succeed(author$project$Generated$Api$SignerForm)))))))))));
+var elm$core$Set$Set_elm_builtin = function (a) {
+	return {$: 'Set_elm_builtin', a: a};
+};
+var elm$core$Set$empty = elm$core$Set$Set_elm_builtin(elm$core$Dict$empty);
+var etaque$elm_form$Form$F = function (a) {
+	return {$: 'F', a: a};
+};
+var etaque$elm_form$Form$updateValidate = F2(
+	function (validation, model) {
+		var _n0 = validation(model.fields);
+		if (_n0.$ === 'Ok') {
+			var output = _n0.a;
+			return _Utils_update(
+				model,
+				{
+					errors: etaque$elm_form$Form$Tree$group(_List_Nil),
+					output: elm$core$Maybe$Just(output)
+				});
+		} else {
+			var error = _n0.a;
+			return _Utils_update(
+				model,
+				{errors: error, output: elm$core$Maybe$Nothing});
+		}
+	});
+var etaque$elm_form$Form$initial = F2(
+	function (initialFields, validation) {
+		var model = {
+			changedFields: elm$core$Set$empty,
+			dirtyFields: elm$core$Set$empty,
+			errors: etaque$elm_form$Form$Tree$group(_List_Nil),
+			fields: etaque$elm_form$Form$Tree$group(initialFields),
+			focus: elm$core$Maybe$Nothing,
+			isSubmitted: false,
+			originalValues: elm$core$Dict$empty,
+			output: elm$core$Maybe$Nothing
+		};
+		return etaque$elm_form$Form$F(
+			A2(etaque$elm_form$Form$updateValidate, validation, model));
+	});
+var author$project$Widget$Common$initModel = function (_n0) {
+	var url = _n0.url;
+	var code = _n0.code;
+	var locale = _n0.locale;
+	return {
+		code: code,
+		flash: author$project$Flash$none,
+		formData: A2(etaque$elm_form$Form$initial, author$project$Widget$Common$initFormValues, author$project$Widget$Common$validate),
+		formStatus: author$project$Widget$Common$Ready,
+		locale: locale,
+		petitionStatus: author$project$Widget$Common$Loading,
+		url: url
+	};
+};
+var author$project$Widget$Common$prepareLocale = function (locale) {
+	if (locale === 'default') {
+		return elm$core$Maybe$Nothing;
+	} else {
+		var l = locale;
+		return elm$core$Maybe$Just(l);
+	}
+};
 var elm$core$Task$Perform = function (a) {
 	return {$: 'Perform', a: a};
 };
@@ -6411,76 +6465,127 @@ var elm$http$Http$send = F2(
 			resultToMessage,
 			elm$http$Http$toTask(request_));
 	});
-var elm$core$Set$Set_elm_builtin = function (a) {
-	return {$: 'Set_elm_builtin', a: a};
-};
-var elm$core$Set$empty = elm$core$Set$Set_elm_builtin(elm$core$Dict$empty);
-var etaque$elm_form$Form$F = function (a) {
-	return {$: 'F', a: a};
-};
-var etaque$elm_form$Form$updateValidate = F2(
-	function (validation, model) {
-		var _n0 = validation(model.fields);
-		if (_n0.$ === 'Ok') {
-			var output = _n0.a;
-			return _Utils_update(
-				model,
-				{
-					errors: etaque$elm_form$Form$Tree$group(_List_Nil),
-					output: elm$core$Maybe$Just(output)
-				});
-		} else {
-			var error = _n0.a;
-			return _Utils_update(
-				model,
-				{errors: error, output: elm$core$Maybe$Nothing});
-		}
-	});
-var etaque$elm_form$Form$initial = F2(
-	function (initialFields, validation) {
-		var model = {
-			changedFields: elm$core$Set$empty,
-			dirtyFields: elm$core$Set$empty,
-			errors: etaque$elm_form$Form$Tree$group(_List_Nil),
-			fields: etaque$elm_form$Form$Tree$group(initialFields),
-			focus: elm$core$Maybe$Nothing,
-			isSubmitted: false,
-			originalValues: elm$core$Dict$empty,
-			output: elm$core$Maybe$Nothing
-		};
-		return etaque$elm_form$Form$F(
-			A2(etaque$elm_form$Form$updateValidate, validation, model));
-	});
-var author$project$Main$init = function (_n0) {
-	var url = _n0.url;
-	var code = _n0.code;
-	var locale = _n0.locale;
+var author$project$Main$init = function (params) {
+	var url = params.url;
+	var code = params.code;
+	var locale = params.locale;
 	return _Utils_Tuple2(
 		{
-			code: code,
-			descriptionExpanded: true,
-			flash: author$project$Flash$none,
-			form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
-			formStatus: author$project$Main$None,
-			locale: locale,
-			petitionStatus: author$project$Main$Loading,
-			signersCount: elm$core$Maybe$Nothing,
-			url: url
+			common: author$project$Widget$Common$initModel(params),
+			descriptionExpanded: true
 		},
 		A2(
 			elm$http$Http$send,
-			author$project$Main$GotPetition,
+			A2(elm$core$Basics$composeL, author$project$Main$CommonMsg, author$project$Widget$Common$GotPetition),
 			A3(
 				author$project$Generated$Api$getPetitionByCode,
 				url,
 				code,
-				author$project$Main$prepareLocale(locale))));
+				author$project$Widget$Common$prepareLocale(locale))));
 };
 var elm$core$Platform$Sub$batch = _Platform_batch;
 var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$none;
 };
+var author$project$Widget$Common$m = F2(
+	function (locale, msg) {
+		if (locale === 'ru') {
+			switch (msg.$) {
+				case 'PetitionFormMsg':
+					return 'Заполните форму';
+				case 'ShowFullTextMsg':
+					return 'Читать полностью';
+				case 'FirstNameMsg':
+					return 'Имя*';
+				case 'LastNameMsg':
+					return 'Фамилия*';
+				case 'CountryMsg':
+					return 'Страна*';
+				case 'CityMsg':
+					return 'Город*';
+				case 'OrganizationMsg':
+					return 'Организация';
+				case 'EmailPhoneMsg':
+					return 'Эл. почта/Телефон*';
+				case 'PhoneMsg':
+					return 'Телефон';
+				case 'BirthYearMsg':
+					return 'Год рождения';
+				case 'GenderMsg':
+					return 'Пол*';
+				case 'MaleMsg':
+					return 'Мужской';
+				case 'FemaleMsg':
+					return 'Женский';
+				case 'KeepMeUpdateMsg':
+					return 'Информировать меня о петиции и других событиях';
+				case 'SubmitMsg':
+					return 'Отправить';
+				case 'ResetMsg':
+					return 'Очистить';
+				case 'ThankYouMsg':
+					return 'Благодарим Вас! Ваш голос учтен!';
+				case 'FillRequiredFieldsMsg':
+					return 'Заполните обязательные поля';
+				case 'WasSignedMsg':
+					return 'Подписало:';
+				case 'PeopleMsg':
+					return ' человек';
+				case 'SignPetitionMsg':
+					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
+				default:
+					return 'Закрыть';
+			}
+		} else {
+			switch (msg.$) {
+				case 'PetitionFormMsg':
+					return 'Fill the form';
+				case 'ShowFullTextMsg':
+					return 'Read full text';
+				case 'FirstNameMsg':
+					return 'First Name*';
+				case 'LastNameMsg':
+					return 'Last Name*';
+				case 'CountryMsg':
+					return 'Country*';
+				case 'CityMsg':
+					return 'City*';
+				case 'OrganizationMsg':
+					return 'Organization';
+				case 'EmailPhoneMsg':
+					return 'Email/Phone*';
+				case 'PhoneMsg':
+					return 'Phone*';
+				case 'BirthYearMsg':
+					return 'BirthYear';
+				case 'GenderMsg':
+					return 'Gender*';
+				case 'MaleMsg':
+					return 'Male';
+				case 'FemaleMsg':
+					return 'Female';
+				case 'KeepMeUpdateMsg':
+					return 'Keep me updated via-email on this petition and related issues. ';
+				case 'SubmitMsg':
+					return 'Submit';
+				case 'ResetMsg':
+					return 'Reset';
+				case 'ThankYouMsg':
+					return 'Thank you! Your vote was taken into account!';
+				case 'FillRequiredFieldsMsg':
+					return 'Please, fill all required fields';
+				case 'WasSignedMsg':
+					return 'Signed by:';
+				case 'PeopleMsg':
+					return ' people';
+				case 'SignPetitionMsg':
+					return 'SIGN THE PETITION: ';
+				default:
+					return 'Close';
+			}
+		}
+	});
 var elm$core$Basics$always = F2(
 	function (a, _n0) {
 		return a;
@@ -6587,127 +6692,27 @@ var author$project$Generated$Api$postPetitionByCodeSigner = F3(
 				withCredentials: false
 			});
 	});
-var author$project$Main$FillRequiredFieldsMsg = {$: 'FillRequiredFieldsMsg'};
-var author$project$Main$FormFailure = function (a) {
+var author$project$Widget$Common$FillRequiredFieldsMsg = {$: 'FillRequiredFieldsMsg'};
+var author$project$Widget$Common$FormFailure = function (a) {
 	return {$: 'FormFailure', a: a};
 };
-var author$project$Main$Loaded = function (a) {
+var author$project$Widget$Common$Loaded = function (a) {
 	return {$: 'Loaded', a: a};
 };
-var author$project$Main$Opss = {$: 'Opss'};
-var author$project$Main$PetitionFailure = function (a) {
+var author$project$Widget$Common$PetitionFailure = function (a) {
 	return {$: 'PetitionFailure', a: a};
 };
-var author$project$Main$Ready = {$: 'Ready'};
-var author$project$Main$RemoveFlash = {$: 'RemoveFlash'};
-var author$project$Main$Sending = {$: 'Sending'};
-var author$project$Main$Sent = {$: 'Sent'};
-var author$project$Main$SentForm = function (a) {
+var author$project$Widget$Common$RemoveFlash = {$: 'RemoveFlash'};
+var author$project$Widget$Common$Sending = {$: 'Sending'};
+var author$project$Widget$Common$Sent = {$: 'Sent'};
+var author$project$Widget$Common$SentForm = function (a) {
 	return {$: 'SentForm', a: a};
 };
-var author$project$Main$SetFlash = function (a) {
+var author$project$Widget$Common$SetFlash = function (a) {
 	return {$: 'SetFlash', a: a};
 };
-var author$project$Main$ThankYouMsg = {$: 'ThankYouMsg'};
-var author$project$Main$flashTimeout = 5000;
-var author$project$Main$m = F2(
-	function (locale, msg) {
-		if (locale === 'ru') {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Заполните форму';
-				case 'ShowFullTextMsg':
-					return 'Читать полностью';
-				case 'FirstNameMsg':
-					return 'Имя*';
-				case 'LastNameMsg':
-					return 'Фамилия*';
-				case 'CountryMsg':
-					return 'Страна*';
-				case 'CityMsg':
-					return 'Город*';
-				case 'OrganizationMsg':
-					return 'Организация';
-				case 'EmailPhoneMsg':
-					return 'Эл. почта/Телефон*';
-				case 'PhoneMsg':
-					return 'Телефон';
-				case 'BirthYearMsg':
-					return 'Год рождения';
-				case 'GenderMsg':
-					return 'Пол*';
-				case 'MaleMsg':
-					return 'Мужской';
-				case 'FemaleMsg':
-					return 'Женский';
-				case 'KeepMeUpdateMsg':
-					return 'Информировать меня о петиции и других событиях';
-				case 'SubmitMsg':
-					return 'Отправить';
-				case 'ResetMsg':
-					return 'Очистить';
-				case 'ThankYouMsg':
-					return 'Благодарим Вас! Ваш голос учтен!';
-				case 'FillRequiredFieldsMsg':
-					return 'Заполните обязательные поля';
-				case 'WasSignedMsg':
-					return 'Подписало:';
-				case 'PeopleMsg':
-					return ' человек';
-				case 'SignPetitionMsg':
-					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
-				default:
-					return 'Закрыть';
-			}
-		} else {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Fill the form';
-				case 'ShowFullTextMsg':
-					return 'Read full text';
-				case 'FirstNameMsg':
-					return 'First Name*';
-				case 'LastNameMsg':
-					return 'Last Name*';
-				case 'CountryMsg':
-					return 'Country*';
-				case 'CityMsg':
-					return 'City*';
-				case 'OrganizationMsg':
-					return 'Organization';
-				case 'EmailPhoneMsg':
-					return 'Email/Phone*';
-				case 'PhoneMsg':
-					return 'Phone*';
-				case 'BirthYearMsg':
-					return 'BirthYear';
-				case 'GenderMsg':
-					return 'Gender*';
-				case 'MaleMsg':
-					return 'Male';
-				case 'FemaleMsg':
-					return 'Female';
-				case 'KeepMeUpdateMsg':
-					return 'Keep me updated via-email on this petition and related issues. ';
-				case 'SubmitMsg':
-					return 'Submit';
-				case 'ResetMsg':
-					return 'Reset';
-				case 'ThankYouMsg':
-					return 'Thank you! Your vote was taken into account!';
-				case 'FillRequiredFieldsMsg':
-					return 'Please, fill all required fields';
-				case 'WasSignedMsg':
-					return 'Signed by:';
-				case 'PeopleMsg':
-					return ' people';
-				case 'SignPetitionMsg':
-					return 'SIGN THE PETITION: ';
-				default:
-					return 'Close';
-			}
-		}
-	});
+var author$project$Widget$Common$ThankYouMsg = {$: 'ThankYouMsg'};
+var author$project$Widget$Common$flashTimeout = 5000;
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var elm$time$Time$Name = function (a) {
@@ -7272,14 +7277,16 @@ var etaque$elm_form$Form$update = F3(
 					A2(etaque$elm_form$Form$updateValidate, validation, newModel));
 		}
 	});
-var author$project$Main$update = F2(
+var author$project$Widget$Common$update = F2(
 	function (msg, model) {
 		var url = model.url;
 		var code = model.code;
 		var locale = model.locale;
-		var form = model.form;
-		var descriptionExpanded = model.descriptionExpanded;
-		var mm = author$project$Main$m(locale);
+		var petitionStatus = model.petitionStatus;
+		var formData = model.formData;
+		var formStatus = model.formStatus;
+		var flash = model.flash;
+		var mm = author$project$Widget$Common$m(locale);
 		switch (msg.$) {
 			case 'GotPetition':
 				var result = msg.a;
@@ -7287,13 +7294,15 @@ var author$project$Main$update = F2(
 					var _n2 = result.a;
 					var petition = _n2.a;
 					var cnt = _n2.b;
+					var pModel = {
+						petition: petition,
+						signersCount: elm$core$Maybe$Just(cnt)
+					};
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								formStatus: author$project$Main$Ready,
-								petitionStatus: author$project$Main$Loaded(petition),
-								signersCount: elm$core$Maybe$Just(cnt)
+								petitionStatus: author$project$Widget$Common$Loaded(pModel)
 							}),
 						elm$core$Platform$Cmd$none);
 				} else {
@@ -7302,8 +7311,7 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								petitionStatus: author$project$Main$PetitionFailure(err),
-								signersCount: elm$core$Maybe$Nothing
+								petitionStatus: author$project$Widget$Common$PetitionFailure(err)
 							}),
 						elm$core$Platform$Cmd$none);
 				}
@@ -7311,7 +7319,7 @@ var author$project$Main$update = F2(
 				var formMsg = msg.a;
 				var _n3 = _Utils_Tuple2(
 					formMsg,
-					etaque$elm_form$Form$getOutput(form));
+					etaque$elm_form$Form$getOutput(formData));
 				if (_n3.a.$ === 'Submit') {
 					if (_n3.b.$ === 'Just') {
 						var _n4 = _n3.a;
@@ -7319,23 +7327,21 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{formStatus: author$project$Main$Sending}),
+								{formStatus: author$project$Widget$Common$Sending}),
 							A2(
 								elm$http$Http$send,
-								author$project$Main$SentForm,
+								author$project$Widget$Common$SentForm,
 								A3(author$project$Generated$Api$postPetitionByCodeSigner, url, code, signer)));
 					} else {
 						var _n5 = _n3.a;
 						var _n6 = _n3.b;
 						return _Utils_Tuple2(
-							_Utils_update(
-								model,
-								{formStatus: author$project$Main$Opss}),
+							model,
 							A2(
 								elm$core$Task$perform,
 								elm$core$Basics$always(
-									author$project$Main$SetFlash(
-										mm(author$project$Main$FillRequiredFieldsMsg))),
+									author$project$Widget$Common$SetFlash(
+										mm(author$project$Widget$Common$FillRequiredFieldsMsg))),
 								elm$time$Time$now));
 					}
 				} else {
@@ -7343,7 +7349,7 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								form: A3(etaque$elm_form$Form$update, author$project$Main$validate, formMsg, form)
+								formData: A3(etaque$elm_form$Form$update, author$project$Widget$Common$validate, formMsg, formData)
 							}),
 						elm$core$Platform$Cmd$none);
 				}
@@ -7351,19 +7357,33 @@ var author$project$Main$update = F2(
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var cnt = result.a;
+					var pStatus = function () {
+						if (petitionStatus.$ === 'Loaded') {
+							var pStatusQ = petitionStatus.a;
+							return author$project$Widget$Common$Loaded(
+								_Utils_update(
+									pStatusQ,
+									{
+										signersCount: elm$core$Maybe$Just(cnt)
+									}));
+						} else {
+							var x = petitionStatus;
+							return x;
+						}
+					}();
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								form: A2(etaque$elm_form$Form$initial, author$project$Main$initFormValues, author$project$Main$validate),
-								formStatus: author$project$Main$Sent,
-								signersCount: elm$core$Maybe$Just(cnt)
+								formData: A2(etaque$elm_form$Form$initial, author$project$Widget$Common$initFormValues, author$project$Widget$Common$validate),
+								formStatus: author$project$Widget$Common$Sent,
+								petitionStatus: pStatus
 							}),
 						A2(
 							elm$core$Task$perform,
 							elm$core$Basics$always(
-								author$project$Main$SetFlash(
-									mm(author$project$Main$ThankYouMsg))),
+								author$project$Widget$Common$SetFlash(
+									mm(author$project$Widget$Common$ThankYouMsg))),
 							elm$time$Time$now));
 				} else {
 					var err = result.a;
@@ -7371,35 +7391,17 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								formStatus: author$project$Main$FormFailure(err)
+								formStatus: author$project$Widget$Common$FormFailure(err)
 							}),
 						elm$core$Platform$Cmd$none);
 				}
 			case 'NoOp':
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-			case 'ToggleDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: !descriptionExpanded}),
-					elm$core$Platform$Cmd$none);
-			case 'ExpandDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: true}),
-					elm$core$Platform$Cmd$none);
-			case 'CollapseDescription':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{descriptionExpanded: false}),
-					elm$core$Platform$Cmd$none);
 			case 'SetFlash':
 				var flashMessage = msg.a;
-				var _n8 = A3(author$project$Flash$setFlash, author$project$Main$RemoveFlash, author$project$Main$flashTimeout, flashMessage);
-				var message = _n8.a;
-				var cmd = _n8.b;
+				var _n9 = A3(author$project$Flash$setFlash, author$project$Widget$Common$RemoveFlash, author$project$Widget$Common$flashTimeout, flashMessage);
+				var message = _n9.a;
+				var cmd = _n9.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -7413,29 +7415,46 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 		}
 	});
+var elm$core$Platform$Cmd$map = _Platform_map;
+var author$project$Main$update = F2(
+	function (msg, model) {
+		var mm = author$project$Widget$Common$m(model.common.locale);
+		switch (msg.$) {
+			case 'CommonMsg':
+				var msgC = msg.a;
+				var _n1 = A2(author$project$Widget$Common$update, msgC, model.common);
+				var newCommon = _n1.a;
+				var cmd = _n1.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{common: newCommon}),
+					A2(elm$core$Platform$Cmd$map, author$project$Main$CommonMsg, cmd));
+			case 'ToggleDescription':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{descriptionExpanded: !model.descriptionExpanded}),
+					elm$core$Platform$Cmd$none);
+			case 'ExpandDescription':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{descriptionExpanded: true}),
+					elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{descriptionExpanded: false}),
+					elm$core$Platform$Cmd$none);
+		}
+	});
 var author$project$Main$CollapseDescription = {$: 'CollapseDescription'};
-var author$project$Main$FormMsg = function (a) {
-	return {$: 'FormMsg', a: a};
-};
 var author$project$Flash$getMessage = function (_n0) {
 	var message = _n0.a;
 	return message;
 };
-var author$project$Main$BirthYearMsg = {$: 'BirthYearMsg'};
-var author$project$Main$CityMsg = {$: 'CityMsg'};
-var author$project$Main$CountryMsg = {$: 'CountryMsg'};
-var author$project$Main$EmailPhoneMsg = {$: 'EmailPhoneMsg'};
-var author$project$Main$FemaleMsg = {$: 'FemaleMsg'};
-var author$project$Main$FirstNameMsg = {$: 'FirstNameMsg'};
-var author$project$Main$GenderMsg = {$: 'GenderMsg'};
-var author$project$Main$KeepMeUpdateMsg = {$: 'KeepMeUpdateMsg'};
-var author$project$Main$LastNameMsg = {$: 'LastNameMsg'};
-var author$project$Main$MaleMsg = {$: 'MaleMsg'};
-var author$project$Main$OrganizationMsg = {$: 'OrganizationMsg'};
-var author$project$Main$PetitionFormMsg = {$: 'PetitionFormMsg'};
-var author$project$Main$PhoneMsg = {$: 'PhoneMsg'};
-var author$project$Main$ResetMsg = {$: 'ResetMsg'};
-var author$project$Main$SubmitMsg = {$: 'SubmitMsg'};
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
@@ -7745,6 +7764,21 @@ var author$project$View$Form$textGroupHidden = F2(
 					elm$html$Html$Attributes$class('hidden')
 				]));
 	});
+var author$project$Widget$Common$BirthYearMsg = {$: 'BirthYearMsg'};
+var author$project$Widget$Common$CityMsg = {$: 'CityMsg'};
+var author$project$Widget$Common$CountryMsg = {$: 'CountryMsg'};
+var author$project$Widget$Common$EmailPhoneMsg = {$: 'EmailPhoneMsg'};
+var author$project$Widget$Common$FemaleMsg = {$: 'FemaleMsg'};
+var author$project$Widget$Common$FirstNameMsg = {$: 'FirstNameMsg'};
+var author$project$Widget$Common$GenderMsg = {$: 'GenderMsg'};
+var author$project$Widget$Common$KeepMeUpdateMsg = {$: 'KeepMeUpdateMsg'};
+var author$project$Widget$Common$LastNameMsg = {$: 'LastNameMsg'};
+var author$project$Widget$Common$MaleMsg = {$: 'MaleMsg'};
+var author$project$Widget$Common$OrganizationMsg = {$: 'OrganizationMsg'};
+var author$project$Widget$Common$PetitionFormMsg = {$: 'PetitionFormMsg'};
+var author$project$Widget$Common$PhoneMsg = {$: 'PhoneMsg'};
+var author$project$Widget$Common$ResetMsg = {$: 'ResetMsg'};
+var author$project$Widget$Common$SubmitMsg = {$: 'SubmitMsg'};
 var elm$core$Debug$toString = _Debug_toString;
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -7826,16 +7860,16 @@ var author$project$Main$formView = F3(
 		var phone = A2(etaque$elm_form$Form$getFieldAsString, 'phone', form);
 		var organization = A2(etaque$elm_form$Form$getFieldAsString, 'organization', form);
 		var notifiesEnabled = A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form);
-		var mm = author$project$Main$m(locale);
+		var mm = author$project$Widget$Common$m(locale);
 		var lastName = A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form);
 		var genderOptions = _List_fromArray(
 			[
 				_Utils_Tuple2(
 				'M',
-				mm(author$project$Main$MaleMsg)),
+				mm(author$project$Widget$Common$MaleMsg)),
 				_Utils_Tuple2(
 				'F',
-				mm(author$project$Main$FemaleMsg))
+				mm(author$project$Widget$Common$FemaleMsg))
 			]);
 		var gender = A2(etaque$elm_form$Form$getFieldAsString, 'gender', form);
 		var firstName = A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form);
@@ -7865,7 +7899,7 @@ var author$project$Main$formView = F3(
 		var _n0 = A2(
 			elm$core$Maybe$withDefault,
 			_Utils_Tuple2(
-				mm(author$project$Main$PetitionFormMsg),
+				mm(author$project$Widget$Common$PetitionFormMsg),
 				''),
 			A2(
 				elm$core$Maybe$map,
@@ -7912,44 +7946,44 @@ var author$project$Main$formView = F3(
 						[
 							A2(
 							author$project$View$Form$textGroup,
-							mm(author$project$Main$FirstNameMsg),
+							mm(author$project$Widget$Common$FirstNameMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'first_name', form)),
 							A2(
 							author$project$View$Form$textGroup,
-							mm(author$project$Main$LastNameMsg),
+							mm(author$project$Widget$Common$LastNameMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'last_name', form)),
 							A2(
 							author$project$View$Form$textGroup,
-							mm(author$project$Main$CountryMsg),
+							mm(author$project$Widget$Common$CountryMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'country', form)),
 							A2(
 							author$project$View$Form$textGroup,
-							mm(author$project$Main$CityMsg),
+							mm(author$project$Widget$Common$CityMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'city', form)),
 							A2(
 							author$project$View$Form$textGroup,
-							mm(author$project$Main$OrganizationMsg),
+							mm(author$project$Widget$Common$OrganizationMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'organization', form)),
 							A2(
 							author$project$View$Form$textGroup,
-							mm(author$project$Main$EmailPhoneMsg),
+							mm(author$project$Widget$Common$EmailPhoneMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'email', form)),
 							A2(
 							author$project$View$Form$textGroupHidden,
-							mm(author$project$Main$PhoneMsg),
+							mm(author$project$Widget$Common$PhoneMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'phone', form)),
 							A2(
 							author$project$View$Form$textGroupHidden,
-							mm(author$project$Main$BirthYearMsg),
+							mm(author$project$Widget$Common$BirthYearMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'birth_year', form)),
 							A3(
 							author$project$View$Form$selectGroup,
 							genderOptions,
-							mm(author$project$Main$GenderMsg),
+							mm(author$project$Widget$Common$GenderMsg),
 							A2(etaque$elm_form$Form$getFieldAsString, 'gender', form)),
 							A2(
 							author$project$View$Form$checkboxGroup,
-							mm(author$project$Main$KeepMeUpdateMsg),
+							mm(author$project$Widget$Common$KeepMeUpdateMsg),
 							A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form)),
 							author$project$View$Form$formActions(
 							_List_fromArray(
@@ -7963,46 +7997,28 @@ var author$project$Main$formView = F3(
 									_List_fromArray(
 										[
 											elm$html$Html$text(
-											mm(author$project$Main$SubmitMsg))
+											mm(author$project$Widget$Common$SubmitMsg))
 										])),
 									A2(
 									elm$html$Html$button,
 									_List_fromArray(
 										[
 											elm$html$Html$Events$onClick(
-											etaque$elm_form$Form$Reset(author$project$Main$initFormValues))
+											etaque$elm_form$Form$Reset(author$project$Widget$Common$initFormValues))
 										]),
 									_List_fromArray(
 										[
 											elm$html$Html$text(
-											mm(author$project$Main$ResetMsg))
+											mm(author$project$Widget$Common$ResetMsg))
 										]))
 								]))
 						]))
 				]));
 	});
-var author$project$Main$toString = function (err) {
-	switch (err.$) {
-		case 'BadUrl':
-			var url = err.a;
-			return 'Bad url: ' + url;
-		case 'Timeout':
-			return 'Timeout';
-		case 'NetworkError':
-			return 'Network error';
-		case 'BadStatus':
-			var response = err.a;
-			return 'Bad response status: ' + response.status.message;
-		default:
-			var str = err.a;
-			var response = err.b;
-			return 'Bad response format: ' + str;
-	}
-};
-var author$project$Main$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
 var author$project$Main$ToggleDescription = {$: 'ToggleDescription'};
-var author$project$Main$WasSignedMsg = {$: 'WasSignedMsg'};
 var author$project$Main$petitionsImagesPath = '/static/images/petitions/';
+var author$project$Widget$Common$ShowFullTextMsg = {$: 'ShowFullTextMsg'};
+var author$project$Widget$Common$WasSignedMsg = {$: 'WasSignedMsg'};
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$img = _VirtualDom_node('img');
 var elm$html$Html$Attributes$href = function (url) {
@@ -8029,7 +8045,7 @@ var elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
 var elm_explorations$markdown$Markdown$toHtml = elm_explorations$markdown$Markdown$toHtmlWith(elm_explorations$markdown$Markdown$defaultOptions);
 var author$project$Main$viewPetition = F6(
 	function (url, code, locale, petition, descriptionExpanded, cnt) {
-		var mm = author$project$Main$m(locale);
+		var mm = author$project$Widget$Common$m(locale);
 		var cntQ = A2(
 			elm$core$Maybe$withDefault,
 			'?',
@@ -8073,7 +8089,7 @@ var author$project$Main$viewPetition = F6(
 							_List_fromArray(
 								[
 									elm$html$Html$text(
-									mm(author$project$Main$WasSignedMsg))
+									mm(author$project$Widget$Common$WasSignedMsg))
 								])),
 							A2(
 							elm$html$Html$div,
@@ -8117,7 +8133,7 @@ var author$project$Main$viewPetition = F6(
 									_List_fromArray(
 										[
 											elm$html$Html$text(
-											mm(author$project$Main$ShowFullTextMsg))
+											mm(author$project$Widget$Common$ShowFullTextMsg))
 										]))
 								]))
 						])),
@@ -8135,29 +8151,44 @@ var author$project$Main$viewPetition = F6(
 						]))
 				]));
 	});
+var author$project$Widget$Common$FormMsg = function (a) {
+	return {$: 'FormMsg', a: a};
+};
+var author$project$Widget$Common$errorToString = function (err) {
+	switch (err.$) {
+		case 'BadUrl':
+			var url = err.a;
+			return 'Bad url: ' + url;
+		case 'Timeout':
+			return 'Timeout';
+		case 'NetworkError':
+			return 'Network error';
+		case 'BadStatus':
+			var response = err.a;
+			return 'Bad response status: ' + response.status.message;
+		default:
+			var str = err.a;
+			var response = err.b;
+			return 'Bad response format: ' + str;
+	}
+};
 var elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var elm$html$Html$map = elm$virtual_dom$VirtualDom$map;
 var author$project$Main$view = function (_n0) {
-	var url = _n0.url;
-	var code = _n0.code;
-	var locale = _n0.locale;
-	var petitionStatus = _n0.petitionStatus;
+	var common = _n0.common;
 	var descriptionExpanded = _n0.descriptionExpanded;
-	var signersCount = _n0.signersCount;
-	var formStatus = _n0.formStatus;
-	var form = _n0.form;
-	var flash = _n0.flash;
-	var mm = author$project$Main$m(locale);
-	switch (petitionStatus.$) {
+	var mm = author$project$Widget$Common$m(common.locale);
+	var _n1 = common.petitionStatus;
+	switch (_n1.$) {
 		case 'PetitionFailure':
-			var err = petitionStatus.a;
+			var err = _n1.a;
 			return A2(
 				elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
 						elm$html$Html$text(
-						'Error of petition getting: ' + author$project$Main$toString(err))
+						'Error of petition getting: ' + author$project$Widget$Common$errorToString(err))
 					]));
 		case 'Loading':
 			return A2(
@@ -8168,63 +8199,22 @@ var author$project$Main$view = function (_n0) {
 						elm$html$Html$text('Loading petition')
 					]));
 		default:
-			var petition = petitionStatus.a;
+			var pModel = _n1.a;
 			return A2(
 				elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
-						A6(author$project$Main$viewPetition, url, code, locale, petition, descriptionExpanded, signersCount),
+						A6(author$project$Main$viewPetition, common.url, common.code, common.locale, pModel.petition, descriptionExpanded, pModel.signersCount),
 						function () {
-						switch (formStatus.$) {
-							case 'Ready':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
-							case 'None':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
+						var _n2 = common.formStatus;
+						switch (_n2.$) {
 							case 'Sending':
 								return elm$html$Html$text('Sending form...');
-							case 'Sent':
-								return A2(
-									elm$html$Html$div,
-									_List_fromArray(
-										[
-											elm$html$Html$Events$onClick(author$project$Main$CollapseDescription)
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
-										]));
 							case 'FormFailure':
-								var err = formStatus.a;
+								var err = _n2.a;
 								return elm$html$Html$text(
-									'Error of sending form: ' + author$project$Main$toString(err));
+									'Error of sending form: ' + author$project$Widget$Common$errorToString(err));
 							default:
 								return A2(
 									elm$html$Html$div,
@@ -8236,8 +8226,8 @@ var author$project$Main$view = function (_n0) {
 										[
 											A2(
 											elm$html$Html$map,
-											author$project$Main$FormMsg,
-											A3(author$project$Main$formView, locale, flash, form))
+											A2(elm$core$Basics$composeL, author$project$Main$CommonMsg, author$project$Widget$Common$FormMsg),
+											A3(author$project$Main$formView, common.locale, common.flash, common.formData))
 										]));
 						}
 					}()
