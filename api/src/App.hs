@@ -60,12 +60,12 @@ mkApp url port dbconnect =
   return $ (cors corsPolicy) $ logStdoutDev $ static $ (serve api $ server url port dbconnect)
 
 server :: Text -> Int -> ByteString -> Server Api
-server url port db = ((getPetitionByCode db) :<|> postSigner db) 
-       :<|> (getHtmlPetitionByCode url port)
-       :<|> (getHtmlPetitionTextByCode db)
+server url port db = ((getPetition db) :<|> postSigner db) 
+       :<|> (getPetitionWidget url port)
+       :<|> (getPetitionFullText db)
 
-getPetitionByCode :: ByteString -> Text -> Maybe Text -> Handler (Petition, Int)
-getPetitionByCode dbconnect code locale = do
+getPetition :: ByteString -> Text -> Maybe Text -> Handler (Petition, Int)
+getPetition dbconnect code locale = do
   conn <- liftIO $ Pg.connectPostgreSQL dbconnect
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of
@@ -75,18 +75,20 @@ getPetitionByCode dbconnect code locale = do
     -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
     _      -> throwE err404
 
-getHtmlPetitionByCode :: Text -> Int -> Text -> Maybe Text -> Handler H.Html
-getHtmlPetitionByCode url port code locale = do
-  let locale' = maybe ("default"::Text) id locale
-  let url' = url `append` ":" `append` (pack $ show port)
+getPetitionWidget :: Text -> Int -> Text -> Maybe Text -> Maybe Text -> Handler H.Html
+getPetitionWidget url port code locale widget = do
+  let widget' = maybe ("default"::Text) id widget
+      locale' = maybe ("default"::Text) id locale
+      url' = url `append` ":" `append` (pack $ show port)
+      widgetDir = url' `append` "/static/widgets/" `append` widget' `append` "/"
+      widgetFile = (widgetDir `append`)
   pure $ H.docTypeHtml H.! A.lang (H.textValue $ maybe "en" id locale) $ do
     H.head $ do
       H.meta H.! A.charset "UTF-8"
       H.title "Petition"
-      H.script H.! A.type_ "text/javascript" H.! A.src (H.textValue $ url' `append` "/static/petition-widget.js") $ mempty
+      H.script H.! A.type_ "text/javascript" H.! A.src (H.textValue $ widgetFile "petition-widget.js") $ mempty
       H.link H.! A.rel "stylesheet" H.! A.href (H.textValue $ url' `append` "/static/reset.css") 
-      H.link H.! A.rel "stylesheet" H.! A.href (H.textValue $ url' `append` "/static/petition.css") 
-      -- H.link H.! A.rel "stylesheet" H.! A.href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+      H.link H.! A.rel "stylesheet" H.! A.href (H.textValue $ widgetFile "petition.css") 
       H.body $ do
         H.div H.! A.id "petition" $ mempty
         H.script $ do
@@ -94,12 +96,9 @@ getHtmlPetitionByCode url port code locale = do
                   \  node: document.getElementById('petition'), \
                   \  flags: {url: '" `append` url' `append` "', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
                   \              });" :: Text))
-      -- H.script H.! A.type_ "text/javascript" H.! A.src "https://code.jquery.com/jquery-3.3.1.slim.min.js" $ mempty
-      -- H.script H.! A.type_ "text/javascript" H.! A.src "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" $ mempty
-      -- H.script H.! A.type_ "text/javascript" H.! A.src "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" $ mempty
 
-getHtmlPetitionTextByCode :: ByteString -> Text -> Maybe Text -> Handler H.Html
-getHtmlPetitionTextByCode dbconnect code locale = do
+getPetitionFullText :: ByteString -> Text -> Maybe Text -> Handler H.Html
+getPetitionFullText dbconnect code locale = do
   conn <- liftIO $ Pg.connectPostgreSQL dbconnect
   p' <- liftIO $ B.getPetitionByCode conn code locale
   case p' of

@@ -63,7 +63,9 @@ checkboxGroup : GroupBuilder Bool
 checkboxGroup labelQ state =
     label 
         [ class "checkbox" ]
-        [ Input.checkboxInput state []
+        [ div 
+            [ class "checkbox-ch" ]
+            [ Input.checkboxInput state [] ]
         , div [ class "checkbox-label" ] [ text labelQ ]
         ]
 
