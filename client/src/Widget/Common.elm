@@ -214,7 +214,7 @@ formView locale flash form =
             , textGroupHidden (mm PhoneMsg) (Form.getFieldAsString "phone" form)
             , textGroupHidden (mm BirthYearMsg) (Form.getFieldAsString "birth_year" form)        
             , selectGroup genderOptions (mm GenderMsg) (Form.getFieldAsString "gender" form)        
-            , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifiesEnabled" form)        
+            , checkboxGroup (mm KeepMeUpdateMsg) (Form.getFieldAsBool "notifies_enabled" form)        
             , formActions
                 [ button
                     [ onClick Form.Submit
@@ -279,6 +279,30 @@ m locale msg =
         PeopleMsg -> " человек"
         SignPetitionMsg -> "ПОДПИШИТЕ ПЕТИЦИЮ: "
         CloseMsg -> "Закрыть"
+    "uk" -> 
+      case msg of 
+        PetitionFormMsg -> "Заповніть форму"
+        ShowFullTextMsg -> "Читати повністю"
+        FirstNameMsg  -> "Ім'я*"
+        LastNameMsg -> "Прізвище*"
+        CountryMsg -> "Країна*"
+        CityMsg -> "Місто*"
+        OrganizationMsg -> "Організація"
+        EmailPhoneMsg -> "Ел. пошта/Телефон*"
+        PhoneMsg -> "Телефон"
+        BirthYearMsg -> "Рік народження"
+        GenderMsg -> "Стать*"
+        MaleMsg -> "Чоловічий"
+        FemaleMsg -> "Жіночий"
+        KeepMeUpdateMsg -> "Інформувати мене про петицію та інші події"
+        SubmitMsg -> "Відправити"
+        ResetMsg -> "Очистити"
+        ThankYouMsg -> "Дякуємо Вам! Ваш голос врахований!"
+        FillRequiredFieldsMsg -> "Заповніть обов'язкові поля"
+        WasSignedMsg -> "Підписавши:"
+        PeopleMsg -> " осіб"
+        SignPetitionMsg -> "ПІДПИШІТЬ ПЕТИЦІЮ: "
+        CloseMsg -> "Закрити"
     _ -> 
       case msg of 
         PetitionFormMsg -> "Fill the form"

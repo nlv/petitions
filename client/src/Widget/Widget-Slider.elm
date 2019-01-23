@@ -167,6 +167,11 @@ m locale msg =
         CommonTextMessage msgC -> Common.m locale msgC
         FillFormFooterMsg -> "Подписать петицию"
         ShowPetitionFooterMsg -> "Текст петиции"
+    "uk" -> 
+      case msg of
+        CommonTextMessage msgC -> Common.m locale msgC
+        FillFormFooterMsg -> "Підписати петицію"
+        ShowPetitionFooterMsg -> "Текст петиції"
     _ ->
       case msg of
         CommonTextMessage msgC -> Common.m locale msgC

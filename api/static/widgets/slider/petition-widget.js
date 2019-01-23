@@ -6492,100 +6492,148 @@ var author$project$Main$subscriptions = function (model) {
 var author$project$Main$FormW = {$: 'FormW'};
 var author$project$Widget$Common$m = F2(
 	function (locale, msg) {
-		if (locale === 'ru') {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Заполните форму';
-				case 'ShowFullTextMsg':
-					return 'Читать полностью';
-				case 'FirstNameMsg':
-					return 'Имя*';
-				case 'LastNameMsg':
-					return 'Фамилия*';
-				case 'CountryMsg':
-					return 'Страна*';
-				case 'CityMsg':
-					return 'Город*';
-				case 'OrganizationMsg':
-					return 'Организация';
-				case 'EmailPhoneMsg':
-					return 'Эл. почта/Телефон*';
-				case 'PhoneMsg':
-					return 'Телефон';
-				case 'BirthYearMsg':
-					return 'Год рождения';
-				case 'GenderMsg':
-					return 'Пол*';
-				case 'MaleMsg':
-					return 'Мужской';
-				case 'FemaleMsg':
-					return 'Женский';
-				case 'KeepMeUpdateMsg':
-					return 'Информировать меня о петиции и других событиях';
-				case 'SubmitMsg':
-					return 'Отправить';
-				case 'ResetMsg':
-					return 'Очистить';
-				case 'ThankYouMsg':
-					return 'Благодарим Вас! Ваш голос учтен!';
-				case 'FillRequiredFieldsMsg':
-					return 'Заполните обязательные поля';
-				case 'WasSignedMsg':
-					return 'Подписало:';
-				case 'PeopleMsg':
-					return ' человек';
-				case 'SignPetitionMsg':
-					return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
-				default:
-					return 'Закрыть';
-			}
-		} else {
-			switch (msg.$) {
-				case 'PetitionFormMsg':
-					return 'Fill the form';
-				case 'ShowFullTextMsg':
-					return 'Read full text';
-				case 'FirstNameMsg':
-					return 'First Name*';
-				case 'LastNameMsg':
-					return 'Last Name*';
-				case 'CountryMsg':
-					return 'Country*';
-				case 'CityMsg':
-					return 'City*';
-				case 'OrganizationMsg':
-					return 'Organization';
-				case 'EmailPhoneMsg':
-					return 'Email/Phone*';
-				case 'PhoneMsg':
-					return 'Phone*';
-				case 'BirthYearMsg':
-					return 'BirthYear';
-				case 'GenderMsg':
-					return 'Gender*';
-				case 'MaleMsg':
-					return 'Male';
-				case 'FemaleMsg':
-					return 'Female';
-				case 'KeepMeUpdateMsg':
-					return 'Keep me updated via-email on this petition and related issues. ';
-				case 'SubmitMsg':
-					return 'Submit';
-				case 'ResetMsg':
-					return 'Reset';
-				case 'ThankYouMsg':
-					return 'Thank you! Your vote was taken into account!';
-				case 'FillRequiredFieldsMsg':
-					return 'Please, fill all required fields';
-				case 'WasSignedMsg':
-					return 'Signed by:';
-				case 'PeopleMsg':
-					return ' people';
-				case 'SignPetitionMsg':
-					return 'SIGN THE PETITION: ';
-				default:
-					return 'Close';
-			}
+		switch (locale) {
+			case 'ru':
+				switch (msg.$) {
+					case 'PetitionFormMsg':
+						return 'Заполните форму';
+					case 'ShowFullTextMsg':
+						return 'Читать полностью';
+					case 'FirstNameMsg':
+						return 'Имя*';
+					case 'LastNameMsg':
+						return 'Фамилия*';
+					case 'CountryMsg':
+						return 'Страна*';
+					case 'CityMsg':
+						return 'Город*';
+					case 'OrganizationMsg':
+						return 'Организация';
+					case 'EmailPhoneMsg':
+						return 'Эл. почта/Телефон*';
+					case 'PhoneMsg':
+						return 'Телефон';
+					case 'BirthYearMsg':
+						return 'Год рождения';
+					case 'GenderMsg':
+						return 'Пол*';
+					case 'MaleMsg':
+						return 'Мужской';
+					case 'FemaleMsg':
+						return 'Женский';
+					case 'KeepMeUpdateMsg':
+						return 'Информировать меня о петиции и других событиях';
+					case 'SubmitMsg':
+						return 'Отправить';
+					case 'ResetMsg':
+						return 'Очистить';
+					case 'ThankYouMsg':
+						return 'Благодарим Вас! Ваш голос учтен!';
+					case 'FillRequiredFieldsMsg':
+						return 'Заполните обязательные поля';
+					case 'WasSignedMsg':
+						return 'Подписало:';
+					case 'PeopleMsg':
+						return ' человек';
+					case 'SignPetitionMsg':
+						return 'ПОДПИШИТЕ ПЕТИЦИЮ: ';
+					default:
+						return 'Закрыть';
+				}
+			case 'uk':
+				switch (msg.$) {
+					case 'PetitionFormMsg':
+						return 'Заповніть форму';
+					case 'ShowFullTextMsg':
+						return 'Читати повністю';
+					case 'FirstNameMsg':
+						return 'Ім\'я*';
+					case 'LastNameMsg':
+						return 'Прізвище*';
+					case 'CountryMsg':
+						return 'Країна*';
+					case 'CityMsg':
+						return 'Місто*';
+					case 'OrganizationMsg':
+						return 'Організація';
+					case 'EmailPhoneMsg':
+						return 'Ел. пошта/Телефон*';
+					case 'PhoneMsg':
+						return 'Телефон';
+					case 'BirthYearMsg':
+						return 'Рік народження';
+					case 'GenderMsg':
+						return 'Стать*';
+					case 'MaleMsg':
+						return 'Чоловічий';
+					case 'FemaleMsg':
+						return 'Жіночий';
+					case 'KeepMeUpdateMsg':
+						return 'Інформувати мене про петицію та інші події';
+					case 'SubmitMsg':
+						return 'Відправити';
+					case 'ResetMsg':
+						return 'Очистити';
+					case 'ThankYouMsg':
+						return 'Дякуємо Вам! Ваш голос врахований!';
+					case 'FillRequiredFieldsMsg':
+						return 'Заповніть обов\'язкові поля';
+					case 'WasSignedMsg':
+						return 'Підписавши:';
+					case 'PeopleMsg':
+						return ' осіб';
+					case 'SignPetitionMsg':
+						return 'ПІДПИШІТЬ ПЕТИЦІЮ: ';
+					default:
+						return 'Закрити';
+				}
+			default:
+				switch (msg.$) {
+					case 'PetitionFormMsg':
+						return 'Fill the form';
+					case 'ShowFullTextMsg':
+						return 'Read full text';
+					case 'FirstNameMsg':
+						return 'First Name*';
+					case 'LastNameMsg':
+						return 'Last Name*';
+					case 'CountryMsg':
+						return 'Country*';
+					case 'CityMsg':
+						return 'City*';
+					case 'OrganizationMsg':
+						return 'Organization';
+					case 'EmailPhoneMsg':
+						return 'Email/Phone*';
+					case 'PhoneMsg':
+						return 'Phone*';
+					case 'BirthYearMsg':
+						return 'BirthYear';
+					case 'GenderMsg':
+						return 'Gender*';
+					case 'MaleMsg':
+						return 'Male';
+					case 'FemaleMsg':
+						return 'Female';
+					case 'KeepMeUpdateMsg':
+						return 'Keep me updated via-email on this petition and related issues. ';
+					case 'SubmitMsg':
+						return 'Submit';
+					case 'ResetMsg':
+						return 'Reset';
+					case 'ThankYouMsg':
+						return 'Thank you! Your vote was taken into account!';
+					case 'FillRequiredFieldsMsg':
+						return 'Please, fill all required fields';
+					case 'WasSignedMsg':
+						return 'Signed by:';
+					case 'PeopleMsg':
+						return ' people';
+					case 'SignPetitionMsg':
+						return 'SIGN THE PETITION: ';
+					default:
+						return 'Close';
+				}
 		}
 	});
 var elm$core$Basics$always = F2(
@@ -7450,26 +7498,37 @@ var author$project$Main$NextWindow = {$: 'NextWindow'};
 var author$project$Main$ShowPetitionFooterMsg = {$: 'ShowPetitionFooterMsg'};
 var author$project$Main$m = F2(
 	function (locale, msg) {
-		if (locale === 'ru') {
-			switch (msg.$) {
-				case 'CommonTextMessage':
-					var msgC = msg.a;
-					return A2(author$project$Widget$Common$m, locale, msgC);
-				case 'FillFormFooterMsg':
-					return 'Подписать петицию';
-				default:
-					return 'Текст петиции';
-			}
-		} else {
-			switch (msg.$) {
-				case 'CommonTextMessage':
-					var msgC = msg.a;
-					return A2(author$project$Widget$Common$m, locale, msgC);
-				case 'FillFormFooterMsg':
-					return 'Sign petition';
-				default:
-					return 'Text of petition';
-			}
+		switch (locale) {
+			case 'ru':
+				switch (msg.$) {
+					case 'CommonTextMessage':
+						var msgC = msg.a;
+						return A2(author$project$Widget$Common$m, locale, msgC);
+					case 'FillFormFooterMsg':
+						return 'Подписать петицию';
+					default:
+						return 'Текст петиции';
+				}
+			case 'uk':
+				switch (msg.$) {
+					case 'CommonTextMessage':
+						var msgC = msg.a;
+						return A2(author$project$Widget$Common$m, locale, msgC);
+					case 'FillFormFooterMsg':
+						return 'Підписати петицію';
+					default:
+						return 'Текст петиції';
+				}
+			default:
+				switch (msg.$) {
+					case 'CommonTextMessage':
+						var msgC = msg.a;
+						return A2(author$project$Widget$Common$m, locale, msgC);
+					case 'FillFormFooterMsg':
+						return 'Sign petition';
+					default:
+						return 'Text of petition';
+				}
 		}
 	});
 var author$project$Widget$Common$WasSignedMsg = {$: 'WasSignedMsg'};
@@ -8113,7 +8172,7 @@ var author$project$Widget$Common$formView = F3(
 							A2(
 							author$project$View$Form$checkboxGroup,
 							mm(author$project$Widget$Common$KeepMeUpdateMsg),
-							A2(etaque$elm_form$Form$getFieldAsBool, 'notifiesEnabled', form)),
+							A2(etaque$elm_form$Form$getFieldAsBool, 'notifies_enabled', form)),
 							author$project$View$Form$formActions(
 							_List_fromArray(
 								[
