@@ -6565,9 +6565,9 @@ var author$project$Widget$Common$m = F2(
 					case 'GenderMsg':
 						return 'Стать*';
 					case 'MaleMsg':
-						return 'Чоловічий';
+						return 'Чоловіча';
 					case 'FemaleMsg':
-						return 'Жіночий';
+						return 'Жіноча';
 					case 'KeepMeUpdateMsg':
 						return 'Інформувати мене про петицію та інші події';
 					case 'SubmitMsg':
