@@ -1,0 +1,6 @@
+%syntax-version=1.0.0
+%project=petitions-schema
+%uri=https://bitbucket.org/nlvomsk/petitions/
+
+init_tables 2019-01-30T09:35:46Z Leon.V.Nikitin <nlvomsk@gmail.com> # Create init tables
+@v0.1.2 2019-01-30T10:19:44Z Leon.V.Nikitin <nlvomsk@gmail.com> # Tag v0.1.2
