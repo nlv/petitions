@@ -172,6 +172,11 @@ m locale msg =
         CommonTextMessage msgC -> Common.m locale msgC
         FillFormFooterMsg -> "Підписати петицію"
         ShowPetitionFooterMsg -> "Текст петиції"
+    "el" ->
+      case msg of
+        CommonTextMessage msgC -> Common.m locale msgC
+        FillFormFooterMsg -> "Υπογράψτε την αίτηση"
+        ShowPetitionFooterMsg -> "Διαβάστε το κείμενο"
     _ ->
       case msg of
         CommonTextMessage msgC -> Common.m locale msgC
