@@ -307,7 +307,7 @@ m locale msg =
       case msg of 
         PetitionFormMsg -> "Συμπληρώστε τή φόρμα"
         ShowFullTextMsg -> "Ολο το κείμενο:"
-        FirstNameMsg  -> "First Name*"
+        FirstNameMsg  -> "Πλήρες όνομα*"
         LastNameMsg -> "Επίθετο*"
         CountryMsg -> "Χώρα*"
         CityMsg -> "Πόλη*"

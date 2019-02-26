@@ -7021,6 +7021,53 @@ var author$project$Widget$Common$m = F2(
 					default:
 						return 'Закрити';
 				}
+			case 'el':
+				switch (msg.$) {
+					case 'PetitionFormMsg':
+						return 'Συμπληρώστε τή φόρμα';
+					case 'ShowFullTextMsg':
+						return 'Ολο το κείμενο:';
+					case 'FirstNameMsg':
+						return 'First Name*';
+					case 'LastNameMsg':
+						return 'Επίθετο*';
+					case 'CountryMsg':
+						return 'Χώρα*';
+					case 'CityMsg':
+						return 'Πόλη*';
+					case 'OrganizationMsg':
+						return 'Οργάνωση';
+					case 'EmailPhoneMsg':
+						return 'Ηλεκτρονικν Δνυθυνση/Τηλέφωνο*';
+					case 'PhoneMsg':
+						return 'Τηλέφωνο*';
+					case 'BirthYearMsg':
+						return 'Έτος γέννησης';
+					case 'GenderMsg':
+						return 'Οργάνωση*';
+					case 'MaleMsg':
+						return 'Άνδρας';
+					case 'FemaleMsg':
+						return 'Γυναίκα';
+					case 'KeepMeUpdateMsg':
+						return 'Κρατήστε με ενήμερο μέσω ηλεκτρονικού ταχυδρομείου, σχετικά με την παρούσα αναφορά και συναφή θέματα. ';
+					case 'SubmitMsg':
+						return 'Υποβάλλουν';
+					case 'ResetMsg':
+						return 'Επαναφορά';
+					case 'ThankYouMsg':
+						return 'Ευχαριστούμε γία την επιλογή σας!';
+					case 'FillRequiredFieldsMsg':
+						return 'Συμπληρώστε όλα τα απαιτούμενα πεδία';
+					case 'WasSignedMsg':
+						return 'Υπογραφές:';
+					case 'PeopleMsg':
+						return ' άτομα';
+					case 'SignPetitionMsg':
+						return 'Υπογράψτε την αίτηση: ';
+					default:
+						return 'Κλείσιμο';
+				}
 			default:
 				switch (msg.$) {
 					case 'PetitionFormMsg':
