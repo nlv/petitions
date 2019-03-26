@@ -93,10 +93,11 @@ getPetitionWidget url port code locale widget = do
         H.div H.! A.id "petition" $ mempty
         H.script $ do
           H.toHtml ("window.onload = function () { \
-                  \    var app = Elm.Main.init({ \
-                  \    node: document.getElementById('petition'), \
-                  \    flags: {url: '" `append` url' `append` "', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
-                  \                }); \
+                  \    setTimeout (function() { var app = Elm.Main.init({ \
+                  \      node: document.getElementById('petition'), \
+                  \      flags: {url: '" `append` url' `append` "', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
+                  \                  }); \
+                  \    , 100); \
                   \ };" :: Text)) 
 
 getPetitionFullText :: ByteString -> Text -> Maybe Text -> Handler H.Html
