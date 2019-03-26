@@ -97,7 +97,7 @@ getPetitionWidget url port code locale widget = do
                   \      node: document.getElementById('petition'), \
                   \      flags: {url: '" `append` url' `append` "', code: '" `append` code `append` "', locale: '" `append` locale' `append` ("'} \
                   \                  }); \
-                  \    , 100); \
+                  \    }, 100); \
                   \ };" :: Text)) 
 
 getPetitionFullText :: ByteString -> Text -> Maybe Text -> Handler H.Html
