@@ -4,3 +4,5 @@
 
 init_tables 2019-01-30T09:35:46Z Leon.V.Nikitin <nlvomsk@gmail.com> # Create init tables
 @v0.1.2 2019-01-30T10:19:44Z Leon.V.Nikitin <nlvomsk@gmail.com> # Tag v0.1.2
+
+letters [init_tables] 2019-03-28T11:03:54Z Leon.V.Nikitin <nlvomsk@gmail.com> # Add letters tables
