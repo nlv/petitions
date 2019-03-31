@@ -3,7 +3,7 @@
 
 BEGIN;
 
-CREATE TYPE signers_status AS ENUM ('new', 'duplicate', 'prepared', 'sent');
+CREATE TYPE signers_status AS ENUM ('new', 'prepared', 'sent', 'duplicate', 'bad', 'test');
 
 ALTER TABLE signers 
 ADD COLUMN status signers_status NOT NULL DEFAULT 'new';
