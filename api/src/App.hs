@@ -73,7 +73,7 @@ getPetition dbconnect code locale = do
       cnt <- liftIO $ B.getSignersCount conn (_petitionId p)
       pure (p, cnt)
     -- Just (Petition (PetitionId a) b c d e) -> pure $ (Petition a b c d e)
-    _      -> throwE err404
+    _      -> throwError err404
 
 getPetitionWidget :: Text -> Int -> Text -> Maybe Text -> Maybe Text -> Handler H.Html
 getPetitionWidget url port code locale widget = do
@@ -116,7 +116,7 @@ getPetitionFullText dbconnect code locale = do
             H.div H.! A.class_ "container" $ do
               H.h1 $ H.text (_petitionName p)
               markdown def (fromStrict $ _petitionContent p)
-    _      -> throwE err404
+    _      -> throwError err404
 
 postSigner :: ByteString -> Text -> SignerForm -> Handler Int
 postSigner dbconnect code signerForm = do
@@ -124,5 +124,5 @@ postSigner dbconnect code signerForm = do
   inserted <- liftIO $ B.insertSigner conn code signerForm
   case inserted of 
     Just cnt -> pure cnt
-    Nothing -> throwE err404
+    Nothing -> throwError err404
 

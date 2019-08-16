@@ -28,7 +28,7 @@ executables:
     main: exe/generate-elm-client/Main.hs
     dependencies:
       - petitions-api
-      - servant-elm
+      - servant-elm >= 0.6.0.0
       - elm-export
 
 dependencies:

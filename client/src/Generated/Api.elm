@@ -1,25 +1,35 @@
 module Generated.Api exposing (..)
 
-import Json.Decode exposing (..)
-import Json.Decode.Pipeline exposing (..)
-import Json.Encode
+import Json.Decode
+import Json.Encode exposing (Value)
+-- The following module comes from bartavelle/json-helpers
+import Json.Helpers exposing (..)
+import Dict exposing (Dict)
+import Set
 import Http
 import String
-import Url
+import Url.Builder
+
+maybeBoolToIntStr : Maybe Bool -> String
+maybeBoolToIntStr mx =
+  case mx of
+    Nothing -> ""
+    Just True -> "1"
+    Just False -> "0"
 
 
-type alias Petition =
-    { petitionId : Int
-    , petitionCode : String
-    , petitionName : String
-    , petitionDescription : String
-    , petitionContent : String
-    , petitionLocale : String
+type alias Petition' =
+    { _petitionId : Int
+    , _petitionCode : String
+    , _petitionName : String
+    , _petitionDescription : String
+    , _petitionContent : String
+    , _petitionLocale : String
     }
 
-decodePetition : Decoder Petition
-decodePetition =
-    succeed Petition
+decodePetition' : Decoder Petition'
+decodePetition' =
+    decode Petition
         |> required "_petitionId" int
         |> required "_petitionCode" string
         |> required "_petitionName" string
@@ -28,21 +38,21 @@ decodePetition =
         |> required "_petitionLocale" string
 
 type alias SignerForm =
-    { signerFormFirstName : String
-    , signerFormLastName : String
-    , signerFormCountry : String
-    , signerFormCity : String
-    , signerFormOrganization : String
-    , signerFormEmail : String
-    , signerFormPhone : String
-    , signerFormBirthYear : Int
-    , signerFormGender : String
-    , signerFormNotifiesEnabled : Bool
+    { _signerFormFirstName : String
+    , _signerFormLastName : String
+    , _signerFormCountry : String
+    , _signerFormCity : String
+    , _signerFormOrganization : String
+    , _signerFormEmail : String
+    , _signerFormPhone : String
+    , _signerFormBirthYear : Int
+    , _signerFormGender : String
+    , _signerFormNotifiesEnabled : Bool
     }
 
 decodeSignerForm : Decoder SignerForm
 decodeSignerForm =
-    succeed SignerForm
+    decode SignerForm
         |> required "_signerFormFirstName" string
         |> required "_signerFormLastName" string
         |> required "_signerFormCountry" string
@@ -57,27 +67,27 @@ decodeSignerForm =
 encodeSignerForm : SignerForm -> Json.Encode.Value
 encodeSignerForm x =
     Json.Encode.object
-        [ ( "_signerFormFirstName", Json.Encode.string x.signerFormFirstName )
-        , ( "_signerFormLastName", Json.Encode.string x.signerFormLastName )
-        , ( "_signerFormCountry", Json.Encode.string x.signerFormCountry )
-        , ( "_signerFormCity", Json.Encode.string x.signerFormCity )
-        , ( "_signerFormOrganization", Json.Encode.string x.signerFormOrganization )
-        , ( "_signerFormEmail", Json.Encode.string x.signerFormEmail )
-        , ( "_signerFormPhone", Json.Encode.string x.signerFormPhone )
-        , ( "_signerFormBirthYear", Json.Encode.int x.signerFormBirthYear )
-        , ( "_signerFormGender", Json.Encode.string x.signerFormGender )
-        , ( "_signerFormNotifiesEnabled", Json.Encode.bool x.signerFormNotifiesEnabled )
+        [ ( "_signerFormFirstName", Json.Encode.string x._signerFormFirstName )
+        , ( "_signerFormLastName", Json.Encode.string x._signerFormLastName )
+        , ( "_signerFormCountry", Json.Encode.string x._signerFormCountry )
+        , ( "_signerFormCity", Json.Encode.string x._signerFormCity )
+        , ( "_signerFormOrganization", Json.Encode.string x._signerFormOrganization )
+        , ( "_signerFormEmail", Json.Encode.string x._signerFormEmail )
+        , ( "_signerFormPhone", Json.Encode.string x._signerFormPhone )
+        , ( "_signerFormBirthYear", Json.Encode.int x._signerFormBirthYear )
+        , ( "_signerFormGender", Json.Encode.string x._signerFormGender )
+        , ( "_signerFormNotifiesEnabled", Json.Encode.bool x._signerFormNotifiesEnabled )
         ]
 
-getPetitionByCode : String -> String -> Maybe (String) -> Http.Request ((Petition, Int))
-getPetitionByCode url capture_code query_locale =
+getPetitionByCode : String -> (Maybe String) -> (Result Http.Error  (((Petition' Int String String String String String), Int))  -> msg) -> Cmd msg
+getPetitionByCode capture_code query_locale toMsg =
     let
         params =
-            List.filter (not << String.isEmpty)
-                [ query_locale
-                    |> Maybe.map (identity >> Url.percentEncode >> (++) "locale=")
-                    |> Maybe.withDefault ""
-                ]
+            List.filterMap identity
+            (List.concat
+                [ [ query_locale
+                    |> Maybe.map (Url.Builder.string "locale") ]
+                ])
     in
         Http.request
             { method =
@@ -85,53 +95,49 @@ getPetitionByCode url capture_code query_locale =
             , headers =
                 []
             , url =
-                String.join "/"
-                    [ url
-                    , "petition"
-                    , capture_code |> Url.percentEncode
+                Url.Builder.crossOrigin ""
+                    [ "petition"
+                    , capture_code
                     ]
-                ++ if List.isEmpty params then
-                       ""
-                   else
-                       "?" ++ String.join "&" params
+                    params
             , body =
                 Http.emptyBody
             , expect =
-                Http.expectJson (map2 (\a b -> (a,b)) (index 0 decodePetition) (index 1 int))
+                Http.expectJson toMsg jsonDec((Petition' Int Text Text Text Text Text), Int)
             , timeout =
                 Nothing
-            , withCredentials =
-                False
+            , tracker =
+                Nothing
             }
 
-postPetitionByCodeSigner : String -> String -> SignerForm -> Http.Request (Int)
-postPetitionByCodeSigner url capture_code body =
-    Http.request
-        { method =
-            "POST"
-        , headers =
-            -- [ Http.header  "Content-Type" "application/json"  ]
-            []
-        , url =
-            String.join "/"
-                [ url
-                , "petition"
-                , capture_code |> Url.percentEncode
-                , "signer"
-                ]
-        , body =
-            Http.jsonBody (encodeSignerForm body)
-        , expect =
-            Http.expectJson int
-            -- Http.expectStringResponse
-            --     (\{body2} ->
-            --         if String.isEmpty body2 then
-            --             Ok ()
-            --         else
-            --             Err "Expected the response body to be empty"
-            --     ) 
-        , timeout =
-            Nothing
-        , withCredentials =
-            False
-        }
+
+
+postPetitionByCodeSigner : String -> SignerForm -> (Result Http.Error  (Int)  -> msg) -> Cmd msg
+postPetitionByCodeSigner capture_code body toMsg =
+    let
+        params =
+            List.filterMap identity
+            (List.concat
+                [])
+    in
+        Http.request
+            { method =
+                "POST"
+            , headers =
+                []
+            , url =
+                Url.Builder.crossOrigin ""
+                    [ "petition"
+                    , capture_code
+                    , "signer"
+                    ]
+                    params
+            , body =
+                Http.jsonBody (jsonEncSignerForm body)
+            , expect =
+                Http.expectJson toMsg Json.Decode.int
+            , timeout =
+                Nothing
+            , tracker =
+                Nothing
+            }

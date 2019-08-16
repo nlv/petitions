@@ -4,7 +4,7 @@
 
 module Main where
 
-import Elm (Spec (Spec), specsToDir, toElmDecoderSource, toElmEncoderSource, toElmTypeSource)
+import Elm (Spec (Spec), specsToDir, toElmDecoderSource, toElmEncoderSource, toElmTypeSource, ElmType)
 import Servant.Elm -- (ElmType, Proxy (Proxy), defElmImports, generateElmForAPI)
 import Data
 import Api
