@@ -40,7 +40,7 @@ dependencies:
   - postgresql-simple
   - product-profunctors
   - optparse-applicative
-  - opaleye
+  - opaleye == 0.6.7003.0
   - servant
   - servant-server
   - servant-blaze
